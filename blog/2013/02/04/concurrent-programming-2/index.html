@@ -1,0 +1,489 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Concurrent programming - 2 - The digital cat</title>
+    <meta name="author" content="Leonardo Giordani">
+    
+	<meta name="description" content="Abstract In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+
+    <!-- remove or comment it to disable ajaxification -->   
+    <script src="/javascripts/ajaxify.js"></script>
+   
+    
+</head>
+
+
+<body>
+    <div id="wrapper">
+    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
+<h1 class="animated pulse">
+    <div id="headerbg">
+        The digital cat
+    </div>
+</h1>
+<br>
+
+<ul id="social-links" style="text-align:center">
+  
+  <!-- GitHub -->
+  <li>
+  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
+  </li>
+  
+  
+  <!-- Google Plus -->
+  <li>
+  <a href="http://plus.google.com/116249535367530805786?rel=author" class="google" title="Google+"></a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li>
+  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
+  </li>
+  
+  
+  
+  
+  
+</ul>
+
+
+<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
+<ul id="nav">
+	<li id="ajax"><a href="/index.html">Home</a></li>
+	<li id="ajax"><a href="/about/index.html">About</a></li>
+	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
+    <li><a href="/atom.xml">RSS</a></li>
+    
+    <li>
+    <div id="dark">
+        <form method="get" action="/search.html" id="search">
+            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
+        </form>
+    </div>
+    </li>
+        
+</ul>
+
+
+
+
+</header>
+
+<div id="toload">
+<!-- begin toload --> 
+    <div id="content" class="inner">
+        <article class="post">
+	<h2 class="title">Concurrent Programming - 2</h2>
+	<div class="entry-content"><h2>Abstract</h2>
+
+<p>In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.</p>
+
+<!--more-->
+
+
+<h2>The C standard library</h2>
+
+<p>The C standard library, nicknamed libc, is a collection of functions for the C language which has been standardized by ANSI and later by ISO. An implementation of it can be found in any major compiler or operating system, especially Unix-like ones.</p>
+
+<p>In the GNU ecosystem, which Linux distributions are grounded on, the library is implemented by glibc (GNU libc). The library reached version 2.17 in December 2012 and is free software released under LGPL, a less restrictive version of the GPL which most notably allows the use of the library by non-GPL software, even proprietary one.</p>
+
+<p>You can find and navigate glibc sources <a href="http://sourceware.org/git/?p=glibc.git;a=summary">here</a></p>
+
+<h2>C language and PIDs</h2>
+
+<p>Processes, like every resource in a computer, are managed by the kernel. This is a part of the operating system that runs continuously in background, exposing functions to other programs that allow them to obtain, manage and release resources such as memory, disk space and CPU time. One of the things the kernel exposes to the hosted programs is the process management, which stands for structures that represent the current status of processes in the system. Using the libc the programmer can easily access those structures in a read-only way.</p>
+
+<p>Let&#8217;s start with the simple concept of PID, the Process IDentifier we described in the past issue of this series. In the libc the <code>pid_t</code> type is defined as an integer capable of containing a pid. To show this we will now take a little tour of the glibc source code: we will cover the whole path this time only, just to highlight both the chances given us by the source code and the complexity of a project like glibc.</p>
+
+<p>We can find the initial definition of <code>pid_t</code> here</p>
+
+<figure class='code'><figcaption><span>posix/sys/types.h</span><a href='http://sourceware.org/git/?p=glibc.git;a=blob;f=posix/sys/types.h;h=33c2176d0f0b38f1a81bf8c76d38f08d2ab38675;hb=HEAD'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#ifndef __pid_t_defined</span>
+</span><span class='line'><span class="k">typedef</span> <span class="n">__pid_t</span> <span class="n">pid_t</span><span class="p">;</span>
+</span><span class='line'><span class="cp">#define __pid_t_defined</span>
+</span><span class='line'><span class="cp">#endif</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see the definition of the type is protected by multiple header inclusion, as usual in the C world. The underlying <code>__pid_t</code> type is then defined here</p>
+
+<figure class='code'><figcaption><span>bits/types.h</span><a href='http://sourceware.org/git/?p=glibc.git;a=blob;f=bits/types.h;h=dc7b784f965749c44257bf030508d6642c07dec7;hb=HEAD'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#define __STD_TYPE typedef</span>
+</span><span class='line'><span class="cp">#define __S32_TYPE int</span>
+</span><span class='line'><span class="n">__STD_TYPE</span> <span class="n">__PID_T_TYPE</span> <span class="n">__pid_t</span><span class="p">;</span> <span class="cm">/* Type of process identifications.  */</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Notice that even the typedef keyword is defined by a macro (remember that the C preprocessor is a little more than a text macro replacement tool); this definition in particular avoids compiler warning when using the <code>long long</code> type which is not supported by all versions of the C standard. <code>S32</code> stands for “signed 32 bits”, as you can read in the code documentation.</p>
+
+<p>The last macro <code>__PID_T_TYPE</code> can be found here</p>
+
+<figure class='code'><figcaption><span>bits/typesizes.h</span><a href='http://sourceware.org/git/?p=glibc.git;a=blob;f=bits/typesizes.h;h=8268b90276700a382db37331be1d8ef5a516403d;hb=HEAD'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#define __PID_T_TYPE            __S32_TYPE</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The heavy use of defines and compiler features made by glibc code allows the library to be compiled on very different architectures.</p>
+
+<h2>Telling the PID</h2>
+
+<p>Let us now discover the function which give us the knowledge of the pid of the process containing our program</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">pid_t</span> <span class="nf">getpid</span> <span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which is defined with <code>pid_t</code> in <code>unistd.h</code> and <code>sys/types.h</code>. The libc simply uses the system call called <code>getpid</code> and its real implementation can be found in the kernel source</p>
+
+<figure class='code'><figcaption><span>kernel/timer.c</span><a href='http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=blob;f=kernel/timer.c;h=367d008584823a6fe01ed013cda8c3693fcfd761;hb=HEAD'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">SYSCALL_DEFINE0</span><span class="p">(</span><span class="n">getpid</span><span class="p">)</span>
+</span><span class='line'><span class="p">{</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">task_tgid_vnr</span><span class="p">(</span><span class="n">current</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We can now write a program whose aim is to print on the standard output its own pid. With an editor of your choice write the following code</p>
+
+<figure class='code'><figcaption><span>print_pid.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">pid</span> <span class="o">=</span> <span class="n">getpid</span><span class="p">();</span>
+</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;The pid assigned to the process is %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">pid</span><span class="p">);</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Save the program as print_pid.c and compile it</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>gcc -o print_pid print_pid.c
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If this operation returns errors make sure you installed gcc and libc headers; refer to your distribution knowledge base to solve this task.</p>
+
+<p>The compiler will build an executable named <code>print_pid</code> (since the current directory is probably not in the system path you can run it with <code>./print_pid</code>). Executing the program we will have no great surprises: it prints out a positive number and, if executed more than once, this number will likely increase progressively; this is not mandatory, however, because another process could be created between two executions of <code>print_pid</code>. Try for example to execute <code>print_pid</code>, then <code>ps</code> and then <code>print_pid</code> again.</p>
+
+<h2>Forking</h2>
+
+<p>Now it is time to meet one of the most important concepts in the field of operating systems, that is the concept of forking.</p>
+
+<p>Forking in general means that one thing splits in two and each part acts like an independent being. At the very moment of the split the two entities are the same, exactly the same, except for the fact that they live in two different spaces. This computer science concept can be retrieved in nature when a simple organism generates a clone of itself. After the cloning the two organisms are the exact copy, but they can be told apart, since they are two things (the right one and the left one, for example). Back to the operating system world we find the very same problem when a process forks; after the fork operation we have two processes with two different PIDs, but the two contain the same program at the same execution point.</p>
+
+<p>So, when a program (running as process A) creates another process (B) the two are identical, that is they have the same code, the memory full of the same data (not the same memory, since the memory regions are different) and the same processor status. From this point on the two can continue in two different ways, just like our cloning organisms, for example depending on the user&#8217;s input or some other data. The process A is called the <strong>parent</strong> process while B is the <strong>child</strong> process; now you can begin to better understand the name <em>parent of all the processes</em> given to init. The function which creates a new process is</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">pid_t</span> <span class="n">fork</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The number returned is a pid, but it deserves a particular attention. We said that the first process duplicates itself splitting in a parent and a child, which will then execute interlacing themselves with the other running processes, doing different works; but immediately after the duplication which process will be executed, the parent or the child?</p>
+
+<p>Well, the answer is as simple as unuseful: one of the two. The decision about which process has to be executed is taken by a part of the operating system called scheduler, and it pays no attention if a process is the parent or the child, following an algorithm based on other parameters.</p>
+
+<p>If we are writing processes that implement a service (such as serving network connections) we need nothing more: the two processes are the same, they behave the same way, so by cloning the process we just incremented the number of service providers. This is usually done by Web servers such as Apache, which spawns a copy of itself to serve incoming connections.</p>
+
+<h2>Parent and child</h2>
+
+<p>Sometimes, anyway, it is fundamental to know what process is in execution: after the fork both processes are at the same execution point (that is just after the <code>fork()</code> call) so how can them tell if they are the parent or the child one?</p>
+
+<p>In order to clarify this question let&#8217;s look at the following algorithm:</p>
+
+<ol>
+<li>fork</li>
+<li>if you are the child then execute &#8230;</li>
+<li>if you are the parent then execute &#8230;</li>
+</ol>
+
+
+<p>which could represent in a sort of metalanguage the code of our program. The question can be expressed this way: “You have been cloned. Who are you, the original one or the clone?”</p>
+
+<p>The answer is once again very simple: the <code>fork()</code> function returns 0 to the child process and the child&#8217;s PID to the parent. So it is enough to test if the returned PID is zero and we will know what process is executing the current code. Putting it in C language we obtain</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+</span><span class='line'>  <span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span><span class='line'>  <span class="p">{</span>
+</span><span class='line'>      <span class="n">code</span> <span class="n">of</span> <span class="n">the</span> <span class="n">child</span> <span class="n">process</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>  <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>      <span class="n">code</span> <span class="n">of</span> <span class="n">the</span> <span class="n">parent</span> <span class="n">process</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It&#8217;s time to write the first real example of multitasking code: you can save it in a <code>fork_demo.c</code> file and compile it as we did before.</p>
+
+<p>The program will fork itself and both the parent and the child will write something on the screen; the final output will be the interlaced output of the two (if all goes right).</p>
+
+<figure class='code'><figcaption><span>fork_demo.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;sys/types.h&gt;</span>
+</span><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
+</span><span class='line'>
+</span><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span><span class='line'>  <span class="n">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">();</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+</span><span class='line'>      <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;-child-</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>      <span class="p">}</span>
+</span><span class='line'>      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;+parent+</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'>  <span class="p">}</span>
+</span><span class='line'>
+</span><span class='line'>  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Lines number 01-03 contain the includes for the necessary libraries (standard I/O, multitasking).</p>
+
+<p>The main function returns an integer (as always in GNU), which normally is zero if the program reached the end without errors or an error code if something goes wrong; let&#8217;s state this time all will run without errors (we can later add some error control code, when the basic concepts will be clear).</p>
+
+<p>Then we define the data type containing a pid (line 06) and an integer working as counter for loops (line 07). At line 09 we call <code>fork()</code> which will return zero to the program executed in the child process and the pid of the child process to the parent; the test is at line 11. Now the code at lines 12-15 will be executed in the child process, while the rest (lines 18-22) will be executed in the parent. Note that we omitted the <code>else</code> statement since the child code ends with a <code>return</code>, thus there is no way for the child to execute the code of the parent.</p>
+
+<p>The two parts simply write 8 times on the standard output the string <code>-child-</code> or <code>+parent+</code>, depending on which process executes it, and then end returning 0. Executing the program will perhaps let you unsatisfied: the result is likely not to be a real mix between the two strings, and this due to the speed of execution of such a short loop. The scheduler runs the parent or the child for a quantum of time which is enough for the process to end the loop; thus probably your output will be a list of <code>+parent+</code> strings followed by a list of <code>-child-</code> ones, or the contrary.</p>
+
+<p>To better highlight the interlacing effect we can insert a random delay before each <code>printf()</code> call: we can do this with <code>sleep()</code> and <code>rand()</code> functions</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">sleep</span><span class="p">(</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">4</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>this make the program sleep for a random number of seconds between 0 and 3. Now the child code looks like</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+</span><span class='line'>  <span class="n">sleep</span> <span class="p">(</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">4</span><span class="p">);</span>
+</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;-child-</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and the same for the parent&#8217;s code. Save it as <code>fork_demo2.c</code>, compile and execute. It is slower now, and we notice a difference in the output string order, and more differences between an execution and the previous one. For example my output is</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'><span class="nv">$ </span>./fork_demo2
+</span><span class='line'>-child-
+</span><span class='line'>+parent+
+</span><span class='line'>+parent+
+</span><span class='line'>-child-
+</span><span class='line'>-child-
+</span><span class='line'>+parent+
+</span><span class='line'>+parent+
+</span><span class='line'>-child-
+</span><span class='line'>-child-
+</span><span class='line'>+parent+
+</span><span class='line'>+parent+
+</span><span class='line'>-child-
+</span><span class='line'>-child-
+</span><span class='line'>-child-
+</span><span class='line'>+parent+
+</span><span class='line'>+parent+
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As always when dealing with multitasking code, your output is probably different from mine, and will also be different between consecutive executions. Try also to change the parameters of the program, such as the sleep time or the number of loops.</p>
+
+<h2>Why forking</h2>
+
+<p>Thinking carefully about the parent and child example a question arises: why should I write code that forks, with all the intricacies it entails, when I could simply write two different programs and run them, letting the operating system to deal with their simultaneous execution?</p>
+
+<p>This is a very interesting question and the answer is very simple, though the underlying concept is rather complex. When you run a program the shell or the GUI follows a pattern called <strong>fork-and-exec</strong>: first it forks, then the child process executes the desired program. The reason of this behaviour is that the <code>exec</code> family of system calls replace the running program with a new program but do not change the PID. So the tasks are divided between system calls: <code>fork</code> creates a new process, while <code>exec</code> loads the given program into the newly created process.</p>
+
+<h2>DOS and Windows</h2>
+
+<p>Operating systems of the DOS and Windows family do not provide a <code>fork</code> mechanism but a <code>spawn</code> family of system calls, which directly implement the fork-and-exec technique; this is a good example of the different implementation OSs make of common computer science concepts: while both implement multitasking and let many processes run concurrently, the way this target is reached can vary significantly.</p>
+
+<h2>Conclusion</h2>
+
+<p>Starting from the knowledge of process you stepped into the fundamental Unix concept of forking, learning to tell apart parent and child processes and running your first multitasking-based program. You also started to understand how complex can some operating system issues be, and how different the solution to them provided by real world OSs.</p>
+
+<p>In the next article we will start to look after processes synchronization and data sharing between processes.</p>
+
+<h2>Past articles</h2>
+
+<p><a href="blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+</div>
+
+<div class="meta">
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+    </div>
+    <footer id="footer">
+    <div style="display:inline">
+    Copyright &copy; 2013
+
+    Leonardo Giordani
+. Powered by <a href="http://octopress.org">Octopress</a> | 
+    Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
+</div>
+
+
+    </footer>
+    <script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-38715090-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+
+
+
+<!-- end toload --> 
+</div>
+</div>
+<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
+/*]]>*/
+</script><!-- remove it to remove the scroll to top button -->
+</body>
+</html>

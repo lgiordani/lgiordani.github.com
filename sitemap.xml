@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
+    <url>
+        <loc>http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1/</loc>
+        <lastmod>2013-02-22T15:27:20+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2/</loc>
+        <lastmod>2013-02-22T15:27:20+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3/</loc>
+        <lastmod>2013-02-22T15:27:20+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4/</loc>
+        <lastmod>2013-02-22T15:27:20+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.com/about/</loc>
+        <lastmod>2013-02-22T15:27:20+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.com/blog/archives/</loc>
+        <lastmod>2013-02-22T15:27:20+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.com/</loc>
+        <lastmod>2013-02-22T15:27:20+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.com/search.html</loc>
+        <lastmod>2013-02-22T15:27:20+01:00</lastmod>
+    </url>
+</urlset>

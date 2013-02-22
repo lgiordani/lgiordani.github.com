@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: operating systems | The digital cat]]></title>
+  <link href="http://lgiordani.github.com/blog/categories/operating-systems/atom.xml" rel="self"/>
+  <link href="http://lgiordani.github.com/"/>
+  <updated>2013-02-22T15:29:57+01:00</updated>
+  <id>http://lgiordani.github.com/</id>
+  <author>
+    <name><![CDATA[Leonardo Giordani]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Concurrent programming - 4]]></title>
+    <link href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4/"/>
+    <updated>2013-02-13T10:50:00+01:00</updated>
+    <id>http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p>In the past issue of this series of articles about concurrent programming we started to concern ourselves with the problems of synchronization between processes. In this installment we will investigate further the subject introducing some structures and functions collectively known as <em>Unix System V IPC</em>.</p>
+
+<!--more-->
+
+
+<h2>IPC: InterProcess Communication</h2>
+
+<p>Communication between processes, either running on the same machine or over a network, is one of the most interesting topics in computer science and, despite its age, new solutions to this problem keep arising. With the widespread availability of Internet access the subject is now a little shifted towards pure network communication, which represents just a part of the techniques known as <strong>IPC</strong>: InterProcess Communication.</p>
+
+<p>This abbreviation encompasses several different scopes in the field of multiprocessing, the most important ones being <strong>synchronization</strong>, <strong>shared data management</strong> and <strong>messaging</strong>. In this article we will focus on local IPC, i.e. communication between processes running on the same machine. The underlying concepts and techniques, however, can be easily applied to a network environment too, but they require a layer to manage network communication, which is out of the scope of this series.</p>
+
+<h2>More on synchronization</h2>
+
+<p>As briefly shown in the last article synchronization problems are not only among the most complex issues to solve in computer science, but can also lead to severe malfunctions of our software.</p>
+
+<p>Let's reconsider and formalize the example given in the last post. Say we create two different processes working on the same data. If the two processes just read the same data from memory (or disk) no problems can arise: data are static, and accessing does not change them. So the execution of the two processes is called <strong>consistent</strong>, which highlights that repeated executions or executions spanning a long time will always result in the same system behaviour.</p>
+
+<p>If now one of the processes wants to modify data different situations can come up, depending on the actual timing of the operations. Say we have two processes <code>A</code> and <code>B</code> and an element <code>d</code>; process <code>A</code> increases element <code>d</code> by 1, while process <code>B</code> prints the element value on the screen. In a sort of metalanguage we could express this situation with the following syntax</p>
+
+<p><code>
+A { d-&gt;d+1 } &amp; B { d-&gt;output }
+</code></p>
+
+<p>where <code>&amp;</code> stands for a concurrent execution; in other words the two processes are not synchronized. One of the possible resulting executions is</p>
+
+<p><code>
+(-) d = 5
+(A) d = 6
+(B) output = 6
+</code></p>
+
+<p>while the other is</p>
+
+<p><code>
+(-) d = 5
+(B) output = 5
+(A) d = 6
+</code></p>
+
+<p>As you can see, different timings can lead to different results; let's pretend that element <code>d</code> is the amount of money in your bank account and you will suddenly realize the importance of the matter. Such a reliance of data on timing or system conditions is know as <strong>data inconsistency</strong>.</p>
+
+<p>As we already described, waiting is a trivial form of synchronization that can solve this problem. However it is as simple as inefficient, as it blocks the execution of one process, while the other is operating and this happens even if the blocked process is no more operating on shared data. The block is indeed based on the simple assumption that one process could lead to data inconsistency.</p>
+
+<p>It is thus necessary to increase the <strong>granularity</strong> of this block. Granularity is the scope of an action: the higher is the granularity, the narrowest is the scope. So we have to restrict the scope of the block, which by now covers the whole process.</p>
+
+<h2>System V keys</h2>
+
+<p>A part of the IPC structures introduced by Unix System V is explicitly dedicated to resource identification, that is the capability of labelling arbitrary objects and to limit access management to them. This is done through the use of the so-called <em>SysV IPC Keys</em>: a <strong>key</strong>, in this context, is a number used to univocally identify an IPC structure. An IPC key can be generated by <code>ftok()</code></p>
+
+<p><code>c
+key_t ftok(const char *pathname, int proj_id);
+</code></p>
+
+<p>where <code>pathname</code> is an existing file name with the full path and <code>proj_id</code> is a number without any restriction. It is guaranteed that the returned key is the same for subsequent calls with the same parameters, but it is not guaranteed that different parameters result in different keys: in other words <em>keys are not guaranteed to be unique</em>. Since IPC functions require a key created with <code>ftok()</code> the best solution is to write a small library that keeps track of assigned keys and avoids duplicates.</p>
+
+<h2>Semaphores - part 1</h2>
+
+<p>The idea of traffic light can be profitably borrowed to control access to resources. A <strong>semaphore</strong>, in the IPC world, is a structure capable of containing a positive or null integer and which manages a queue of processes waiting for a particular condition of the semaphore itself.</p>
+
+<p>Despite their simplicity, the power of semaphores is big, thus their correct use is not trivial. We will therefore start writing code without error control, just to focus on the real subject. Please remember that in real world applications error control code can vary from 40% up to 80% of the total amount, so bear in mind that code without error control is good only for the purpose of understanding concepts.</p>
+
+<p>The first possible use of a semaphore is that of access controller: the value of the semaphore represents the number of processes that can concurrently access the resource. Every time a process access the resource it decrements the value of the semaphore and every time a process releases the resource it increments the value. If the resource is exclusive (that is only one process can access the resource at a time) the maximum value of the semaphore will be 1.</p>
+
+<p>A second use of the semaphore is that of resource counter. The value in this case is the number of resources available to processes, e.g. memory cells, network connections, and so on. As you can easily understand using a resource is equivalent to locking its access.</p>
+
+<p>Let's consider a practical case where both the uses of semaphores will be useful.</p>
+
+<p>We build a buffer of length L where n processes W1,..., Wn can write to, but from which just one process R can read. Say also that just one process can access the buffer at a given time T. As you can easily understand W processes can write at any time except when the buffer is full, while the process R can read at any time except when the buffer is empty.</p>
+
+<p>This buffer could be easily managed in a standard single task environment by declaring 2 flags, the first to signal overflow and the second to signal underflow. But we are in a multitasking environment now, so flags declared before the fork operation are not shared between processes (each process has its own copy of the flags, and they are not linked). So we have to use a shared structure and this is where IPC semaphores take the field.</p>
+
+<p>We can declare three semaphores: the first one will manage the access to the buffer, while the second and third will keep track of how many elements are in the buffer (later it will become clear why two semaphores are not sufficient).</p>
+
+<p>Given that the access to the buffer is exclusive the first semaphore will be a binary one (which value thus will be 0 or 1), while the second and the third will have values linked to the length of the buffer.</p>
+
+<p>In C language the SysV primitive to create a semaphore is</p>
+
+<p><code>c
+int semget(key_t key, int nsems, int semflg);
+</code></p>
+
+<p>where <code>key</code> is an IPC key created with <code>ftok()</code>, <code>nsems</code> is the number of semaphores we want to create and <code>semflg</code> a set of flags controlling the access to the semaphores. Access to IPC structures is ruled by a 12 bit system which is almost identical to the Unix file system access control, but we will not dive into it. As you can also notice <code>semget()</code> manages sets of semaphores, which helps us keeping the code compact.</p>
+
+<p>Let's review the full code to create a semaphore</p>
+
+<p>``` c</p>
+
+<h1>include &lt;stdio.h></h1>
+
+<h1>include &lt;stdlib.h></h1>
+
+<h1>include &lt;linux/types.h></h1>
+
+<h1>include &lt;linux/ipc.h></h1>
+
+<h1>include &lt;linux/sem.h></h1>
+
+<p>int main(void)
+{
+  key_t key;
+  int semid;</p>
+
+<p>  key = ftok("/etc/fstab", getpid());</p>
+
+<p>  /<em> create a semaphore set with only 1 semaphore: </em>/
+  semid = semget(key, 1, 0666 | IPC_CREAT);</p>
+
+<p>  return 0;
+}
+```</p>
+
+<p>Do not compile and execute it by now. As you can see from the <code>#include</code> statements IPC structures are provided by the operating system itself and not by the standard C library. The key is created by passing to <code>ftok()</code> a file that certainly exists in the system and the PID of the current process. To know more about permission flags check the manual page for <code>semget()</code>.</p>
+
+<p>Let's go on learning to manage and remove semaphores; the primitive used to interact with a semaphore is</p>
+
+<p><code>c
+int semctl(int semid, int semnum, int cmd, ...)
+</code></p>
+
+<p>where <code>semid</code> is the semaphore set identifier returned from <code>semget()</code>, <code>semnum</code> the index of the semaphore inside the set and <code>cmd</code> the command you want to run. The value <code>semnum</code> is optional for some commands. Some commands need also an additional argument which type is <code>union semun</code>, defined as</p>
+
+<p>``` c
+union semun {
+ int val;                  /<em> value for SETVAL </em>/
+ struct semid_ds <em>buf;     /</em> buffer for IPC_STAT, IPC_SET <em>/
+ unsigned short </em>array;    /<em> array for GETALL, SETALL </em>/</p>
+
+<pre><code>                       /* Linux specific part: */
+</code></pre>
+
+<p> struct seminfo <em>__buf;    /</em> buffer for IPC_INFO */
+};
+```</p>
+
+<p>To set the value of a semaphore the command is <code>SETVAL</code> and the value is specified through a <code>union semun</code> variable. To set the value of the first semaphore to 1 we modify the program this way</p>
+
+<p>``` c</p>
+
+<h1>include &lt;stdio.h></h1>
+
+<h1>include &lt;stdlib.h></h1>
+
+<h1>include &lt;linux/types.h></h1>
+
+<h1>include &lt;linux/ipc.h></h1>
+
+<h1>include &lt;linux/sem.h></h1>
+
+<p>int main(void)
+{
+  key_t key;
+  int semid;
+  union semun arg;</p>
+
+<p>  key = ftok("/etc/fstab", getpid());</p>
+
+<p>  /<em> create a semaphore set with only 1 semaphore: </em>/
+  semid = semget(key, 1, 0666 | IPC_CREAT);</p>
+
+<p>  arg.val = 1;
+  semctl(semid, 0, SETVAL, arg);</p>
+
+<p>  return 0;
+}
+```</p>
+
+<p>Last we have to cancel the semaphore releasing the structures needed for its management; this is done by the command <code>IPC_RMID</code>, which removes the semaphore and notifies all processes queued to access it that it has been removed. Let this notification aside for the moment and change the code to remove the semaphore</p>
+
+<p>``` c</p>
+
+<h1>include &lt;stdio.h></h1>
+
+<h1>include &lt;stdlib.h></h1>
+
+<h1>include &lt;linux/types.h></h1>
+
+<h1>include &lt;linux/ipc.h></h1>
+
+<h1>include &lt;linux/sem.h></h1>
+
+<p>int main(void)
+{
+  key_t key;
+  int semid;
+  union semun arg;</p>
+
+<p>  key = ftok("/etc/fstab", getpid());</p>
+
+<p>  /<em> create a semaphore set with only 1 semaphore: </em>/
+  semid = semget(key, 1, 0666 | IPC_CREAT);</p>
+
+<p>  arg.val = 1;
+  semctl(semid, 0, SETVAL, arg);</p>
+
+<p>  /<em> deallocate semaphore </em>/
+  semctl(semid, 0, IPC_RMID);</p>
+
+<p>  return 0;
+}
+```</p>
+
+<p>Now you can compile and run it. As you can imagine the program seems to do nothing: it just silently creates a semaphore, sets its value and removes it.</p>
+
+<h2>Semaphores - part 2</h2>
+
+<p>Time to effectively use the semaphore: the function that allows to performs operations on a semaphore is</p>
+
+<p><code>c
+int semop(int semid, struct sembuf *sops, unsigned nsops);
+</code></p>
+
+<p>where <code>semid</code> is the set identifier, <code>sops</code> an array of operations and <code>nsops</code> the length of this latter. Each operation is declared through a <code>struct sembuf</code></p>
+
+<p>``` c
+struct sembuf {</p>
+
+<pre><code>ushort  sem_num;        /* semaphore index in array */
+         short   sem_op;         /* semaphore operation */
+         short   sem_flg;        /* operation flags */
+</code></pre>
+
+<p>};
+```</p>
+
+<p>For the time being we will always set <code>sem_flg</code> to 0. Operations are always integers and obey the following rules</p>
+
+<ol>
+<li><p><code>sem_op</code> &lt; 0 This signals that you want to decrease the semaphore value, or in other words lock one of the resources controlled by it. If the value of the semaphore can be decremented without becoming negative it will be and the process running <code>semop()</code> continues. Otherwise the calling process falls in a sleep status until the semaphore has that number of resources available.</p></li>
+<li><p><code>sem_op</code> = 0 This signals that you are waiting for the semaphore to reach value zero, that is the condition where no resources are available. The calling process falls in a sleep status until that moment.</p></li>
+<li><p><code>sem_op</code> > 0 This signals that you want increase the semaphore value, or in other words release the given number of resources.</p></li>
+</ol>
+
+
+<p>Now we can write some code to implement the buffer example given above. We are going to create 5 processes called W (writers) and a process called R (reader). Each W process tries to lock the resource (the buffer) through a semaphore and if the buffer is not full, adds an element and releases the lock. The R process tries to lock the buffer, removes an element if available (buffer not empty) and releases the lock.</p>
+
+<p>Since we did not yet talk about shared memory we have to simulate read and write operation, i.e. pretend the operation has been performed. This is necessary since each process has its own memory space and cannot access that of another process. So each process has its own copy of the buffer and the copies are not linked each other. Later in this series we will talk about techniques to share memory regions between processes.</p>
+
+<p>As already stated we need 3 semaphores: the first acts as access controller and its maximum value is 1, while the other two manage overflow and underflow conditions. A single semaphore could not handle both conditions, since <code>semop()</code> acts one-way only.</p>
+
+<p>Let's clarify this latter statement before looking at the code. Say we have a single semaphore to manage over- and underflow conditions, with a value equal to the number of empty spaces in the buffer. Each time a W process fills the buffer it can decrease the semaphore value by one unit, until the value reaches 0, which represents the condition of full buffer. This way, however the empty buffer condition cannot be managed since the R process can increment the value of the semaphore without any limit. Semaphores, indeed, just control the lower boundary and not the upper one.</p>
+
+<p>``` c</p>
+
+<h1>include &lt;stdio.h></h1>
+
+<h1>include &lt;stdlib.h></h1>
+
+<h1>include &lt;errno.h></h1>
+
+<h1>include &lt;linux/types.h></h1>
+
+<h1>include &lt;linux/ipc.h></h1>
+
+<h1>include &lt;linux/sem.h></h1>
+
+<p>int main(int argc, char <em>argv[])
+{
+  /</em> IPC structures */
+  pid_t pid;
+  key_t key;
+  int semid;
+  union semun arg;
+  struct sembuf lock_res = {0, -1, 0};
+  struct sembuf rel_res = {0, 1, 0};
+  struct sembuf push[2] = {1, -1, IPC_NOWAIT, 2, 1, IPC_NOWAIT};
+  struct sembuf pop[2] = {1, 1, IPC_NOWAIT, 2, -1, IPC_NOWAIT};</p>
+
+<p>  int i, j;
+  int len;
+  int num_proc = 5;
+  int num_write_actions = 20;
+  int num_read_actions = 100;</p>
+
+<p>  if(argc &lt; 2){</p>
+
+<pre><code>printf("Usage: %s &lt;size&gt;\n", argv[0]);
+exit(0);
+</code></pre>
+
+<p>  }</p>
+
+<p>  len = strtol(argv[1], NULL, 10);</p>
+
+<p>  key = ftok("/etc/fstab", getpid());</p>
+
+<p>  /<em> Create a set with 3 semaphores </em>/
+  semid = semget(key, 3, 0666 | IPC_CREAT);</p>
+
+<p>  /<em> Initialize semaphore #0 to 1 - Resource controller </em>/
+  arg.val = 1;
+  semctl(semid, 0, SETVAL, arg);</p>
+
+<p>  /<em> Initialize semaphore #1 to buf_length - Overflow controller </em>/
+  /<em> Sem value represents free space in buffer </em>/
+  arg.val = len;
+  semctl(semid, 1, SETVAL, arg);</p>
+
+<p>  /<em> Initialize semaphore #2 to buf_length - Underflow controller </em>/
+  /<em> Sem value represents the number of elements in buffer </em>/
+  arg.val = 0;
+  semctl(semid, 2, SETVAL, arg);</p>
+
+<p>  /<em> Fork </em>/
+  for (i = 0; i &lt; num_proc; i++){</p>
+
+<pre><code>pid = fork();
+if (!pid){
+  /* Child process code*/
+  for (j = 0; j &lt; num_write_actions; j++){
+sleep(rand()%6);
+
+/* Try to lock the buffer - sem #0 */
+if (semop(semid, &amp;lock_res, 1) == -1){
+  perror("semop:lock_res (write)");
+}
+
+/* Lock a free cell - sem #1 */
+/* Push an element - sem #2 */
+if (semop(semid, &amp;push, 2) != -1){
+  printf("---&gt; Child process %d: Element written\n", getpid());
+}
+else{
+  printf("---&gt; Child process %d: BUFFER FULL\n", getpid());
+}
+
+/* Release the buffer */
+semop(semid, &amp;rel_res, 1);
+  }
+
+  exit(0);
+}
+</code></pre>
+
+<p>  }</p>
+
+<p>  for (i = 0;i &lt; num_read_actions; i++){</p>
+
+<pre><code>sleep(rand()%3);
+
+/* Try to lock the buffer - sem #0 */
+if (semop(semid, &amp;lock_res, 1) == -1){
+  perror("semop:lock_res (read)");
+}
+
+/* Unlock a free cell - sem #1 */
+/* Pop an element - sem #2 */
+if (semop(semid, &amp;pop, 2) != -1){
+  printf("&lt;--- Parent process %d: Element read\n", getpid());
+}
+else {
+  printf("&lt;--- Parent process %d: BUFFER EMPTY\n", getpid());
+}
+
+/* Release the buffer */
+semop(semid, &amp;rel_res, 1);
+</code></pre>
+
+<p>  }</p>
+
+<p>  /<em> Destroy semaphores </em>/
+  semctl(semid, 0, IPC_RMID);</p>
+
+<p>  return 0;
+}
+```</p>
+
+<p>Let us review the most interesting parts of the code.</p>
+
+<p><code>c
+  struct sembuf lock_res = {0, -1, 0};
+  struct sembuf rel_res = {0, 1, 0};
+  struct sembuf push[2] = {1, -1, IPC_NOWAIT, 2, 1, IPC_NOWAIT};
+  struct sembuf pop[2] = {1, 1, IPC_NOWAIT, 2, -1, IPC_NOWAIT};
+</code></p>
+
+<p>These four lines of code declare the actions we will use later on the semaphore set. The first two are single actions, while the second two are double ones. The first action, <code>lock_res</code>, is used to lock the buffer: as you can see the semaphore number 0 is decremented by 1 and in case of busy resource the strategy is waiting (the last 0 in the action). The second action releases the buffer and is the mirror image of the first one.</p>
+
+<p>The third and fourth actions are specular too; each of them is an array of two actions, the first on the semaphore number 1 and the second on the semaphore number 2; while the first one is incremented the second is decremented and vice versa. The policy is changed from the first two actions: <code>IPC_NOWAIT</code> forces the process to continue execution, in contrast with the previous case, when the process was put on hold.</p>
+
+<p>``` c
+  /<em> Initialize semaphore #0 to 1 - Resource controller </em>/
+  arg.val = 1;
+  semctl(semid, 0, SETVAL, arg);</p>
+
+<p>  /<em> Initialize semaphore #1 to buf_length - Overflow controller </em>/
+  /<em> Sem value represents free space in buffer </em>/
+  arg.val = len;
+  semctl(semid, 1, SETVAL, arg);</p>
+
+<p>  /<em> Initialize semaphore #2 to buf_length - Underflow controller </em>/
+  /<em> Sem value represents the number of elements in buffer </em>/
+  arg.val = 0;
+  semctl(semid, 2, SETVAL, arg);
+```</p>
+
+<p>Next, semaphores must be initialized: as already stated the first one is set to 1, being a binary access controller, the second to the length of the buffer as overflow controller and the third to 0 as underflow controller.</p>
+
+<p>``` c</p>
+
+<pre><code>/* Try to lock the buffer - sem #0 */
+if (semop(semid, &amp;lock_res, 1) == -1){
+  perror("semop:lock_res (write)");
+}
+
+/* Lock a free cell - sem #1 */
+/* Push an element - sem #2 */
+if (semop(semid, &amp;push, 2) != -1){
+  printf("---&gt; Child process %d: Element written\n", getpid());
+}
+else{
+  printf("---&gt; Child process %d: BUFFER FULL\n", getpid());
+}
+
+/* Release the buffer */
+semop(semid, &amp;rel_res, 1);
+</code></pre>
+
+<p>```</p>
+
+<p>Child process code (a writer) tries first of all to lock the buffer using <code>lock_res</code>; once the control over the resource has been acquired it performs the <code>push</code> action and writes on the standard output a meaningful message. Otherwise it signals that the buffer is full. The last action it performs is to release the resource through <code>rel_res</code>.</p>
+
+<p>``` c</p>
+
+<pre><code>/* Try to lock the buffer - sem #0 */
+if (semop(semid, &amp;lock_res, 1) == -1){
+  perror("semop:lock_res (read)");
+}
+
+/* Unlock a free cell - sem #1 */
+/* Pop an element - sem #2 */
+if (semop(semid, &amp;pop, 2) != -1){
+  printf("&lt;--- Parent process %d: Element read\n", getpid());
+}
+else {
+  printf("&lt;--- Parent process %d: BUFFER EMPTY\n", getpid());
+}
+
+/* Release the buffer */
+semop(semid, &amp;rel_res, 1);
+</code></pre>
+
+<p>```</p>
+
+<p>As you can immediately notice parent process (reader) mimics the behaviour of the child. It lock the buffer, reads some data with the <code>pop</code> action and release the resource.</p>
+
+<p>Try to change the parameters such as the buffer length (on the command line) or the number of cycles performed by parent and child processes to see what happens.</p>
+
+<h2>Conclusions</h2>
+
+<p>In the next article we will introduce and deal with atomicity, which is a very important concept in concurrent programming and database systems. We will also introduce a new IPC structure, which has a broad use in distributed systems: message queues.</p>
+
+<h2>Past articles</h2>
+
+<p><a href="blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+
+<p><a href="blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+
+<p><a href="blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Concurrent programming - 3]]></title>
+    <link href="http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3/"/>
+    <updated>2013-02-06T12:25:00+01:00</updated>
+    <id>http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p>In the first article we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second article we met the fundamental fork operation and wrote our first multitasking code. In this article we will go ahead and introduce ourselves in the topic of synchronization: the problem we face now indeed is to release the full power of multitasking, that is to share the work between processes.</p>
+
+<p>In the first part of the article I want to make a step back to the basics of multitasking to clarify the single/multiple CPU theme. Then we will start talking about shared data between processes, first looking at the problems arising and then writing some code.</p>
+
+<!--more-->
+
+
+<h2>Simultaneous execution</h2>
+
+<p>We should never forget that the main reason behind multitasking on a single CPU is to give the impression of simultaneous execution, not to speed up execution.</p>
+
+<p>Let's clarify this statement. A single CPU can execute only one operation at a time, so running two processes means to run the first one for a little time, then switch to execute the second one and so on. As already stated, this interlacing operation is what we call multitasking, and it is clear that such a technique slows down the interlaced processes: since each of the two processes runs for half the time (the other half being spent by the other process), the result is a process that runs half the speed.</p>
+
+<p>If you add to this that a switch operation does not come for free, because some time is spent by the operating system replacing the current process with the other one, you suddenly realize that multitasking is a double-edged sword: on one side it gives us the chance to run multiple programs at the same time, on the other side it slows down the execution of the whole system.</p>
+
+<p>This issue can only be solved by using multiple CPUs or multiple cores (the two are not exactly the same), either on the same physical machine or on different ones.</p>
+
+<p>So if you are writing an algorithm to process an image in foreground, that is for a user that is waiting in front of the screen, you could profitably split it in many parts, each of which will process a tile of the whole image. This way the user could have a glance at the whole result while it is being computed. The same technique counts if for example you are computing statistics about a set of data: since some computations last longer than others you could split them among different processes, so that the user can immediately obtain the faster ones.</p>
+
+<p>But if you are writing code that runs in background, that is without the user being there waiting for the results, you should never split it in different processes if you are working on a single CPU. That way you are just tangling up the code and wasting the CPU cycles to switch between processes without any real benefit.</p>
+
+<h2>Working together</h2>
+
+<p>Being our processes running at the very same time on different CPUs or just interlaced on a single one, a completely new set of problems arises if the two have to work on the same data.</p>
+
+<p>Just imagine this very common scenario: two processes share a common storage area in memory where partial results of their computations can be temporarily saved. So each process writes data on the storage area, then runs computing other data and last loads previously saved data to finalize its work. What happens if, in the meantime, the second process wrote some of its temporary data  on the same area? The first process has no way to figure out that the loaded data is not correct, and this can lead to catastrophic results. The worst thing about such a bug, as quite always in the multitasking environment, is that such a problem can arise or not, depending on input, times, status of the running machine and so on. This class of problems is usually known as race condition and is one of the most subtle and dangerous bug forms, since it is difficult to spot, to reproduce and sometimes to automatically test.</p>
+
+<p>A little search about the Therac-25 accident (1987) can clearly exemplify the extent of the problem that such a bug can cause.</p>
+
+<h2>Basic synchronization</h2>
+
+<p>The simplest form of synchronization is waiting, that is a process sits down until another process finishes running, then runs its own code. The system call that allows a process to wait for another to end is</p>
+
+<p><code>c
+pid_t waitpid (pid_t PID, int *STATUS_PTR, int OPTIONS)
+</code></p>
+
+<p>where <code>PID</code> is the PID of the process we are waiting for, <code>STATUS_PTR</code> a pointer to an integer which will contain the status of the child process (<code>NULL</code> if the information is not needed) and <code>OPTIONS</code> a set of options we have not to care about for now.</p>
+
+<p>This is an example of a program in which the parent creates a child process and waits until it ends up</p>
+
+<p>``` c</p>
+
+<h1>include &lt;unistd.h></h1>
+
+<h1>include &lt;sys/types.h></h1>
+
+<h1>include &lt;stdio.h></h1>
+
+<p>int main()
+{
+  pid_t pid;
+  int i;</p>
+
+<p>  pid = fork();</p>
+
+<p>  if (pid == 0){</p>
+
+<pre><code>for (i = 0; i &lt; 8; i++){
+  printf("-child-\n");
+}
+return 0;
+</code></pre>
+
+<p>  }</p>
+
+<p>  printf("+parent+ Waiting for the child to terminate...\n");
+  waitpid (pid, NULL, 0);
+  printf("+parent+ ...ended\n");</p>
+
+<p>  return 0;
+}
+```</p>
+
+<p>Let's save the code as <code>fork_demo3.c</code>, compile it and execute. The output I get from this program is the following</p>
+
+<p><code>bash
+$ ./fork_demo3
++parent+ Waiting for the child to terminate...
+-child-
+-child-
+-child-
+-child-
+-child-
+-child-
+-child-
+-child-
++parent+ ...ended
+</code></p>
+
+<p>Looking at it you can realize a very important thing about <code>waitpid()</code>: it is a so-called <strong>blocking system call</strong>, that is something that keeps running until a certain condition is met. In this case, <code>waitpid()</code> keeps doing nothing until the child ends. So waiting is a blocking synchronization technique.</p>
+
+<h2>Relationships</h2>
+
+<p>Speaking about parents and children there are two more type of processes we can find in the system: <strong>orphans</strong> and <strong>zombies</strong>. A process is orphaned when the parent terminates while it is still running, according to the real meaning of the word orphan; in such a case the orphan process is adopted by <code>init</code>, the first process in the system, thus becoming one of its children.</p>
+
+<p>Zombie processes, on the contrary, are already terminated but they have not been waited by the parent. In other words they are not running, but the operating system still holds their data to allow the parent to collect the exit status.</p>
+
+<p>A simple demonstration of the zombie status can be done with the following code</p>
+
+<p>``` c</p>
+
+<h1>include &lt;unistd.h></h1>
+
+<h1>include &lt;sys/types.h></h1>
+
+<h1>include &lt;stdio.h></h1>
+
+<p>int main()
+{
+  pid_t pid;
+  int i;</p>
+
+<p>  pid = fork();</p>
+
+<p>  if (pid == 0){</p>
+
+<pre><code>printf("-child-\n");
+return 0;
+</code></pre>
+
+<p>  }</p>
+
+<p>  for (i = 0; i &lt; 14; i++){</p>
+
+<pre><code>printf("+parent+\n");
+sleep(2);
+</code></pre>
+
+<p>  }</p>
+
+<p>  return 0;
+}
+```</p>
+
+<p>Save it as <code>zombie_demo.c</code>, compile and run. Just after the child has printed its string open another terminal and run <code>ps xa</code>. The last lines of your output will be something like</p>
+
+<p><code>bash
+ 4399 pts/1    S+     0:00 ./zombie_demo
+ 4400 pts/1    Z+     0:00 [zombie_demo] &lt;defunct&gt;
+</code></p>
+
+<p>As you can see the first process listed is the parent, while the second, the child, is marked as defunct and its status is zombie (Z).</p>
+
+<h2>Conclusion</h2>
+
+<p>Multitasking is a fundamental technique, which must be however used with care; as any other technology, it cannot solve every problem, neither its introduction comes completely for free.</p>
+
+<p>Synchronization between processes is something which must be carefully considered and implemented, since errors in this field can lead to devious bugs.</p>
+
+<p>Last you met two new types of processes, orphans and zombies, and learned why they can be found in the system.</p>
+
+<p>In the next article we will study some classical synchronization problems and introduce the basic InterProcess Communication (IPC) structures and techniques Unix systems make available to programmers.</p>
+
+<h2>Past articles</h2>
+
+<p><a href="blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+
+<p><a href="blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Concurrent programming - 2]]></title>
+    <link href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2/"/>
+    <updated>2013-02-04T10:35:00+01:00</updated>
+    <id>http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p>In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.</p>
+
+<!--more-->
+
+
+<h2>The C standard library</h2>
+
+<p>The C standard library, nicknamed libc, is a collection of functions for the C language which has been standardized by ANSI and later by ISO. An implementation of it can be found in any major compiler or operating system, especially Unix-like ones.</p>
+
+<p>In the GNU ecosystem, which Linux distributions are grounded on, the library is implemented by glibc (GNU libc). The library reached version 2.17 in December 2012 and is free software released under LGPL, a less restrictive version of the GPL which most notably allows the use of the library by non-GPL software, even proprietary one.</p>
+
+<p>You can find and navigate glibc sources <a href="http://sourceware.org/git/?p=glibc.git;a=summary">here</a></p>
+
+<h2>C language and PIDs</h2>
+
+<p>Processes, like every resource in a computer, are managed by the kernel. This is a part of the operating system that runs continuously in background, exposing functions to other programs that allow them to obtain, manage and release resources such as memory, disk space and CPU time. One of the things the kernel exposes to the hosted programs is the process management, which stands for structures that represent the current status of processes in the system. Using the libc the programmer can easily access those structures in a read-only way.</p>
+
+<p>Let's start with the simple concept of PID, the Process IDentifier we described in the past issue of this series. In the libc the <code>pid_t</code> type is defined as an integer capable of containing a pid. To show this we will now take a little tour of the glibc source code: we will cover the whole path this time only, just to highlight both the chances given us by the source code and the complexity of a project like glibc.</p>
+
+<p>We can find the initial definition of <code>pid_t</code> here</p>
+
+<p>``` c posix/sys/types.h http://sourceware.org/git/?p=glibc.git;a=blob;f=posix/sys/types.h;h=33c2176d0f0b38f1a81bf8c76d38f08d2ab38675;hb=HEAD link</p>
+
+<h1>ifndef __pid_t_defined</h1>
+
+<p>typedef __pid_t pid_t;</p>
+
+<h1>define __pid_t_defined</h1>
+
+<h1>endif</h1>
+
+<p>```</p>
+
+<p>As you can see the definition of the type is protected by multiple header inclusion, as usual in the C world. The underlying <code>__pid_t</code> type is then defined here</p>
+
+<p>``` c bits/types.h http://sourceware.org/git/?p=glibc.git;a=blob;f=bits/types.h;h=dc7b784f965749c44257bf030508d6642c07dec7;hb=HEAD link</p>
+
+<h1>define __STD_TYPE typedef</h1>
+
+<h1>define __S32_TYPE int</h1>
+
+<p><strong>STD_TYPE </strong>PID_T_TYPE __pid_t; /<em> Type of process identifications.  </em>/
+```</p>
+
+<p>Notice that even the typedef keyword is defined by a macro (remember that the C preprocessor is a little more than a text macro replacement tool); this definition in particular avoids compiler warning when using the <code>long long</code> type which is not supported by all versions of the C standard. <code>S32</code> stands for “signed 32 bits”, as you can read in the code documentation.</p>
+
+<p>The last macro <code>__PID_T_TYPE</code> can be found here</p>
+
+<p>``` c bits/typesizes.h http://sourceware.org/git/?p=glibc.git;a=blob;f=bits/typesizes.h;h=8268b90276700a382db37331be1d8ef5a516403d;hb=HEAD link</p>
+
+<h1>define <strong>PID_T_TYPE            </strong>S32_TYPE</h1>
+
+<p>```</p>
+
+<p>The heavy use of defines and compiler features made by glibc code allows the library to be compiled on very different architectures.</p>
+
+<h2>Telling the PID</h2>
+
+<p>Let us now discover the function which give us the knowledge of the pid of the process containing our program</p>
+
+<p><code>c
+pid_t getpid (void);
+</code></p>
+
+<p>which is defined with <code>pid_t</code> in <code>unistd.h</code> and <code>sys/types.h</code>. The libc simply uses the system call called <code>getpid</code> and its real implementation can be found in the kernel source</p>
+
+<p>``` c kernel/timer.c http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=blob;f=kernel/timer.c;h=367d008584823a6fe01ed013cda8c3693fcfd761;hb=HEAD link
+SYSCALL_DEFINE0(getpid)
+{</p>
+
+<pre><code>return task_tgid_vnr(current);
+</code></pre>
+
+<p>}
+```</p>
+
+<p>We can now write a program whose aim is to print on the standard output its own pid. With an editor of your choice write the following code</p>
+
+<p>``` c print_pid.c</p>
+
+<h1>include &lt;unistd.h></h1>
+
+<h1>include &lt;sys/types.h></h1>
+
+<h1>include &lt;stdio.h></h1>
+
+<p>int main() {
+  pid_t pid;</p>
+
+<p>  pid = getpid();
+  printf("The pid assigned to the process is %d\n", pid);</p>
+
+<p>  return 0;
+}
+```</p>
+
+<p>Save the program as print_pid.c and compile it</p>
+
+<p><code>bash
+gcc -o print_pid print_pid.c
+</code></p>
+
+<p>If this operation returns errors make sure you installed gcc and libc headers; refer to your distribution knowledge base to solve this task.</p>
+
+<p>The compiler will build an executable named <code>print_pid</code> (since the current directory is probably not in the system path you can run it with <code>./print_pid</code>). Executing the program we will have no great surprises: it prints out a positive number and, if executed more than once, this number will likely increase progressively; this is not mandatory, however, because another process could be created between two executions of <code>print_pid</code>. Try for example to execute <code>print_pid</code>, then <code>ps</code> and then <code>print_pid</code> again.</p>
+
+<h2>Forking</h2>
+
+<p>Now it is time to meet one of the most important concepts in the field of operating systems, that is the concept of forking.</p>
+
+<p>Forking in general means that one thing splits in two and each part acts like an independent being. At the very moment of the split the two entities are the same, exactly the same, except for the fact that they live in two different spaces. This computer science concept can be retrieved in nature when a simple organism generates a clone of itself. After the cloning the two organisms are the exact copy, but they can be told apart, since they are two things (the right one and the left one, for example). Back to the operating system world we find the very same problem when a process forks; after the fork operation we have two processes with two different PIDs, but the two contain the same program at the same execution point.</p>
+
+<p>So, when a program (running as process A) creates another process (B) the two are identical, that is they have the same code, the memory full of the same data (not the same memory, since the memory regions are different) and the same processor status. From this point on the two can continue in two different ways, just like our cloning organisms, for example depending on the user's input or some other data. The process A is called the <strong>parent</strong> process while B is the <strong>child</strong> process; now you can begin to better understand the name <em>parent of all the processes</em> given to init. The function which creates a new process is</p>
+
+<p><code>c
+pid_t fork(void)
+</code></p>
+
+<p>The number returned is a pid, but it deserves a particular attention. We said that the first process duplicates itself splitting in a parent and a child, which will then execute interlacing themselves with the other running processes, doing different works; but immediately after the duplication which process will be executed, the parent or the child?</p>
+
+<p>Well, the answer is as simple as unuseful: one of the two. The decision about which process has to be executed is taken by a part of the operating system called scheduler, and it pays no attention if a process is the parent or the child, following an algorithm based on other parameters.</p>
+
+<p>If we are writing processes that implement a service (such as serving network connections) we need nothing more: the two processes are the same, they behave the same way, so by cloning the process we just incremented the number of service providers. This is usually done by Web servers such as Apache, which spawns a copy of itself to serve incoming connections.</p>
+
+<h2>Parent and child</h2>
+
+<p>Sometimes, anyway, it is fundamental to know what process is in execution: after the fork both processes are at the same execution point (that is just after the <code>fork()</code> call) so how can them tell if they are the parent or the child one?</p>
+
+<p>In order to clarify this question let's look at the following algorithm:</p>
+
+<ol>
+<li>fork</li>
+<li>if you are the child then execute ...</li>
+<li>if you are the parent then execute ...</li>
+</ol>
+
+
+<p>which could represent in a sort of metalanguage the code of our program. The question can be expressed this way: “You have been cloned. Who are you, the original one or the clone?”</p>
+
+<p>The answer is once again very simple: the <code>fork()</code> function returns 0 to the child process and the child's PID to the parent. So it is enough to test if the returned PID is zero and we will know what process is executing the current code. Putting it in C language we obtain</p>
+
+<p>``` c
+int main() {</p>
+
+<pre><code>pid_t pid;
+pid = fork();
+
+if (pid == 0)
+{
+    code of the child process
+}
+else {
+    code of the parent process
+}
+</code></pre>
+
+<p>}
+```</p>
+
+<p>It's time to write the first real example of multitasking code: you can save it in a <code>fork_demo.c</code> file and compile it as we did before.</p>
+
+<p>The program will fork itself and both the parent and the child will write something on the screen; the final output will be the interlaced output of the two (if all goes right).</p>
+
+<p>``` c fork_demo.c</p>
+
+<h1>include &lt;unistd.h></h1>
+
+<h1>include &lt;sys/types.h></h1>
+
+<h1>include &lt;stdio.h></h1>
+
+<p>int main() {</p>
+
+<pre><code>pid_t pid;
+int i;
+
+pid = fork();
+
+if (pid == 0){
+    for (i = 0; i &lt; 8; i++){
+        printf("-child-\n");
+    }
+    return 0;
+}
+
+for (i = 0; i &lt; 8; i++){
+    printf("+parent+\n");
+}
+
+return 0;
+</code></pre>
+
+<p>}
+```</p>
+
+<p>Lines number 01-03 contain the includes for the necessary libraries (standard I/O, multitasking).</p>
+
+<p>The main function returns an integer (as always in GNU), which normally is zero if the program reached the end without errors or an error code if something goes wrong; let's state this time all will run without errors (we can later add some error control code, when the basic concepts will be clear).</p>
+
+<p>Then we define the data type containing a pid (line 06) and an integer working as counter for loops (line 07). At line 09 we call <code>fork()</code> which will return zero to the program executed in the child process and the pid of the child process to the parent; the test is at line 11. Now the code at lines 12-15 will be executed in the child process, while the rest (lines 18-22) will be executed in the parent. Note that we omitted the <code>else</code> statement since the child code ends with a <code>return</code>, thus there is no way for the child to execute the code of the parent.</p>
+
+<p>The two parts simply write 8 times on the standard output the string <code>-child-</code> or <code>+parent+</code>, depending on which process executes it, and then end returning 0. Executing the program will perhaps let you unsatisfied: the result is likely not to be a real mix between the two strings, and this due to the speed of execution of such a short loop. The scheduler runs the parent or the child for a quantum of time which is enough for the process to end the loop; thus probably your output will be a list of <code>+parent+</code> strings followed by a list of <code>-child-</code> ones, or the contrary.</p>
+
+<p>To better highlight the interlacing effect we can insert a random delay before each <code>printf()</code> call: we can do this with <code>sleep()</code> and <code>rand()</code> functions</p>
+
+<p><code>c
+sleep(rand()%4)
+</code></p>
+
+<p>this make the program sleep for a random number of seconds between 0 and 3. Now the child code looks like</p>
+
+<p>``` c
+for (i = 0; i &lt; 8; i++){</p>
+
+<pre><code>sleep (rand()%4);
+printf("-child-\n");
+</code></pre>
+
+<p>}
+```</p>
+
+<p>and the same for the parent's code. Save it as <code>fork_demo2.c</code>, compile and execute. It is slower now, and we notice a difference in the output string order, and more differences between an execution and the previous one. For example my output is</p>
+
+<p><code>bash
+$ ./fork_demo2
+-child-
++parent+
++parent+
+-child-
+-child-
++parent+
++parent+
+-child-
+-child-
++parent+
++parent+
+-child-
+-child-
+-child-
++parent+
++parent+
+</code></p>
+
+<p>As always when dealing with multitasking code, your output is probably different from mine, and will also be different between consecutive executions. Try also to change the parameters of the program, such as the sleep time or the number of loops.</p>
+
+<h2>Why forking</h2>
+
+<p>Thinking carefully about the parent and child example a question arises: why should I write code that forks, with all the intricacies it entails, when I could simply write two different programs and run them, letting the operating system to deal with their simultaneous execution?</p>
+
+<p>This is a very interesting question and the answer is very simple, though the underlying concept is rather complex. When you run a program the shell or the GUI follows a pattern called <strong>fork-and-exec</strong>: first it forks, then the child process executes the desired program. The reason of this behaviour is that the <code>exec</code> family of system calls replace the running program with a new program but do not change the PID. So the tasks are divided between system calls: <code>fork</code> creates a new process, while <code>exec</code> loads the given program into the newly created process.</p>
+
+<h2>DOS and Windows</h2>
+
+<p>Operating systems of the DOS and Windows family do not provide a <code>fork</code> mechanism but a <code>spawn</code> family of system calls, which directly implement the fork-and-exec technique; this is a good example of the different implementation OSs make of common computer science concepts: while both implement multitasking and let many processes run concurrently, the way this target is reached can vary significantly.</p>
+
+<h2>Conclusion</h2>
+
+<p>Starting from the knowledge of process you stepped into the fundamental Unix concept of forking, learning to tell apart parent and child processes and running your first multitasking-based program. You also started to understand how complex can some operating system issues be, and how different the solution to them provided by real world OSs.</p>
+
+<p>In the next article we will start to look after processes synchronization and data sharing between processes.</p>
+
+<h2>Past articles</h2>
+
+<p><a href="blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+]]></content>
+  </entry>
+  
+  <entry>
+    <title type="html"><![CDATA[Concurrent programming - 1]]></title>
+    <link href="http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1/"/>
+    <updated>2013-01-31T16:47:00+01:00</updated>
+    <id>http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p><em>This series of articles on concurrent programming have been already published on LinuxFocus from November 2002 and have been now carefully reviewed. Feel free to notify me any error you will find.</em></p>
+
+<p>The purpose of this article (and the following ones in this series) is to introduce the reader to the concept of multitasking and to its implementation in the Linux operating system. Thus, we will start from the theoretical concepts at the base of multitasking and from those we will move towards advanced concept like multithreading and interprocess communication. Along this path we will practice some code and some Linux internals, trying to constantly exemplify how concepts are realized in a real world operating system.</p>
+
+<!--more-->
+
+
+<h2>Prerequisites</h2>
+
+<p>Prerequisites for the understanding of the article are:</p>
+
+<ul>
+<li>Minimal knowledge of the text shell use (bash)</li>
+<li>Basic knowledge of C language (syntax, loops, libraries)</li>
+</ul>
+
+
+<p>Even if the articles are written using a Linux machine, many concepts are shared by any Unix-like operating system, most notably Mac OS X. Pay however attention to the fact that while any Unix-like system behaves the same way (more or less), its internal structures and code can be significantly different. On the other hand OSs of the DOS and Windows family share some concepts with Unix-like ones but behave very differently.</p>
+
+<p>One of the biggest positive apects of dealing with an open source operating system like Linux is the possibility to look at the code: this allow us to uncover the internal working of a system that runs on the most important data center of the planet.</p>
+
+<h2>Introduction</h2>
+
+<p>One of the most important turning points in the history of operating systems was the concept of multiprogramming, a technique for interlacing the execution of several programs in order to gain a more constant use of the system's resources. Let's think about a simply workstation, where a user can execute at the same time a word processor, an audio player, a print queue, a web browser and more, and we can understand the importance of this technique. As we will discover this little list is only a minimal part of the set of programs that are currently executing on our machine, even though they are the most visible ones.</p>
+
+<h2>The concept of process</h2>
+
+<p>In order to interlace programs a remarkable change of the operating system is necessary; in order to avoid conflicts between running programs an unavoidable choice is to encapsulate each of them with all the information needed for their execution.</p>
+
+<p>Before we explore what happens in our operating system let's give some technical nomenclature: given a running program, at a given time the <strong>code</strong>
+is the set of instructions which it's made of, the <strong>memory space</strong> the part of machine memory taken up by its code and data and the <strong>processor status</strong> the value of the microprocessor's parameters, such as the registers, the flags or the Program Counter (the address of the next instruction to be executed).</p>
+
+<p>Given a tern of objects made of code, memory space and processor status we can define a <strong>running program</strong>. If at a given time during the operation of the machine we save this information and replace them with the same set taken from another running program, the flow of the latter will continue from the point at which it was stopped: doing this once with the first program and once with the second realizes the interlacing we described before. The tern of objects we used is named <strong>process</strong> (or <strong>task</strong>), a concept which has to do with that of program, yet being an extension of it.</p>
+
+<p>Let's explain what was happening to the workstation we spoke about in the introduction: at each moment only one task is in execution (there is only one microprocessor with just one core and it cannot do two things at the same time), and the machine executes part of its code; after a certain amount of time named <strong>quantum</strong> the running process is suspended, its tern of objects is saved and replaced by those of another waiting process, whose code will be executed for a quantum of time, and so on. This mechanism is what we call multitasking (or multiprocessing).</p>
+
+<p>As stated before the introduction of multitasking causes a set of problems, most of which are not trivial, such as the management of the waiting processes queues (called <strong>scheduling</strong>); nevertheless those problems have to do with the architecture of each operating system, and are not the topic of the current article.</p>
+
+<h2>Processes in Linux and Unix</h2>
+
+<p>Let's discover something about the processes running on our machine. The command which gives us such informations is ps which is an acronym for Process Status. Opening a normal text shell and typing the ps command we will obtain an output such as</p>
+
+<pre><code>PID TTY          TIME CMD
+2241 ttyp4    00:00:00 bash
+2346 ttyp4    00:00:00 ps
+</code></pre>
+
+<p>I state in advance that this list is not complete, but let's concentrate ourself on this for the moment: ps has given us the list of each process running on the current terminal. We recognize in the last column the name the process is started with (such as "firefox" for Mozilla Firefox and "gcc" for the GNU Compiler Collection). Obviously "ps" appears in the list because it was running when the list of running processes was made out. The other listed process is the Bourne Again Shell, the shell running on the terminal.</p>
+
+<p>Let's leave out for the moment the information about TIME and TTY and let's look at PID, the Process IDentifier. The pid is a strictly positive number (not zero) which is univocally assigned to each running process; once the process has been terminated the pid can be reused, but we are guaranteed that during the execution of a process its pid remains the same, and that it is unique. All this implies that the output each of you will
+obtain from the ps command will probably be different from that in the example above.</p>
+
+<p>Just to check this latter sentence, let's open another shell without closing the first one and type the ps command: this time the output gives the same list of processes but with
+different pid numbers, showing that they are two different processes even if the program they executes is the same.</p>
+
+<p>We can also obtain a list of all processes running on our Linux box: the ps command man page says that the switch -e means "select all processes". Let's type "ps -e" in a terminal and ps will print out a long list formatted as seen above. In order to comfortably analyze this list we can redirect the output of ps in the ps.log file:</p>
+
+<pre><code>ps -e &gt; ps.log
+</code></pre>
+
+<p>Now we can read this file editing it with our preferred editor (or simply with the less command); as stated at the beginning of this article the number of running processes is higher than we would expect; on the machine I'm currently writing on they are around 170.</p>
+
+<p>That list contains not only processes started by us (through the command line or our graphical environment of choice), but also a set of processes, some of which with strange names: the number and the identity of the listed processes depends on the configuration of your system, but there are some common things.</p>
+
+<p>First of all, no matter what type of configuration you gave to the system, the process with pid equal to 1 is always "init", the so called father of all the processes. Wait, wait, I hear you screaming “What about fatherhood among processes?”. This concept will become clear later, when we will talk about forking and the way new processes are spawned in the system. By now just note that the fact that init owns the pid number 1 tells us that it is the first process executed by a Unix-like operating system.</p>
+
+<p>Another thing we can easily note is the presence of many processes, whose name ends with a "d": they are the so called "daemons" and are some of the most important processes of the system. Since this is just an introductory article we will not diffusely talk about deamons now: just say they are programs that sit waiting for specific events and when one of those events occur the daemons waiting for it perform some actions. An typical example of a daemon is sshd, which establishes or refuses SSH connections upon external requests.</p>
+
+<p>The existence of daemons make even more clear why multitasking is vital for a modern operating system: since there are many peripherals and connections to manage, through multitasking we can run many small specialized programs (call them deamons, services, components), each of which knows only how to manage that specific object. This is a typical concept of the Unix world, summarized by the sentence “do one thing and do it well”.</p>
+
+<h2>Conclusion</h2>
+
+<p>Now you have been introduced to the meaning of multitasking and to the reason of its implementation. You started to familiarize with the concept of process and the related jargon and discovered a little about the internal working of the operating system by looking at all the processes running in it.</p>
+
+<p>Next article will dig into the fundamental concept of process forking, both from the theoretical point of view and with real C examples. We will also later talk about interprocess communication, multithreading, multiple CPUs and cores and scheduling.</p>
+
+<p>Feel free to ask questions or point errors through comments or social networks.</p>
+]]></content>
+  </entry>
+  
+</feed>
