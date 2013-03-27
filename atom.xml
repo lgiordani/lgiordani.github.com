@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.com/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.com/"/>
-  <updated>2013-03-25T11:38:04+01:00</updated>
+  <updated>2013-03-27T11:40:52+01:00</updated>
   <id>http://lgiordani.github.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,294 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Python Generators - From Iterators to Cooperative Multitasking - 2]]></title>
+    <link href="http://lgiordani.github.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/"/>
+    <updated>2013-03-26T14:05:00+01:00</updated>
+    <id>http://lgiordani.github.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2</id>
+    <content type="html"><![CDATA[<h2>Introduction</h2>
+
+<p>After the recap of the iteration process in Python, in this post we will introduce the concept of generator, which aims to solve some problems that arise from the use of iterators.</p>
+
+<!--more-->
+
+
+<h2>Generators</h2>
+
+<p>The for construct is generally simple to use and such a loop can be found in almost all programming languages. Its implementation, however, can be problematic in some cases. Let’s look at an example:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">while</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">num</span><span class="p">:</span>
+</span><span class='line'>      <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span><span class='line'>      <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span><span class='line'>  <span class="k">return</span> <span class="n">s</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+</span><span class='line'>  <span class="k">print</span> <span class="n">i</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>At  first sight <code>sequence()</code> seems to be a good function without big defects (for the sake of simplicity error checking has been intentionally omitted - it does not work with negative numbers for example - and the code is intentionally non-pythonic).</p>
+
+<p>The problem concealed in such code is that the function does not execute return until the whole list has been built and until the function returns the loop does not start. Thus when the loop begins the function already processed the whole data set.</p>
+
+<p>While you are building normal sequences of numbers this can be considered irrelevant, even for rather long ones. The problem gets worse when the data set becomes very big or when the creation of an element is very demanding process; in the first case the function might fill the memory, whereas in the second one the whole execution can last a very long time. Both conditions happen even before the loop produces the first element.</p>
+
+<p>The solution can be found in the generation concept: generating, in this context, means producing only one element of the sequence at each function call. This way each call will take the minimum amount of memory and CPU time needed to create the element and the loop will start immediately.</p>
+
+<p>To allow the implementation of such a solution without using global variables generators have been introduced in Python. A <strong>generator</strong> is a special type of iterator, its peculiarity being the way it is built. Aside from this, generators behave the same exact way as iterators.</p>
+
+<p>A generator is built from every function that contains the <strong>yield</strong> statement; <code>yield</code>’s behaviour follows that of the <code>return</code> statement, i.e. it terminates the function returning a value to the caller. But whereas return permanently terminates the function, giving up local variables to the garbage collector, <code>yield</code> freezes the function’s code, allowing a later call to resume execution immediately after <code>yield</code>, with all local variables initialized as they were during the previous execution.</p>
+
+<p>Pay attention to the fact that the first call of a function that contains an <code>yield</code> statement returns a generator immediately, without executing a single line of the function’s code. Since a generator is an iterator it automatically exposes a next() method that, when called, will actually continue the execution of the frozen function.</p>
+
+<p>A simple example of generator is the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">x</span> <span class="o">=</span> <span class="n">num</span>
+</span><span class='line'>  <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>      <span class="n">x</span> <span class="o">-=</span> <span class="mi">1</span>
+</span><span class='line'>      <span class="k">yield</span> <span class="n">x</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&gt;&gt;&gt; <span class="nv">g</span> <span class="o">=</span> dec<span class="o">(</span>8<span class="o">)</span>
+</span><span class='line'>&gt;&gt;&gt; g
+</span><span class='line'>&lt;generator object dec at 0xb6abbf2c&gt;
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When executed, the <code>dec()</code> function returns a <strong>generator object</strong> and no lines of code have been executed (i.e. <code>x</code> has not yet been initialized).</p>
+
+<p>As soon as <code>next()</code> is called for the first time <code>x</code> will be initialized with the value passed to the function (8 in the example above) and the infinite loop will start. Inside it the local variable <code>x</code> will be decremented and returned to the caller by <code>yield</code>. This latter will also freeze again the code, holding the internal state, in this case the value of the variable <code>x</code>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
+</span><span class='line'>7
+</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
+</span><span class='line'>6
+</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
+</span><span class='line'>5
+</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
+</span><span class='line'>4
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see the generator <code>g</code> remembers its previous state and acts accordingly.</p>
+
+<p>Since generators are iterators they are allowed to raise the <code>StopIteration</code> exception to signal their exhaustion. In the previous example the <code>dec()</code> function never raises it, thus providing an infinite generator (or infinite iterator).</p>
+
+<p>Another caveat: as for return a function is not limited to one statement, but can contain more than one; obviously the peculiarity of yield makes this scenario rather complex, opening at the same time remarkable possibilities such as that of easily build state machines.</p>
+
+<p>What happens if we call the function again, maybe with a different value of the parameter? We simply obtain a new generator object that is completely independent from the first one, although it behaves the same way.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&gt;&gt;&gt; <span class="nv">f</span> <span class="o">=</span> dec<span class="o">(</span>12<span class="o">)</span>
+</span><span class='line'>&gt;&gt;&gt; f
+</span><span class='line'>&lt;generator object dec at 0xb72e1cac&gt;
+</span><span class='line'>&gt;&gt;&gt; f.next<span class="o">()</span>
+</span><span class='line'>11
+</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
+</span><span class='line'>3
+</span><span class='line'>&gt;&gt;&gt; f.next<span class="o">()</span>
+</span><span class='line'>10
+</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
+</span><span class='line'>2
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Let’s recap the whole concept. A function containing the <code>yield</code> statement is called generator function and when executed returns a generator object; this is nothing more than a simple iterator, which automatically implements the freeze and resume of the function’s code.</p>
+
+<p>Pay attention to the fact that a generator is an iterator (it exposes <code>next()</code> and <code>__iter__()</code> methods and may raise <code>StopIteration</code>) but the opposite is not always true. A generator is an iterator built by a generator function, i.e. through the use of the <code>yield</code> statement; as explained there are other ways to build iterators.</p>
+
+<p>Back to the <code>sequence()</code> function showed above we can now write it as a generator function and use it to build arbitrarily long sequences and, at the limit, infinite.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span><span class='line'>  <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>      <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">num</span><span class="p">:</span>
+</span><span class='line'>          <span class="k">raise</span> <span class="ne">StopIteration</span>
+</span><span class='line'>      <span class="k">yield</span> <span class="n">i</span>
+</span><span class='line'>      <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>&gt;&gt;&gt; <span class="nv">s</span> <span class="o">=</span> sequence<span class="o">(</span>3<span class="o">)</span>
+</span><span class='line'>&gt;&gt;&gt; s.next<span class="o">()</span>
+</span><span class='line'>0
+</span><span class='line'>&gt;&gt;&gt; s.next<span class="o">()</span>
+</span><span class='line'>1
+</span><span class='line'>&gt;&gt;&gt; s.next<span class="o">()</span>
+</span><span class='line'>2
+</span><span class='line'>&gt;&gt;&gt; s.next<span class="o">()</span>
+</span><span class='line'>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
+</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 5, in sequence
+</span><span class='line'>StopIteration
+</span><span class='line'>&gt;&gt;&gt;
+</span><span class='line'>&gt;&gt;&gt; <span class="k">for </span>i in sequence<span class="o">(</span>3<span class="o">)</span>:
+</span><span class='line'>...  print i
+</span><span class='line'>...
+</span><span class='line'>0
+</span><span class='line'>1
+</span><span class='line'>2
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Generators and iterators</h2>
+
+<p>A question might arise: if generators are iterators why should we use the <code>yield</code>-based method to create them? After all, generator functions are simple to write but not so simple to manage, due to the radically different behaviour from that of standard functions. Wouldn’t it be enough to create an iterable object that at each call of the <code>next()</code> method creates the correct element of the sequence?</p>
+
+<p>The answer is certainly affirmative: everything you can do with generators can be done with standard iterators. There are two caveats, however.</p>
+
+<p>First consideration is about performances: instancing an object and calling its methods is slower than calling a function. Every time you hear talking about performance problems always think about Web services, administration or scientific tools and in general about big amounts of data. Obviously a script that manages a dozen or so files is not noticeably affected by such problems.</p>
+
+<p>Second consideration is about code complexity, since writing a function is simpler than writing an object. Take into account, however, that an iterable object can be enriched by custom methods that make it more flexible than a generator; for instance a <code>reset()</code> method that can restore the object to its initial state.</p>
+
+<h2>Generator expressions</h2>
+
+<p>The two observations above identify the problems that generators can solve in a simpler way than iterators do; one of those problems concerns the processing of long arrays of data.</p>
+
+<p>Every Python programmer uses and hopefully appreciates the elegance of list comprehension. The following code instances with a single line 100 objects of the <code>MyObject</code> class and puts them in a list</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">object_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">MyObject</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>where the classic code would be</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">object_list</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">object_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MyObject</span><span class="p">())</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Surely it is not a lot of code, but it is less easy to understand immediately and less elegant; less pythonic, in a word. List comprehension, however, being nothing more than an alternative syntax to express the above for loop, suffers from the same problems, particularly from performance issues we talked about earlier. Bitter enemies of list comprehensions are long lists and objects which creation is expensive.</p>
+
+<p>Could we take advantage of generators in this case? Yes, with <strong>generator expressions</strong>. The syntax of such expressions is identical to that of list comprehension, except for the use of round brackets instead of square ones. While list comprehension returns a list, however, a generator expression return a generator, as the name implies. The previous code could thus be written this way</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">object_generator</span> <span class="o">=</span> <span class="p">(</span><span class="n">MyObject</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>where <code>object_generator</code> is a generator like one of those returned by a generator function. This latter form of the code would be</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">object_generator_function</span><span class="p">():</span>
+</span><span class='line'>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+</span><span class='line'>      <span class="k">yield</span> <span class="n">MyObject</span><span class="p">()</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">object_generator</span> <span class="o">=</span> <span class="n">object_generator_function</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Which is, as happens for list comprehension and for loops, less elegant than its equivalent shortcut syntax. Obviously, returning a generator has all the advantages we described above: after the generator expression has been executed no element has yet been created. That will happen when the generator is consumed by a for loop or a similar construct.</p>
+
+<p>As for list comprehension, generator expressions can encompass a condition in the form</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">generator</span> <span class="o">=</span> <span class="p">(</span><span class="n">expression</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">condition</span><span class="p">)</span><span class="o">.</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and can also be directly used as arguments for single-argument functions, using function call brackets to mark the expression.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">afunction</span><span class="p">(</span><span class="n">expression</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>There is however no real performance improvement using such a syntax, since the generator is exhausted before passing it to the function, but the syntax is very elegant and compact.</p>
+
+<p>A typical example of this use is that of the so-called <strong>dictionary comprehension</strong>; from two lists of the same length, one of keys and one of values, we can obtain a dictionary with</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">z</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>since <code>dict()</code> accepts an iterable of <code>(key, value)</code> tuples, which is what the generator with <code>zip()</code> returns.</p>
+
+<h2>Conclusions</h2>
+
+<p>Generators are a very powerful tool, not only because they simplify the creation of iterators, but also for the advantage of delaying the creation of the objects in a list and for the capability of generator functions to interrupt and resume the execution. As we will see in the third post this last feature is the foundation stone of an easy approach to cooperative multitasking.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Python generators - from iterators to cooperative multitasking]]></title>
@@ -138,8 +426,8 @@
 </span><span class='line'>1
 </span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
 </span><span class='line'>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-</span><span class='line'>File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
-</span><span class='line'>File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 7, in next
+</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
+</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 7, in next
 </span><span class='line'>StopIteration
 </span><span class='line'>&gt;&gt;&gt;
 </span><span class='line'>&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
