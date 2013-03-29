@@ -4,7 +4,7 @@
   <title><![CDATA[Category: generators | The digital cat]]></title>
   <link href="http://lgiordani.github.com/blog/categories/generators/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.com/"/>
-  <updated>2013-03-27T18:39:30+01:00</updated>
+  <updated>2013-03-29T14:56:38+01:00</updated>
   <id>http://lgiordani.github.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,387 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Python Generators - From Iterators to Cooperative Multitasking - 3]]></title>
+    <link href="http://lgiordani.github.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/"/>
+    <updated>2013-03-29T13:25:00+01:00</updated>
+    <id>http://lgiordani.github.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3</id>
+    <content type="html"><![CDATA[<h2>Introduction</h2>
+
+<p>In this third issue we move on uncovering how generators can be the foundation of a cooperative multitasking system and show some code that implements it. Before we face this topic we will talk shortly about another interesting use of generators, namely generator expressions chains.</p>
+
+<!--more-->
+
+
+<h2>Chaining generator expressions</h2>
+
+<p>At PyCon 2008 David M. Beazley, author of “Python Essential Reference”, made a very interesting speech about the use of generators in system administration, in other words where usually more or less complex bash scripts are involved and in particular where long pipe sequences are used.</p>
+
+<p>David starts from the consideration that generators, producing one element at a time, are chainable, that is a generator expression can encompass another generator expression and so on. This way he shows how to write in a very compact and reusable way components that can act as “filters” on a data set, thus following the Unix philosophy of building tools that “do one thing and do it well”, chaining them afterwards to get the needed behaviour.</p>
+
+<p>The slides of this presentation are freely downloadable, so I suggest the interested reader to take a look at it at the following address: <a href="http://www.dabeaz.com/generators-uk/">Generator Tricks for Systems Programmers</a>.</p>
+
+<h2>Microthread: cooperative multitasking</h2>
+
+<p><em>Disclaimer: the concepts and code presented here have been heavily influenced by the Kamaelia project. You can find it <a href="www.kamaelia.org">here</a>.</em></p>
+
+<p>Let us move forward to see how (Python) generators allow us to easily build applications based on the concept of cooperative multitasking. I assume the reader is familiar with the concepts of preemption and thread-based multitasking and is aware of the pro and cons of such solutions.</p>
+
+<p><strong>Cooperative multitasking</strong> allows an application to hold the control of the CPU for an arbitrary time lapse, waiting for it to voluntarily release the resource to the scheduler. This is a major break with the modern approach to multitasking, where the scheduler is in charge of stopping and resuming applications without any previous agreement with them.</p>
+
+<p>Since application can now stop on their own initiative every issue related to shared data protection, atomicity and synchronization is greatly simplified if not removed. Applications need however a mechanism to stop running, save their internal state and later resume from the same point.</p>
+
+<p>Generators, indeed, through the <code>yield</code> statement implement this very behaviour, thus they may be used to create a system based on cooperative multitasking, where processes are now called <strong>microthreads</strong> to highlight that they are a lightweight form of thread.</p>
+
+<h4>Microthreads</h4>
+
+<p>Let’s look at a simple implementation of such a system. First of all we need a <code>MicroThread</code> object, i.e. an object that can run simultaneously with other similar objects, but in a cooperative way.</p>
+
+<p>```python
+class MicroThread(object):</p>
+
+<pre><code>def main(self):
+    while 1:
+        yield 1
+</code></pre>
+
+<p>```</p>
+
+<p>An instance of this object exposes a <code>main()</code> method that, when called, returns a generator. This latter, at each call of its <code>next()</code> method simply returns <code>1</code>, freezing at the same time its execution just after the <code>yield</code> statement, still inside the infinite while loop.</p>
+
+<p>The object can be directly tested</p>
+
+<p>```bash</p>
+
+<blockquote><blockquote><blockquote><p>mt = MicroThread()
+g = mt.main()
+g
+<generator object main at 0xb74331e4>
+g.next()
+1
+```</p></blockquote></blockquote></blockquote>
+
+<p>To make the object more easily inheritable and extendable we can refactor it a little</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (mthread.py)</span> <a href='/downloads/code/python-generators/mthread.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">MicroThread</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</span><span class='line'>        <span class="k">yield</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</span><span class='line'>            <span class="k">yield</span> <span class="mi">1</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Such changes let us inherit the class and extend it simply by overriding the <code>create()</code> and <code>step()</code> methods; the first is called as soon as <code>main()</code> is called, acting as a delayed initializer, while the second is executed at each call of <code>next()</code>, just before freezing the code with <code>yield</code>. Pay attention that since <code>create()</code> is called inside the generator function, you have to call <code>next()</code> once to run it after the genrator has been created. So the standard workflow with this object is</p>
+
+<p>```python</p>
+
+<h1>Instance the object</h1>
+
+<p>mt = MicroThread()</p>
+
+<h1>Initialize it</h1>
+
+<p>mt.next()</p>
+
+<h1>Loop over it</h1>
+
+<p>mt.next()
+mt.next()
+...
+```</p>
+
+<p>Since <code>main()</code> is a generator function it must act as any generator and signal its exhaustion rising a <code>StopIteration</code> exception. The overridden <code>step()</code> method, thus, may raise this exception at any point (even multiple ones) to terminate the microthread.</p>
+
+<h4>Scheduler</h4>
+
+<p>Now we need a scheduler, i.e. the system component that manages running tasks. While in a true multitasking system the scheduler is a big and complex component, in a cooperative environment it can be rather simple: its job is to execute each task and wait till they give control back. In between a task and the following the scheduler can execute other functions, but its basic workflow is very straightforward. Obviously the scheduler shall handle the <code>StopIteration</code> exception possibly raised by a task, removing it from the list of running microthreads.</p>
+
+<p>The core of the scheduler will be something like the following:</p>
+
+<p>```python
+for thread in active_microthreads:</p>
+
+<pre><code>try:
+    thread.next()
+    scheduled_microthreads.append(thread)
+except StopIteration:
+    pass
+</code></pre>
+
+<p>active_microthreads = scheduled_microthreads
+scheduled_microthreads = []
+```</p>
+
+<p>This snippet encompasses the behaviour described above. We have two lists, <code>active_microthreads</code> with all the tasks that shall be executed in the current loop and <code>scheduled_microthreads</code> with all the tasks that are goig to be executed in the next loop. At each loop of the scheduler all microthreads in <code>active_microthreads</code> are executed, that is they are granted one execution of their <code>next()</code> function. After this the thread is scheduled again, i.e. it is appended to the <code>scheduled_microthreads</code> list. If the thread raises the <code>StopIteration</code> exception during its execution it is simply not scheduled again. When the <code>active_microthreads</code> list is exhausted the loop ends and the scheduled threads list is transferred in the <code>active_threads</code> one; after this the loop starts again.</p>
+
+<p>So the first implementation of the scheduler is the following:</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (scheduler.py)</span> <a href='/downloads/code/python-generators/scheduler.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Scheduler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_microthreads</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">add_microthread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mthread</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">g</span> <span class="o">=</span> <span class="n">mthread</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">try</span><span class="p">:</span>
+</span><span class='line'>                    <span class="n">thread</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span class='line'>                    <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_microthreads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+</span><span class='line'>                    <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_microthreads</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_microthreads</span> <span class="o">=</span> <span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>The <code>__init__()</code> method initializes the two internal lists we talked about above. The <code>add_microthread()</code> method allows us to add a microthread to the scheduler; the method calls <code>main()</code> on each microthread we add to obtain its generator, then calls <code>next()</code> once on this latter to initialize it and finally adds it to the list of scheduled tasks.</p>
+
+<p>The scheduler logic is then implemented in the <code>run()</code> method, which executes the above core code in an infinite while loop.</p>
+
+<p>We can test the microthreads and the scheduler with this simple code</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (test_scheduler.py)</span> <a href='/downloads/code/python-generators/test_scheduler.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">mthread</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">scheduler</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TestMicroThread</span><span class="p">(</span><span class="n">mthread</span><span class="o">.</span><span class="n">MicroThread</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">number</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;Number:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">mt1</span> <span class="o">=</span> <span class="n">TestMicroThread</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="n">mt2</span> <span class="o">=</span> <span class="n">TestMicroThread</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span><span class='line'><span class="n">mt3</span> <span class="o">=</span> <span class="n">TestMicroThread</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ms</span> <span class="o">=</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">Scheduler</span><span class="p">()</span>
+</span><span class='line'><span class="n">ms</span><span class="o">.</span><span class="n">add_microthread</span><span class="p">(</span><span class="n">mt1</span><span class="p">)</span>
+</span><span class='line'><span class="n">ms</span><span class="o">.</span><span class="n">add_microthread</span><span class="p">(</span><span class="n">mt2</span><span class="p">)</span>
+</span><span class='line'><span class="n">ms</span><span class="o">.</span><span class="n">add_microthread</span><span class="p">(</span><span class="n">mt3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ms</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>Here the <code>TestMicroThread</code> is a microthread but the <code>step()</code> method was reimplemented to print a number and wait 1 second. Three microthreads are instanced and added to the scheduler and the <code>run()</code> method of the scheduler is executed. Not surprisingly the result is the following</p>
+
+<p><code>bash
+$ python test_scheduler.py
+Number: 1
+Number: 2
+Number: 3
+Number: 1
+Number: 2
+Number: 3
+[...]
+</code></p>
+
+<p>The three microthreads are executed in a round-robin fashion, as expected from a cooperative multitasking system.</p>
+
+<p>Note: while all microthreads showed in this article just execute <code>yield 1</code> to freeze the code, <code>yield</code> can return any object, just like the <code>return</code> statement does, and this could be exploited to enhance the communication between microthreads and scheduler.</p>
+
+<h4>Microschedulers</h4>
+
+<p>The scheduler could however be more flexible, specifically it could be converted to a microthread itself. The scheduler, when executed, will return a generator, and each call of its <code>next()</code> method will run one of its microthreads. After this the scheduler will freeze and give control back.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (mscheduler.py)</span> <a href='/downloads/code/python-generators/mscheduler.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">MicroScheduler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_microthreads</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">add_microthread</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mthread</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">g</span> <span class="o">=</span> <span class="n">mthread</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">yield</span> <span class="mi">1</span>
+</span><span class='line'>        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">yield</span> <span class="mi">1</span>
+</span><span class='line'>            <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span><span class="p">:</span>
+</span><span class='line'>                <span class="k">try</span><span class="p">:</span>
+</span><span class='line'>                    <span class="n">thread</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+</span><span class='line'>                    <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_microthreads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">thread</span><span class="p">)</span>
+</span><span class='line'>                <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+</span><span class='line'>                    <span class="k">pass</span>
+</span><span class='line'>                <span class="k">yield</span> <span class="mi">1</span>
+</span><span class='line'>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">active_microthreads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_microthreads</span>
+</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">scheduled_microthreads</span> <span class="o">=</span> <span class="p">[]</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>It is sufficient to rename <code>run()</code> to <code>main()</code>, to match our arbitrary microthread interface, and add some <code>yield</code> statements. The first <code>yield</code> at the beginning of <code>main()</code> terminates the creation part: this scheduler has no <code>create()</code> method, but if present it should be called here. The second <code>yield</code> is called if the scheduler contains no microthreads, since it has nothing to do. The third <code>yield</code> is called after each loop of the microthread running part.</p>
+
+<p>These little changes allow the scheduler to be run into another scheduler, thus enabling us to create a hierarchy to easily build complex systems. At the same time the scheduler can be used as usual simply calling its <code>next()</code> method in a for loop.</p>
+
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (test_mscheduler.py)</span> <a href='/downloads/code/python-generators/test_mscheduler.py'>download</a></figcaption>
+ <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">mthread</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">mscheduler</span>
+</span><span class='line'><span class="kn">import</span> <span class="nn">time</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">TestMicroThread</span><span class="p">(</span><span class="n">mthread</span><span class="o">.</span><span class="n">MicroThread</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">num</span> <span class="o">=</span> <span class="n">number</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;Number:&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num</span>
+</span><span class='line'>        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">mt1</span> <span class="o">=</span> <span class="n">TestMicroThread</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span><span class='line'><span class="n">mt2</span> <span class="o">=</span> <span class="n">TestMicroThread</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span><span class='line'><span class="n">mt3</span> <span class="o">=</span> <span class="n">TestMicroThread</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">ms</span> <span class="o">=</span> <span class="n">mscheduler</span><span class="o">.</span><span class="n">MicroScheduler</span><span class="p">()</span>
+</span><span class='line'><span class="n">ms</span><span class="o">.</span><span class="n">add_microthread</span><span class="p">(</span><span class="n">mt1</span><span class="p">)</span>
+</span><span class='line'><span class="n">ms</span><span class="o">.</span><span class="n">add_microthread</span><span class="p">(</span><span class="n">mt2</span><span class="p">)</span>
+</span><span class='line'><span class="n">ms</span><span class="o">.</span><span class="n">add_microthread</span><span class="p">(</span><span class="n">mt3</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">ms</span><span class="o">.</span><span class="n">main</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">pass</span>
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
+
+<p>This example is obviously very simple. However it shows how simple it is to build components of a cooperative system and let them live together in an execution space. Executing the scheduler in a different way, for example inside another generator, new microthreads can also be added live. This allows to instance system components on the fly to manage specific needs, such as incoming service requests.</p>
+
+<h2>Conclusions</h2>
+
+<p>Obviously this sort of multitasking cannot provide an interactive execution like that used on our desktop OS or on a Web server, where human users must receive an immediate feedback of their actions. But for systems where task must simply be simultaneously executed without timing needs cooperative multitasking is a valuable solution, due to its simplicity.</p>
+
+<p>Another interesting scenario is that of a real multitasking system (ruled by threaded code or by the OS itself) where each task is made of small cooperating components. This way putting multiple functionalities inside a single component becomes a breeze; the code of each functionality could also be splitted in several plugins and loaded on demand.</p>
+
+<p>A package that implements cooperative multitasking with generator based microthreads is <a href="http://www.kamaelia.org">Kamaelia</a>, and this article has been heavily inspired by it. Other solutions you can find interesting are <a href="http://pypi.python.org/pypi/greenlet">greenlet</a>, presently the most used microthread Python library that runs on the standard unmodified Python interpreter and <a href="http://www.stackless.com/">Stackless Python</a>, a fork of Python that natively implements microthreads.</p>
+
+<h2>Past articles</h2>
+
+<ul>
+<li><a href="/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
+<li><a href="/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Python Generators - From Iterators to Cooperative Multitasking - 2]]></title>
@@ -242,7 +623,10 @@ d = dict(z for z in zip(keys, values))
 
 <h2>Past articles</h2>
 
-<p><a href="/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></p>
+<ul>
+<li><a href="/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
