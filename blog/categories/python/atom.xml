@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | The digital cat]]></title>
   <link href="http://lgiordani.github.com/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.com/"/>
-  <updated>2013-03-29T14:56:38+01:00</updated>
+  <updated>2013-03-29T15:10:19+01:00</updated>
   <id>http://lgiordani.github.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -35,7 +35,7 @@
 
 <h2>Microthread: cooperative multitasking</h2>
 
-<p><em>Disclaimer: the concepts and code presented here have been heavily influenced by the Kamaelia project. You can find it <a href="www.kamaelia.org">here</a>.</em></p>
+<p><em>Disclaimer: the concepts and code presented here have been heavily influenced by the Kamaelia project. You can find it <a href="http://www.kamaelia.org">here</a>.</em></p>
 
 <p>Let us move forward to see how (Python) generators allow us to easily build applications based on the concept of cooperative multitasking. I assume the reader is familiar with the concepts of preemption and thread-based multitasking and is aware of the pro and cons of such solutions.</p>
 
