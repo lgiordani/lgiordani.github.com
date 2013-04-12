@@ -4,7 +4,7 @@
   <title><![CDATA[Category: concurrent programming | The digital cat]]></title>
   <link href="http://lgiordani.github.com/blog/categories/concurrent-programming/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.com/"/>
-  <updated>2013-03-29T15:10:19+01:00</updated>
+  <updated>2013-04-12T09:12:52+02:00</updated>
   <id>http://lgiordani.github.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -959,6 +959,10 @@ semop(semid, &amp;rel_res, 1);
 <p><a href="/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
 
 <p><a href="/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+
+<h2>Next articles</h2>
+
+<p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
 ]]></content>
   </entry>
   
@@ -1128,6 +1132,12 @@ sleep(2);
 <p><a href="/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
 
 <p><a href="/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+
+<h2>Next articles</h2>
+
+<p><a href="/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
+
+<p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
 ]]></content>
   </entry>
   
@@ -1402,6 +1412,14 @@ $ ./fork_demo2
 <h2>Past articles</h2>
 
 <p><a href="/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+
+<h2>Next articles</h2>
+
+<p><a href="/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+
+<p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+
+<p><a href="/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 ]]></content>
   </entry>
   
@@ -1489,6 +1507,16 @@ different pid numbers, showing that they are two different processes even if the
 <p>Next article will dig into the fundamental concept of process forking, both from the theoretical point of view and with real C examples. We will also later talk about interprocess communication, multithreading, multiple CPUs and cores and scheduling.</p>
 
 <p>Feel free to ask questions or point errors through comments or social networks.</p>
+
+<h2>Next articles</h2>
+
+<p><a href="/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+
+<p><a href="/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+
+<p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+
+<p><a href="/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 ]]></content>
   </entry>
   

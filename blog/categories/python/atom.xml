@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | The digital cat]]></title>
   <link href="http://lgiordani.github.com/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.com/"/>
-  <updated>2013-03-29T15:10:19+01:00</updated>
+  <updated>2013-04-12T09:12:52+02:00</updated>
   <id>http://lgiordani.github.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -627,6 +627,13 @@ d = dict(z for z in zip(keys, values))
 <li><a href="/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
 </ul>
 
+
+<h2>Next articles</h2>
+
+<ul>
+<li><a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -780,6 +787,14 @@ some_code
 <h2>Conclusion</h2>
 
 <p>This first post tried to summarize the loop protocol implemented by the for statement, which is in Python very different from many classic languages. Next post will explore the concept of generator and its Python implementation.</p>
+
+<h2>Next articles</h2>
+
+<ul>
+<li><a href="/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
+<li><a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
