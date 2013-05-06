@@ -4,7 +4,7 @@
   <title><![CDATA[Category: concurrent programming | The digital cat]]></title>
   <link href="http://lgiordani.github.com/blog/categories/concurrent-programming/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.com/"/>
-  <updated>2013-04-12T09:12:52+02:00</updated>
+  <updated>2013-05-06T19:05:03+02:00</updated>
   <id>http://lgiordani.github.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,609 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Concurrent programming - 6]]></title>
+    <link href="http://lgiordani.github.com/blog/2013/04/23/concurrent-programming-6/"/>
+    <updated>2013-04-23T08:29:00+02:00</updated>
+    <id>http://lgiordani.github.com/blog/2013/04/23/concurrent-programming-6</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p>Issue 5 of this series ended with a small program where two processes exchanged ten numbers through a message queue, thus being a synchronized producer-consumer couple. This time I am going to show and comment the code of a very simple communication simulator written in C. The code leverages IPC queues to allow multiple processes to talk each other while running concurrently.</p>
+
+<!--more-->
+
+
+<h2>The simulator</h2>
+
+<p>The program simulates a messaging switch, where multiple users (child processes) connect to a central switch (parent process) and send text messages (SMS-like) to other users through it. The switch receives messages and route them if the recipient is reachable (process is running). Moreover, the switch can perform a timing operation on a user, checking how much time the user needs to answer a message, or select it for termination. Last, the switch counts how many times a user sends a message to an unreachable user and when a threshold is reached terminates it. Switch and user decisions are taken extracting pseudo-random numbers and comparing them with thresholds given on the command line. Remember that the simulation wants to demonstrate a concrete use of message queues and does not claim to be a complete communication system between processes.</p>
+
+<h2>10,000 feet overview</h2>
+
+<p>I splitted the simulator in 3 parts, namely two stacked layers of function and the main application code. The first layer implements the message structure, provides functions to interact with it (getters and setters), exports basic functions to manage queues and to send and receive messages. The second layer exports functions that implement the protocol, i.e. the actions users and switch can perform. Last, the main function contains the actual logic of the whole simulation. Due to the instructional purpose of the simulation some of the solution implemented are far from optimal or even correct (e.g. random numbers management); I suggest you to try to evolve the simulation, adding new services or messages between users.</p>
+
+<h2>Debugging nightmares</h2>
+
+<p>Be ready to spend some time debugging your multiprocessing applications! If you ever debugged some code, you know that the most friendly bugs are by far those which are reproducible: you only need to add some debugging output or step through the code with the debugger and the bug is spotted. Multiprocessing and network application are at the very opposite corner: most of the time the bugs in that sort of applications are very difficult to reproduce, when not impossible. The concurrent execution of multiple processes, indeed, makes every execution unique, since the actual execution sequence is random (random means that it is the result of so many factors that the result is unpredictable and thus irreproducible). Network programs suffers from the same problems (concurrent execution), worsened by network lags that add a factor of randomness.</p>
+
+<h2>Code and analysis</h2>
+
+<p>I am not going to include the whole code of the layers directly in the post text as they are a straightforward implementation of what was presented in the previous articles; the code of the main application is, on the contrary, analyzed block by block. The links to the source files are at the end of the article, together with compilation instructions.</p>
+
+<h2>Layer 1</h2>
+
+<h4>Message structure</h4>
+
+<p>The structure of the message is</p>
+
+<p>``` c
+typedef struct
+{
+ int sender;
+ int recipient;
+ char text[160];
+ int service;
+ int service_data;
+} message_t;</p>
+
+<p>typedef struct
+{
+ long mtype;
+ message_t mtext;
+} messagebuf_t;
+```</p>
+
+<p>Here, <code>sender</code> and <code>recipient</code> are numbers that identify the switch and the users (0 is the switch, then users are numbered increasingly when they connect to the switch); <code>text</code> is the content of a message a user sends to another user, and is 160 characters long to mimic SMS behaviour. Last <code>service</code> is the identifier of some system operation, like a request the switch sends to the users; <code>service_data</code> carries the optional data the service needs to communicate. Actual services are implemented in layer 2 and I am going to describe them later.</p>
+
+<h4>Other functions</h4>
+
+<p>Layer 1 exposes many functions: some are simple set and get functions to deal with the message structure while five simplify access to IPC structures; <code>build_key()</code> makes an IPC key from a given character, <code>create_queue()</code> and <code>remove_queue()</code> manage IPC queues and last <code>send_message()</code> and <code>receive_message()</code> give a simple way to route messages.</p>
+
+<p>A very simple error management code has been introduced here: C language does not allow to use exceptions, so errors have to be managed by functions or returned through the <code>return</code> statement. A solid error management in C is outside the scope of this article, so here you will find the bare minimum.</p>
+
+<p>The error management of <code>receive_message()</code> needs a little explanation.</p>
+
+<p>``` c
+int receive_message(int qid, long type, messagebuf_t *qbuf){
+  int result, length;
+  length = sizeof(messagebuf_t) - sizeof(long);</p>
+
+<p>  if((result = msgrcv(qid, (struct msgbuf *)qbuf, length, type, IPC_NOWAIT)) == -1){</p>
+
+<pre><code>if(errno == ENOMSG){
+  return 0;
+}
+else{
+  perror("msgrcv");
+  exit(1);
+}
+</code></pre>
+
+<p>  }</p>
+
+<p>  return result;
+}
+```</p>
+
+<p>Here, <code>msgrcv()</code> fails even when there are no messages of the given type, producing a <code>ENOMSG</code> error. This is the reason why that case has been ignored through the <code>if(errno == ENOMSG)</code> construct.</p>
+
+<h2>Layer 2</h2>
+
+<h4>The protocol</h4>
+
+<p>Layer2 implements the actual communication protocol between the switch and the users. Users send text messages to other users, and those messages are routed by the switch. Users and switch can also send service messages; those are messages encompassing information used to manage the system.</p>
+
+<p>Every user, when spawned, initializes a queue, connects to the switch and communicates the queue id. Since the queues can contain old unread messages, it is necessary to empty them before the use. Each user enters a loop where it sleeps a while, receives service messages, sends messages and last receives text messages. At the same time, the switch collects queue ids, routes text messages from the sender to the recipient and sometimes sends a service request to a user.</p>
+
+<p>The services the switch can request from users are to terminate and to test the answering time. Both can be requested on a probability base, but the first is also forced when the user sends too many messages to unreachable recipients.</p>
+
+<p>The answering time test is performed in a simple way: the switch requests the service and records the time of the request. The user answers with a message that contains the time at which it received the request and the switch computes the difference between the two. Pay attention that both the timing service and the random number extraction used to request services on a probability base are not exact; the code works but is good only for a demonstration system.</p>
+
+<p>I defined some useful constants in the header file: <code>MAX_SLEEP</code> is the maximum number of seconds a user waits before performing an action while <code>TYPE_SERVICE</code> and <code>TYPE_TEXT</code> identify the type of message. The defines which name starts with <code>SERVICE_</code> list all the possible services: <code>SERVICE_TERMINATE</code> forces a user to quit; <code>SERVICE_TIME</code> makes it perform a timing operation; <code>SERVICE_CONNECT</code> and <code>SERVICE_DISCONNECT</code> tell the switch a new user has connected or disconnected; <code>SERVICE_QID</code> bears the identifier of the user queue to the switch; <code>SERVICE_UNREACHABLE_DESTINATION</code> communicates a user that the recipient of a message is no more online.</p>
+
+<h4>Queues</h4>
+
+<p>Two functions are dedicated to queues, <code>init_queue()</code> and <code>close_queue()</code>. The first builds an IPC key from a given number (previously converting it to a char) and runs the <code>create_queue()</code> function from layer 1. Because of the char conversion the range of integers it can accept is 0-255, and for simplicity's sake there is no check in the whole code that a queue key has not yet been assigned. For this example, I am simply leveraging that different numbers return different keys and, thus, queues.</p>
+
+<p>The second function closes the queue running the <code>remove_queue()</code> function from layer 1. The underlying system calls are not used directly to allow the future introduction of checks on the assigned queues.</p>
+
+<h4>User functions</h4>
+
+<p>Users have five functions that implement their part of the protocol. Two functions communicate to the switch that the user connected or disconnected, namely <code>user_send_connect()</code> and <code>user_send_disconnect()</code>; both carry the <code>sender</code> id and the switch id <code>sw</code>, which however in the main program is always 0. The <code>user_send_qid()</code> function communicates to the switch the queue id of the user; <code>user_send_text_message()</code> sends a string of text to another user and <code>user_send_time()</code> answers the timing service.</p>
+
+<h4>Switch functions</h4>
+
+<p>The switch can execute <code>switch_send_text_message()</code> to deliver a text message sent by a user; <code>switch_send_terminate()</code> to ask a user to terminate; <code>switch_send_time()</code> to ask a user to perform a timing service.</p>
+
+<h4>Code analysis</h4>
+
+<p>Now I will briefly review the whole application code to better explain the different parts of the system. Please remember that this is a demonstration system so many choices have been made for simplicity's sake.</p>
+
+<p>``` c</p>
+
+<h1>include &lt;stdio.h></h1>
+
+<h1>include &lt;stdlib.h></h1>
+
+<h1>include &lt;unistd.h></h1>
+
+<h1>include &lt;linux/ipc.h></h1>
+
+<h1>include &lt;linux/msg.h></h1>
+
+<h1>include &lt;time.h></h1>
+
+<h1>include &lt;signal.h></h1>
+
+<h1>include &lt;wait.h></h1>
+
+<h1>include "layer1.h"</h1>
+
+<h1>include "layer2.h"</h1>
+
+<h1>define MINCHILDS 1</h1>
+
+<h1>define MAXCHILDS 15</h1>
+
+<h1>define MAXFAILS 10</h1>
+
+<p>```</p>
+
+<p>After the list of includes, you will find three defines that rule the number of child processes the system can spawn and the maximum number of messages a user can send to unreachable recipients before the switch asks it to terminate.</p>
+
+<p>``` c
+int random_number(int max)
+{
+  double r,x;
+  r = (double) random();
+  x = r * (double) max / RAND_MAX;
+  return((int) x);
+}</p>
+
+<p>void usage(char *argv[])
+{
+  printf("Telephone switch simulator\n");
+  printf("%s <number of users> <service probability> <text message probability>\n", argv[0]);
+  printf("\n");
+  printf("     <number of users> - Number of users alive in the system (%d - %d)\n", MINCHILDS, MAXCHILDS);
+  printf("     <service probability> - The probability that the switch requires a service from the user (0-100)\n");
+  printf("     <text message probability> - The probability the a user sends a message to another user (0-100)\n\n");
+}
+```</p>
+
+<p>The <code>random_number()</code> function is used to extract a random number between 0 and a maximum <code>max</code>; <code>RAND_MAX</code> is a define of the standard library and represents the maximum number the <code>random()</code> function can return and in the GNU C library it is 2<sup>31</sup> (2147483647); here it is used to calculate a proportion with the maximum value given by the caller. The <code>usage()</code> function helps the user remembering the command line arguments; as you can see, the program receives 3 mandatory input values: the number of users that the switch can spawn; the probability that the switch requests a service to a user when this latter sends a message; the probability that a user sends a text message to another user.</p>
+
+<p>``` c
+int main(int argc, char *argv[])
+{
+  pid_t pid;
+  int i;</p>
+
+<p>  int users_number;
+  int service_probability;
+  int text_message_probability;</p>
+
+<p>  int status;
+  int deadproc = 0; /<em> A counter of the already terminated user processes </em>/
+  int qid;
+  int sw; /<em> Qid of the switch </em>/
+  int dest; /<em> Destination of the message </em>/
+  int olddest; /<em> Destination of the previous message </em>/</p>
+
+<p>  int queues[MAXCHILDS + 1]; /<em> Queue identifiers - 0 is the qid of the switch </em>/</p>
+
+<p>  int msg_sender;
+  int msg_recipient;
+  char msg_text[160];
+  int msg_service;
+  int msg_service_data;</p>
+
+<p>  int t;
+  int timing[MAXCHILDS + 1][2];</p>
+
+<p>  int unreachable_destinations[MAXCHILDS + 1];</p>
+
+<p>  char *padding = "                                                                      ";
+  char text[160];</p>
+
+<p>  messagebuf_t msg, in;</p>
+
+<p><code>``
+Many of these variables are just helpers that simplify the code;</code>queues<code>holds the queue identifier of each process;</code>timing<code>holds the information about user timing service results;</code>unreachable_destinations<code>contains how many times each user sent a message to an unreachable recipient;</code>dest<code>and</code>olddest<code>are used to avoid a user to send a message to the recipient of the previous one.  The</code>padding` variable is a quick and dirty way to create two columns, the left one filled by switch messages and the right one by user ones.</p>
+
+<p>Remember that in C you have to declare variables at the beginning of the program while in C++ you can declare them anywhere. This means that child processes, a copy of the parent, carry in memory some variables such as <code>queues</code> and <code>timings</code> that are used only by the switch. This is both a waste of resources and a dangerous situation, so remember that in general statically allocated variables are not a good choice for concurrent programs.</p>
+
+<p>``` c
+  /<em> Command line argument parsing </em>/
+  if(argc != 4){</p>
+
+<pre><code>usage(argv);
+exit(0);
+</code></pre>
+
+<p>  }</p>
+
+<p>  users_number = strtol(argv[1], NULL, 10);<br/>
+  service_probability = strtol(argv[2], NULL, 10);
+  text_message_probability = strtol(argv[3], NULL, 10);</p>
+
+<p>  if((users_number &lt; MINCHILDS) || (users_number > MAXCHILDS)){</p>
+
+<pre><code>usage(argv);
+exit(1);
+</code></pre>
+
+<p>  }</p>
+
+<p>  if((service_probability &lt; 0) || (service_probability > 100)){</p>
+
+<pre><code>usage(argv);
+exit(0);
+</code></pre>
+
+<p>  }</p>
+
+<p>  if((text_message_probability &lt; 0) || (text_message_probability > 100)){</p>
+
+<pre><code>usage(argv);
+exit(0);
+</code></pre>
+
+<p>  }</p>
+
+<p>  printf("Number of users: %d\n", users_number);
+  printf("Probability of a service request: %d%%\n", service_probability);
+  printf("Probability of a text message: %d%%\n", text_message_probability);
+  printf("\n");</p>
+
+<p>  /<em> Initialize the random number generator </em>/
+  srandom(time(NULL));
+```</p>
+
+<p>All these lines contain initialization code and checks for the values passed on the command line.</p>
+
+<p>``` c
+  /<em> Switch queue initialization </em>/
+  sw = init_queue(255);</p>
+
+<p>  /<em> Read the last messages we have in the queue </em>/
+  while(receive_message(sw, TYPE_TEXT, &amp;in)){</p>
+
+<pre><code>printf("%d -- S -- Receiving old text messages\n", (int) time(NULL), i);
+</code></pre>
+
+<p>  }</p>
+
+<p>  /<em> Read the last messages we have in the queue </em>/
+  while(receive_message(sw, TYPE_SERVICE, &amp;in)){</p>
+
+<pre><code>printf("%d -- S -- Receiving old service messge\n", (int) time(NULL), i);
+</code></pre>
+
+<p>  }</p>
+
+<p>  /<em> All queues are "uninitialized" (set equal to switch queue) </em>/
+  for(i = 0; i &lt;= users_number; i++){</p>
+
+<pre><code>queues[i] = sw;
+unreachable_destinations[i] = 0;
+</code></pre>
+
+<p>  }
+```</p>
+
+<p>The switch initializes its queue; this has to be done before spawning users since the <code>sw</code> variable will be copied in each child process and used to communicate with the switch. The queue is initialized with the number 255 just to be sure that no child process initializes the same queue. As explained, IPC queues provide no mechanism to ensure uniqueness of the instanced queues, so we have to establish our own system; in this simple example we spawn a maximum of 15 users, so we could also use <code>16</code> or <code>MAXCHILDS+1</code> to initialize the switch queue. Since queues are shared structures and nothing prevents the system to assign to a process a previously used queue we must ensure that the queue is empty, so the switch reads and discards all text and service messages found in its queue. Last, the <code>queues</code> and <code>unreachable_destinations</code> arrays are initialized.</p>
+
+<p>``` c
+  /<em> Create users </em>/
+  for(i = 1; i &lt;= users_number; i++){</p>
+
+<pre><code>pid = fork();
+
+if (pid == 0){
+  srandom(time(NULL) + 1000*i);
+
+  /* Initialize queue  */
+  qid = init_queue(i);
+
+  /* Read the last messages we have in the queue */
+  while(receive_message(qid, TYPE_TEXT, &amp;in)){
+    printf("%s%d -- U %02d -- Receiving old text messages\n", padding, (int) time(NULL), i);
+  }
+
+  /* Read the last messages we have in the queue */
+  while(receive_message(qid, TYPE_SERVICE, &amp;in)){
+    printf("%s%d -- U %02d -- Receiving old service messge\n", padding, (int) time(NULL), i);
+  }
+
+  /* Let the switch know we are alive */
+  user_send_connect(i, sw);
+
+  /* Let the switch know how to reach us */
+  user_send_qid(i, qid, sw);
+</code></pre>
+
+<p>```</p>
+
+<p>This code spawns the users and from here the code splits in two, and the code of the user processes is inside the if construct. As you can see, the user acts like the switch at the very beginning, initializing its own queue and flushing the possible messages it contains. After this, the user sends the switch a message to communicate that it is alive and sends its qid to allow the user to communicate.</p>
+
+<p>``` c</p>
+
+<pre><code>  /* Enter the main loop */
+  while(1){
+    sleep(rand()%MAX_SLEEP);
+
+    /* Check if the switch requested a service */
+    if(receive_message(qid, TYPE_SERVICE, &amp;in)){
+      msg_service = get_service(&amp;in);
+
+      switch(msg_service){
+
+      case SERVICE_TERMINATE:
+        /* Send an acknowledgement to the switch */
+        user_send_disconnect(i, getpid(), sw);
+
+        /* Read the last messages we have in the queue */
+        while(receive_message(qid, TYPE_TEXT, &amp;in)){
+          msg_sender = get_sender(&amp;in);
+          get_text(&amp;in, msg_text);
+          printf("%s%d -- U %02d -- Message received\n", padding, (int) time(NULL), i);
+          printf("%s                      Sender: %d\n", padding, msg_sender);
+          printf("%s                      Text: %s\n", padding, msg_text);
+        }
+
+        /* Remove the queue */
+        close_queue(qid);
+        printf("%s%d -- U %02d -- Termination\n", padding, (int) time(NULL), i);
+        exit(0);
+        break;
+
+      case SERVICE_TIME:
+        user_send_time(i, sw);
+        printf("%s%d -- U %02d -- Timing\n", padding, (int) time(NULL), i);
+        break;
+      }
+    }
+</code></pre>
+
+<p>```</p>
+
+<p>The user loops infinitely and at each loop sleeps a random number of seconds. After that, it checks its message queue for service messages (<code>receive_message()</code> with the parameter <code>TYPE_SERVICE</code>); if the requested service is <code>SERVICE_TERMINATE</code>, an acknowledgement is sent to the switch (<code>user_send_disconnect()</code>) so that the user is marked as offline and no more messages are sent with it as recipient. The user then reads all remaining text messages in its queue and closes the queue. Last with <code>exit()</code>the user process terminates. If the requested service is <code>SERVICE_TIME</code>, the user simply sends the current time back to the switch through <code>user_send_time()</code>.</p>
+
+<p>``` c</p>
+
+<pre><code>    /* Send a message */
+    if(random_number(100) &lt; text_message_probability){
+      dest = random_number(users_number + 1);
+
+      /* Do not send a message to the switch, to yourself and to the previous recipient */
+      while((dest == 0) || (dest == i) || (dest == olddest)){
+        dest = random_number(users_number + 1);
+      }
+      olddest = dest;
+
+      printf("%s%d -- U %02d -- Message to user %d\n", padding, (int) time(NULL), i, dest);
+      sprintf(text, "A message from me (%d) to you (%d)", i, dest);
+      user_send_text_message(i, dest, text, sw);
+    }
+
+    /* Check the incoming box for simple messages */
+    if(receive_message(qid, TYPE_TEXT, &amp;in)){
+      msg_sender = get_sender(&amp;in);
+      get_text(&amp;in, msg_text);
+      printf("%s%d -- U %02d -- Message received\n", padding, (int) time(NULL), i);
+      printf("%s                      Sender: %d\n", padding, msg_sender);
+      printf("%s                      Text: %s\n", padding, msg_text);
+    }
+  }
+}
+</code></pre>
+
+<p>  }
+```</p>
+
+<p>The user extracts a random number and tests it against the probability given on the command line; if the test gives a positive result the user extracts a random user, avoiding the switch (<code>dest == 0</code>), itself (<code>dest == i</code>) and the recipient of the previous message it sent (<code>dest == olddest</code>). The new recipient is saved in <code>olddest</code>, and the message is sent through <code>user_send_text_message()</code>. This part ends the user code.</p>
+
+<p>``` c
+  /<em> Switch (parent process) </em>/
+  while(1){</p>
+
+<pre><code>/* Check if some user is answering to service messages */
+if(receive_message(sw, TYPE_SERVICE, &amp;in)){
+  msg_service = get_service(&amp;in);
+  msg_sender = get_sender(&amp;in);
+
+  switch(msg_service){
+  case SERVICE_CONNECT:
+    /* A new user has connected */
+    printf("%d -- S -- Service: connection\n", (int) time(NULL));
+    printf("                   User: %d\n", msg_sender);
+    break;
+
+  case SERVICE_DISCONNECT:
+    /* The user is terminating */
+    printf("%d -- S -- Service: disconnection\n", (int) time(NULL));
+    printf("                   User: %d\n", msg_sender);
+
+    deadproc++;
+    break;
+
+  case SERVICE_QID:
+    /* The user is sending us its queue id */
+    msg_service_data = get_service_data(&amp;in);
+    printf("%d -- S -- Service: queue\n", (int) time(NULL));
+    printf("                   User: %d\n", msg_sender);
+    printf("                   Qid: %d\n", msg_service_data);
+    queues[msg_sender] = msg_service_data;
+    break;
+
+  case SERVICE_TIME:
+    msg_service_data = get_service_data(&amp;in);
+
+    /* Timing informations */
+    timing[msg_sender][1] = msg_service_data - timing[msg_sender][1];
+
+    printf("%d -- S -- Service: timing\n", (int) time(NULL));
+    printf("                   User: %d\n", msg_sender);
+    printf("                   Timing: %d\n", timing[msg_sender][1]);
+
+    /* The user is no more blocked by a timing operation */
+    timing[msg_sender][0] = 0;
+    break;
+  }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>The switch code has a structure similar to that of the user code. It loops infinitely with a <code>while(1)</code> statement, and inside this it checks for incoming messages and acts accordingly. The first thing it does is to check for service messages. If the service is <code>SERVICE_CONNECT</code> a user is communicating that it is alive, and the switch simply print out a log of this event; when a user disconnects it sends a <code>SERVICE_DISCONNECT</code> message and the switch increases the number of dead processes to monitor the number of active user processes; if the service is a <code>SERVICE_QID</code> a user is sending the switch its queue identifier and this is stored in the <code>queues</code> array; last, the <code>SERVICE_TIME</code> messages mean that a user is answering a timing request; its answer is compared with the recorded send time and the result is printed.</p>
+
+<p>``` c</p>
+
+<pre><code>/* Check if some user has connected */
+if(receive_message(sw, TYPE_TEXT, &amp;in)){
+
+  msg_recipient = get_recipient(&amp;in);
+  msg_sender = get_sender(&amp;in);
+  get_text(&amp;in, msg_text);
+
+  /* If the destination is connected */
+  if(queues[msg_recipient] != sw){
+    /* Send the message (forward it) */
+    switch_send_text_message(msg_sender, msg_text, queues[msg_recipient]);
+
+    printf("%d -- S -- Routing message\n", (int) time(NULL));
+    printf("                   Sender: %d -- Destination: %d\n", msg_sender, msg_recipient);
+    printf("                   Text: %s\n", msg_text);
+  }
+  else{
+    unreachable_destinations[msg_sender] += 1;
+
+    if (unreachable_destinations[msg_sender] &gt; MAXFAILS) {
+      continue;
+    }
+
+    printf("%d -- S -- Unreachable destination\n", (int) time(NULL));
+    printf("                   Sender: %d -- Destination: %d\n", msg_sender, msg_recipient);
+    printf("                   Text: %s\n", msg_text);
+    printf("                   Threshold: %d/%d\n", unreachable_destinations[msg_sender], MAXFAILS);
+
+    if (unreachable_destinations[msg_sender] == MAXFAILS) {
+      printf("%d -- S -- User %d reached max unreachable destinations\n", (int) time(NULL), msg_sender);
+
+      switch_send_terminate(queues[msg_sender]);
+
+      /* Remove its queue from the list */
+      queues[msg_sender] = sw;
+    }
+  }
+</code></pre>
+
+<p>```</p>
+
+<p>Here, the switch checks the queue for incoming text messages users send to other users. If the recipient is connected (reachable) the message is routed through <code>switch_send_text_message()</code>; otherwise the counter of failed dispatches <code>unreachable_destinations</code> is incremented for that user; when the maximum number of failures <code>MAXFAILS</code> is reached the switch sends that user a termination request.</p>
+
+<p>``` c</p>
+
+<pre><code>  /* Randomly request a service to the sender of the last message */
+  if((random_number(100)  &lt; service_probability) &amp;&amp; (queues[msg_sender] != sw)){
+    if (random_number(100) &lt; 40){
+      /* The user must terminate */
+      printf("%d -- S -- User %d chosen for termination\n", (int) time(NULL), msg_sender);
+
+      switch_send_terminate(queues[msg_sender]);
+
+      /* Remove its queue from the list */
+      queues[msg_sender] = sw;
+    }
+    else {
+      /* Check if we are already timing that user */
+      if(!timing[msg_sender][0]){
+        timing[msg_sender][0] = 1;
+        timing[msg_sender][1] = (int) time(NULL);
+        printf("%d -- S -- User %d chosen for timing...\n", timing[msg_sender][1], msg_sender);
+        switch_send_time(queues[msg_sender]);
+      }
+    }
+  }
+}
+</code></pre>
+
+<p>```</p>
+
+<p>Each user that sends a message through the switch can be selected as the destination of a service request. Here, the switch tests a random number against the probability given on the command line, ensuring that the users is not already unreachable. The probability of a termination service is hardcoded (40%), the other case being the timing service; when this latter is requested, the switch sends a message to the user recording the dispatch time so that it can be later compared with the user answer.</p>
+
+<p>``` c</p>
+
+<pre><code>else{
+  if(deadproc == users_number){
+    /* All childs have been terminated, just wait for the last to complete its jobs */
+    waitpid(pid, &amp;status, 0);
+
+    /* Remove the switch queue */
+    remove_queue(sw);
+
+    printf("\n");
+    printf("No more active users. Switch turns off.\n");
+
+    /* Terminate the program */
+    exit(0);
+  }
+}
+</code></pre>
+
+<p>  }
+}
+```</p>
+
+<p>When there are no incoming messages the switch checks if the number of dead processes is equal to the number of users; when this happens the switch waits for each child process (to avoid zombie processes), removes its queue and terminates.</p>
+
+<h2>Files and compilation</h2>
+
+<p>The 5 files of this small program can be downloaded here:</p>
+
+<ul>
+<li><a href="/downloads/code/ipc_demo/layer1.h">layer1.h</a></li>
+<li><a href="/downloads/code/ipc_demo/layer1.c">layer1.c</a></li>
+<li><a href="/downloads/code/ipc_demo/layer2.h">layer2.h</a></li>
+<li><a href="/downloads/code/ipc_demo/layer2.c">layer2.c</a></li>
+<li><a href="/downloads/code/ipc_demo/main.c">main.c</a></li>
+</ul>
+
+
+<p>and can be compiled with the following command line</p>
+
+<p><code>bash
+gcc -o ipc_demo main.c layer1.c layer2.c
+</code></p>
+
+<p>A typical execution can be obtained running the program with the following parameters</p>
+
+<p><code>bash
+./ipc_demo 8 30 80
+</code></p>
+
+<p>Remember that the output lines of the processes are mixed and generally not in order; indeed, you can find the answer of a user printed before the switch request. Timestamps can help you find the right order, but the resolution of the <code>time()</code> function is a second, and in such a time span many messages can be sent.</p>
+
+<h2>Conclusions</h2>
+
+<p>This article ends by now this little series on concurrent programming in C and IPC structures. As you can see C is not the best language to implement concurrent programming concepts, due to its very low level nature. However, since many OSs are written in C (and/or C++) knowledge of the way this language can provide concurrent execution is useful.</p>
+
+<p>There is much left to say about concurrent programming structures: atomicity, mutual exclusions, threads, monitors are just some of the most important. I will post new articles on such topics in the future, perhaps showing their implementation in other languages.</p>
+
+<h2>Past articles</h2>
+
+<p><a href="/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+
+<p><a href="/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+
+<p><a href="/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+
+<p><a href="/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
+
+<p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 5]]></title>
@@ -1414,103 +2017,6 @@ $ ./fork_demo2
 <p><a href="/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
 
 <h2>Next articles</h2>
-
-<p><a href="/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
-
-<p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
-
-<p><a href="/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Concurrent programming - 1]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1/"/>
-    <updated>2013-01-31T16:47:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1</id>
-    <content type="html"><![CDATA[<h2>Abstract</h2>
-
-<p><em>This series of articles on concurrent programming have been already published on LinuxFocus from November 2002 and have been now carefully reviewed. Feel free to notify me any error you will find.</em></p>
-
-<p>The purpose of this article (and the following ones in this series) is to introduce the reader to the concept of multitasking and to its implementation in the Linux operating system. Thus, we will start from the theoretical concepts at the base of multitasking and from those we will move towards advanced concept like multithreading and interprocess communication. Along this path we will practice some code and some Linux internals, trying to constantly exemplify how concepts are realized in a real world operating system.</p>
-
-<!--more-->
-
-
-<h2>Prerequisites</h2>
-
-<p>Prerequisites for the understanding of the article are:</p>
-
-<ul>
-<li>Minimal knowledge of the text shell use (bash)</li>
-<li>Basic knowledge of C language (syntax, loops, libraries)</li>
-</ul>
-
-
-<p>Even if the articles are written using a Linux machine, many concepts are shared by any Unix-like operating system, most notably Mac OS X. Pay however attention to the fact that while any Unix-like system behaves the same way (more or less), its internal structures and code can be significantly different. On the other hand OSs of the DOS and Windows family share some concepts with Unix-like ones but behave very differently.</p>
-
-<p>One of the biggest positive apects of dealing with an open source operating system like Linux is the possibility to look at the code: this allow us to uncover the internal working of a system that runs on the most important data center of the planet.</p>
-
-<h2>Introduction</h2>
-
-<p>One of the most important turning points in the history of operating systems was the concept of multiprogramming, a technique for interlacing the execution of several programs in order to gain a more constant use of the system's resources. Let's think about a simply workstation, where a user can execute at the same time a word processor, an audio player, a print queue, a web browser and more, and we can understand the importance of this technique. As we will discover this little list is only a minimal part of the set of programs that are currently executing on our machine, even though they are the most visible ones.</p>
-
-<h2>The concept of process</h2>
-
-<p>In order to interlace programs a remarkable change of the operating system is necessary; in order to avoid conflicts between running programs an unavoidable choice is to encapsulate each of them with all the information needed for their execution.</p>
-
-<p>Before we explore what happens in our operating system let's give some technical nomenclature: given a running program, at a given time the <strong>code</strong>
-is the set of instructions which it's made of, the <strong>memory space</strong> the part of machine memory taken up by its code and data and the <strong>processor status</strong> the value of the microprocessor's parameters, such as the registers, the flags or the Program Counter (the address of the next instruction to be executed).</p>
-
-<p>Given a tern of objects made of code, memory space and processor status we can define a <strong>running program</strong>. If at a given time during the operation of the machine we save this information and replace them with the same set taken from another running program, the flow of the latter will continue from the point at which it was stopped: doing this once with the first program and once with the second realizes the interlacing we described before. The tern of objects we used is named <strong>process</strong> (or <strong>task</strong>), a concept which has to do with that of program, yet being an extension of it.</p>
-
-<p>Let's explain what was happening to the workstation we spoke about in the introduction: at each moment only one task is in execution (there is only one microprocessor with just one core and it cannot do two things at the same time), and the machine executes part of its code; after a certain amount of time named <strong>quantum</strong> the running process is suspended, its tern of objects is saved and replaced by those of another waiting process, whose code will be executed for a quantum of time, and so on. This mechanism is what we call multitasking (or multiprocessing).</p>
-
-<p>As stated before the introduction of multitasking causes a set of problems, most of which are not trivial, such as the management of the waiting processes queues (called <strong>scheduling</strong>); nevertheless those problems have to do with the architecture of each operating system, and are not the topic of the current article.</p>
-
-<h2>Processes in Linux and Unix</h2>
-
-<p>Let's discover something about the processes running on our machine. The command which gives us such informations is ps which is an acronym for Process Status. Opening a normal text shell and typing the ps command we will obtain an output such as</p>
-
-<pre><code>PID TTY          TIME CMD
-2241 ttyp4    00:00:00 bash
-2346 ttyp4    00:00:00 ps
-</code></pre>
-
-<p>I state in advance that this list is not complete, but let's concentrate ourself on this for the moment: ps has given us the list of each process running on the current terminal. We recognize in the last column the name the process is started with (such as "firefox" for Mozilla Firefox and "gcc" for the GNU Compiler Collection). Obviously "ps" appears in the list because it was running when the list of running processes was made out. The other listed process is the Bourne Again Shell, the shell running on the terminal.</p>
-
-<p>Let's leave out for the moment the information about TIME and TTY and let's look at PID, the Process IDentifier. The pid is a strictly positive number (not zero) which is univocally assigned to each running process; once the process has been terminated the pid can be reused, but we are guaranteed that during the execution of a process its pid remains the same, and that it is unique. All this implies that the output each of you will
-obtain from the ps command will probably be different from that in the example above.</p>
-
-<p>Just to check this latter sentence, let's open another shell without closing the first one and type the ps command: this time the output gives the same list of processes but with
-different pid numbers, showing that they are two different processes even if the program they executes is the same.</p>
-
-<p>We can also obtain a list of all processes running on our Linux box: the ps command man page says that the switch -e means "select all processes". Let's type "ps -e" in a terminal and ps will print out a long list formatted as seen above. In order to comfortably analyze this list we can redirect the output of ps in the ps.log file:</p>
-
-<pre><code>ps -e &gt; ps.log
-</code></pre>
-
-<p>Now we can read this file editing it with our preferred editor (or simply with the less command); as stated at the beginning of this article the number of running processes is higher than we would expect; on the machine I'm currently writing on they are around 170.</p>
-
-<p>That list contains not only processes started by us (through the command line or our graphical environment of choice), but also a set of processes, some of which with strange names: the number and the identity of the listed processes depends on the configuration of your system, but there are some common things.</p>
-
-<p>First of all, no matter what type of configuration you gave to the system, the process with pid equal to 1 is always "init", the so called father of all the processes. Wait, wait, I hear you screaming “What about fatherhood among processes?”. This concept will become clear later, when we will talk about forking and the way new processes are spawned in the system. By now just note that the fact that init owns the pid number 1 tells us that it is the first process executed by a Unix-like operating system.</p>
-
-<p>Another thing we can easily note is the presence of many processes, whose name ends with a "d": they are the so called "daemons" and are some of the most important processes of the system. Since this is just an introductory article we will not diffusely talk about deamons now: just say they are programs that sit waiting for specific events and when one of those events occur the daemons waiting for it perform some actions. An typical example of a daemon is sshd, which establishes or refuses SSH connections upon external requests.</p>
-
-<p>The existence of daemons make even more clear why multitasking is vital for a modern operating system: since there are many peripherals and connections to manage, through multitasking we can run many small specialized programs (call them deamons, services, components), each of which knows only how to manage that specific object. This is a typical concept of the Unix world, summarized by the sentence “do one thing and do it well”.</p>
-
-<h2>Conclusion</h2>
-
-<p>Now you have been introduced to the meaning of multitasking and to the reason of its implementation. You started to familiarize with the concept of process and the related jargon and discovered a little about the internal working of the operating system by looking at all the processes running in it.</p>
-
-<p>Next article will dig into the fundamental concept of process forking, both from the theoretical point of view and with real C examples. We will also later talk about interprocess communication, multithreading, multiple CPUs and cores and scheduling.</p>
-
-<p>Feel free to ask questions or point errors through comments or social networks.</p>
-
-<h2>Next articles</h2>
-
-<p><a href="/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
 
 <p><a href="/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
 
