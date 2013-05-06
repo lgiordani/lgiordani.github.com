@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.com/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.com/"/>
-  <updated>2013-05-06T19:05:03+02:00</updated>
+  <updated>2013-05-06T20:01:02+02:00</updated>
   <id>http://lgiordani.github.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -1835,15 +1835,15 @@
 <!--more-->
 
 
-<p>This post started as a collection of some thoughts that aimed to summarize the experience collected by me in 10 years of software development. As usual, short sentences proved to be too short and became long sentences, then paragraphs, and the short list was already a long article. However, despite of the length my analysis does not claim to be neither complete nor exact.</p>
+<p>This post started as a collection of some thoughts that aimed to summarize the experience collected by me in 10 years of software development. As usual, short sentences proved to be too short and became long sentences, then paragraphs, and the short list was already a long article. However, despite the length my analysis does not claim to be either complete or exact.</p>
 
 <p>It simply represents an attempt to introduce the reader to the complexity of a matter which is always relevant in the software world.</p>
 
 <h2>A known concept?</h2>
 
-<p>Borrowing an example from an everyday context, speaking about versioning is like speaking about engine size of cars. Everyone roughly knows what engine size is and can give it both a relative value, comparing different sizes, and an absolute one. But many people do not know the unit of measurement of engine size and almost no one among the common people (including me) knows the internal problems of an engine that arise when the size grows or decreases. While we can be satisfied by having a shallow knowledge of this topic, so that we can buy a car, identify it and drive it, the engineer who designs it or the mechanic who repairs it cannot stop at that level, but has to dive more into the subject.</p>
+<p>Borrowing an example from an everyday context, speaking about versioning is like speaking about engine size of cars. Everyone roughly knows what engine size is and can give it both a relative value, comparing different sizes, and an absolute one. Many people, however, do not know the unit of measurement of engine size and almost no one among the common people (including me) knows the internal problems of an engine that arise when the size grows or decreases. While we can be satisfied by having a shallow knowledge of this topic, so that we can buy a car, identify it and drive it, the engineer who designs it or the mechanic who repairs it cannot stop at that level, but has to dive more into the subject.</p>
 
-<p>Back to the software environment we can observe that everyone uses a computer even only for standard office work can roughly deal with different versions of the most common programs. Windows 7 is more recent that Windows XP, Photoshop CS2 is rather old, since the last version is CS6, and so on. As we will discover a rather complex world disguises behind those simple labels.</p>
+<p>Back to the software environment we can observe that everyone uses a computer even only for standard office work can roughly deal with different versions of the most common programs. Windows 7 is more recent that Windows XP; Photoshop CS2 is very old since the last version is CS6, and so on. As we will discover a rather complex world disguises behind those simple labels.</p>
 
 <h2>A formal definition of versioning</h2>
 
@@ -1855,9 +1855,9 @@
 
 <h2>The purpose of versioning</h2>
 
-<p>This latter formal definition leaves the question about the purpose of versioning open, i.e. the real benefit of applying that labelling. The reasons behind the necessity of univocally identifying the status of a given object are many and involve different aspects. Here pure technical or scientific motivations mix with less formal decisions such as marketing ones.</p>
+<p>This latter formal definition leaves the question about the purpose of versioning open, i.e. the real benefit of applying that labelling. The reasons behind the necessity of univocally identifying the status of a given object are many and involve different aspects. Here, pure technical or scientific motivations mix with lesser formal decisions such as marketing ones.</p>
 
-<p>Back to the game consoles example from above: Xbox version numbers have been conceived to transmit a marketing message, more than a technical one. The second version of Xbox, indeed, was designed to hinder the Playstation 3 sales. Thus, simply calling it Xbox 2 might have given the impression of an older and less performing object. Xbox 360, then, may have multiple meanings from this point of view. The number 3 definitely refers to the version of the competitor’s console, but 360 also remembers the 360 degrees in a circle, suggesting that the console can do anything. As a consequence, the temporary name of the third version of Xbox is Xbox 720, continuing the sequence. The official name could be different however since it is not the first time Microsoft changes the versioning system of a product to match other products or different marketing strategies.</p>
+<p>Back to the game consoles example from above: Xbox version numbers have been conceived to transmit a marketing message, more than a technical one. The second version of Xbox, indeed, was designed to hinder the Playstation 3 sales. Thus, simply calling it Xbox 2 might have given the impression of an object older and less performing than the competitor. Xbox 360, then, may have multiple meanings from this point of view. The number 3 definitely refers to the version of the competitor’s console, but 360 also remembers the 360 degrees in a circle, suggesting that the console can do anything. As a consequence, the temporary name of the third version of Xbox is Xbox 720, continuing the sequence. The official name could be different, however, since it is not the first time Microsoft changes the versioning system of a product to match other products or different marketing strategies.</p>
 
 <h4>Adopting a versioning system</h4>
 
@@ -1865,59 +1865,59 @@
 
 <h5>Find out what has been used or distributed at a specific point in the past</h5>
 
-<p>This is the classic need of who uses machines or software to produce other objects (either concrete objects or less material things like data, drawings, texts). It is always possible to find defects in the machine used to make the products, as it is possible and desirable to upgrade it. At that point it is very useful, when not mandatory, <em>to know what objects has been produced with the previous version</em> of the machine or the software and when, where and to whom they have been distributed or sold.</p>
+<p>This is the classic need of whom uses machines or software to produce other objects (either concrete objects or lesser material things like data, drawings, texts). It is always possible to find defects in the machine used to make the products as it is possible and desirable to upgrade it. At that point, it is very useful, when not mandatory, <em>to know what objects has been produced with the previous version</em> of the machine or the software and when, where and to whom they have been distributed or sold.</p>
 
-<p>Significant in this scope is the example of food, where entire lots are (physically) labelled in order to make it possible to go back to the origin, as an instance when sanitation problems arise. That way it is possible to reach all customers who bought the product and withdraw it from the market. Similarly, when a software bug is discovered which opens a vulnerability in a system it is mandatory to find everyone uses the bugged version of the software to alert them and invite them to upgrade the installation.</p>
+<p>Significant in this scope is the example of food, where entire lots are (physically) labelled in order to make it possible to go back to the origin, as an instance when sanitation problems arise. That way it is possible to withdraw the product from the market, reaching at the same time all customers who bought it. Similarly, when a software bug is discovered which opens a vulnerability in a system it is mandatory to find everyone uses the bugged version of the software to alert them and invite them to upgrade the installation.</p>
 
 <h5>Know the list of changes made in a period of time</h5>
 
-<p>In the software scope, from the programmer’s point of view it is always useful <em>to know what changes have been made between two versions</em> to easily find out what version introduced a bug or made a given functionality available. From the user’s point of view knowing the features introduced with a new version is useful either to know the new possibilities of the software or to evaluate the purchase.</p>
+<p>In the software scope, from the programmer’s point of view it is always useful <em>to know what changes have been made between two versions</em> to find out in an easy way what version introduced a bug or made a given functionality available. From the user’s point of view, it is useful to know the features introduced with a new version, either to know the new possibilities of the software or to evaluate the purchase.</p>
 
 <h5>Make easily recognisable different versions of the same model</h5>
 
-<p>When purchasing an object such as a car, the same model can be sold in different versions, each of them differs in some (more or less important) details: engine, fuel supply, color, etc. The producer, from its point of view, must be able <em>to tell each model apart</em> to sell them or to service them.</p>
+<p>When purchasing an object such as a car, the same model can be sold in different versions; each of them differs in some (more or less important) details: engine, fuel supply, color, etc. The producer, from its point of view, must be able <em>to tell each model apart</em> to sell them or to service them.</p>
 
-<h2>What a version number represents</h2>
+<h2>What does a version number represent?</h2>
 
-<p>With version number we mean <strong>a code which is usually made of digits, letters and symbols</strong>, and which altogether identifies one and only one status of the labelled object. As in every code schema, however, it is necessary to state what the number or its parts represent. Especially important are the comparison rules between version numbers.</p>
+<p>With version number, we mean <strong>a code which is usually made of digits, letters and symbols</strong>, and which altogether identifies one and only one status of the labelled object. As in every code schema, however, it is necessary to state what the number or its parts represent. Especially important are the comparison rules between version numbers.</p>
 
 <h4>An example of versioning</h4>
 
-<p>To help our understanding of the matter let us make an example of the simplest versioning scheme, that is that made by a single integer number (a group of digits). The first version of the software (from now on we will look especially at this scope) will be labelled version <code>1</code>. The versioning system states then that next version will be version <code>2</code>, then version <code>3</code> and so on.</p>
+<p>To help our understanding of the matter let us make an example of the simplest versioning scheme, that is that made by a single integer number (a group of digits). The first version of the software (from now on we will look especially at this scope) will be labelled version <code>1</code>. The versioning system states then that the next version will be version <code>2</code>, then version <code>3</code> and so on.</p>
 
-<p>Such a scheme seems to work, but gives little information. For example it is not possible to know the extent of the changes made between the two versions. Both after the fixing of minor bugs and a complete rewrite of the graphical interface of the software the version number increases by one. Neither it is possible to have information about the compatibility between different versions and taking for granted that no version breaks compatibility is a dangerous assumption.</p>
+<p>Such a scheme seems to work, but gives little information. For example, it is not possible to know the extent of changes made between the two versions. Both after the fixing of minor bugs and a complete rewrite of the graphical interface of the software the version number increases by one. Neither it is possible to have information about the compatibility between different versions and taking for granted that no version breaks compatibility is a dangerous assumption.</p>
 
 <p>So our simple versioning schema has some communication shortcomings. Such flaws, however, could be easily balanced by a good documentation that details the peculiarities of each version. This solution is definitely not elegant and immediate but would transmit all the necessary information.</p>
 
 <h4>Limits of the system</h4>
 
-<p>But in our simple schema there is also a serious structural flaw. Think about a software that has two versions, <code>1</code> and <code>2</code>, labelled according to the schema. For various reasons many users are still using version <code>1</code> while version <code>2</code> has been available for a long time, for instance because the migration to the new version is hard or expensive.</p>
+<p>There is a serious structural flaw in our simple schema. Think about a software that has two versions, <code>1</code> and <code>2</code>, labelled according to the schema. For various reasons, many users are still using version <code>1</code> while version <code>2</code> has been available for a long time, for instance because the migration to the new version is hard or expensive.</p>
 
-<p>In such a scenario, which could last for a long time, the developers find a serious bug in a piece of code which was not changed between the two versions. That bug is a dangerous issue for the software and affects both versions. The developers work on it and eventually fix it so now a new release of the software must be produced. For version <code>2</code> the bug fix results, according to the versioning system, in a new version called version <code>3</code>. But what about version <code>1</code>? How will the new version be called? It cannot be called version <code>2</code>, since that label has already been assigned to another status of the code.</p>
+<p>In such a scenario, which could last for a long time, the developers find a serious bug in a piece of code which was not changed between the two versions. That bug is a dangerous issue for the software and affects both versions. The developers work on it and eventually fix it so now a new release of the software must be produced. For version <code>2</code> the bug fix results, according to the versioning system, in a new version called version <code>3</code>. But what about version <code>1</code>? How will the new version be called? It cannot be called version <code>2</code> since that label has already been assigned to another status of the code.</p>
 
 <h4>Evolving the system</h4>
 
-<p>As you can easily see the problem has no solution if we keep using the given versioning system. Likewise, it is obvious that such a problem arises only when two or more versions of the same software are actively maintained, i.e. new features are added to it and its bugs are still fixed.</p>
+<p>As you can easily see, the problem has no solution if we keep using the given versioning system. Likewise, it is obvious that only when two or more versions of the same software are actively maintained such a problem arises; a software is actively maintained when new features are added to it, and its bugs are still fixed.</p>
 
 <p>So a change is required. The first thing that comes to mind is to add to the version number another component that shows “minor” modifications. Pay attention to the fact that the “minor” adjective used here <em>refers to the software maintenance and distribution process  and not to an actual measure of the amount or quality of the new code</em>. Indeed there is usually some correlation between the amount of code and the extent of the change, but it is not so straightforward as it could seem at first sight.</p>
 
 <p>A very broadly accepted and used method to add a new component to a version number is to add digits separating them from other components with a single dot.</p>
 
-<p>Our simple versioning system thus enriches. The first version of the software will be <code>1.0</code>. A change that does not introduce an incompatibility will increase the rightmost number, producing versions <code>1.1</code>, <code>1.2</code>, and so on. A change that introduces an incompatibility will increase the leftmost number, producing versions <code>2.0</code>, <code>3.0</code>, and so on. This completely solves the problem described above. After the bug fix the majority of our software users will run versions <code>1.1</code> and <code>2.1</code>, and only those users who did not yet upgrade the system will be running versions <code>1.0</code> and <code>2.0</code>.</p>
+<p>Our simple versioning system thus enriches. The first version of the software will be <code>1.0</code>. A change that does not introduce an incompatibility will increase the rightmost number, producing versions <code>1.1</code>, <code>1.2</code>, and so on. A change that introduces an incompatibility will increase the leftmost number, producing versions <code>2.0</code>, <code>3.0</code>, and so on. This completely solves the previously described problem. After the bug fix the majority of our software users will run versions <code>1.1</code> and <code>2.1</code>, and only those users who did not yet upgrade the system will be running versions <code>1.0</code> and <code>2.0</code>.</p>
 
 <h2>About numbering</h2>
 
-<p>A short digression about numbering. Generally we start counting from 1, and if you ask someone met on the road to tell you the first ten numbers, he or she will likely answer with the sequence 1,2,3,&#8230;,10. If you think carefully about it, however, the decimal system considers 0 the first number (0 units and 0 tens) and 10 the first of the sequence of numbers with 1 ten and units ranging from 0 to 9.</p>
+<p>A short digression about numbering. Generally we start counting from 1, and if you ask someone to tell you the first ten numbers, he or she will likely answer with the sequence 1,2,3,&#8230;,10. If you think carefully about it, however, the decimal system considers 0 the first number (0 units and 0 tens) and 10 the first of the sequence of numbers with 1 ten and units ranging from 0 to 9.</p>
 
-<p>Obviously this system is valid as long as we use numbers as ordinals, that is <em>as labels</em> (the first number is labelled <code>0</code>, the second is labelled <code>1</code>, and so on). From a cardinal point of view, i.e. speaking about the <em>size of a set</em>, starting from 1 is a must, since the minimal concrete set is made by one object. I think it is good spending some time thinking about the subject, since it is a very interesting matter in the programming scope too.</p>
+<p>Obviously this system is valid as long as we use numbers as ordinals, that is <em>as labels</em> (the first number is labelled <code>0</code>, the second is labelled <code>1</code>, and so on). From a cardinal point of view, i.e. speaking about the <em>size of a set</em>, starting from 1 is a must since the minimal concrete set is made by one object. I think it is good spending some time thinking about the subject since it is a very interesting matter in the programming scope too.</p>
 
-<p>As an example, consider the difference between Fortran, COBOL and MATLAB (just to name some of the most famous ones) on one side and C and derived languages on the other. The first set of languages index array elements starting from 1, while the second one index from 0 (while this is a well-known C feature, should be said that LISP first introduced it).</p>
+<p>As an example, consider the difference between Fortran, COBOL and MATLAB (just to name some of the most famous ones) on one side, and C and derived languages on the other. The first set of languages index array elements starting from 1 while the second one index from 0 (while this is a well-known C feature, should be said that LISP first introduced it).</p>
 
-<p>Unfortunately there is an ambiguity in the common language since we name positions in a list starting from 1, thus mixing the cardinal and ordinal system. This is deep-rooted in the language: for instance in english the word &#8220;the third&#8221; comes from three, &#8220;the fourth&#8221; comes from four and so on (&#8220;the first” comes from &#8220;the foremost&#8221; and “the second” comes from the Latin secundus). But if we index elements starting from 0, now &#8220;the third&#8221; is the number two, the fourth is the number three, etc. This ambiguity comes from the rather late introduction of the number zero in western culture, officially around 1200. Just to show you that this point is less complex than it appears think about the hours you read on your digital clock; as you can see, they start from 0:00, not from 1:01. Indeed &#8220;the first hour&#8221; is hour number 0.</p>
+<p>Unfortunately, there is an ambiguity in the common language since we name positions in a list starting from 1, thus mixing the cardinal and ordinal system. This is deep-rooted in the language: for instance in english the word &#8220;the third&#8221; comes from three, &#8220;the fourth&#8221; comes from four and so on (&#8220;the first” comes from &#8220;the foremost&#8221; and “the second” comes from the Latin secundus). If on the contrary we index elements starting from 0, now &#8220;the third&#8221; is the number two, the fourth is the number three, etc. This ambiguity comes from the rather late introduction of the number zero in western culture, officially around 1200. Just to show you that this point is less complex than it appears think about the hours you read on your digital clock; as you can see, they start from 0:00, not from 1:01. Indeed &#8220;the first hour&#8221; is hour number 0.</p>
 
-<p>This ambiguity is very manifest in the versioning environment, where it is taken for granted that the first version of a software is numbered <code>1.0</code>. According to the common numbering system the first version should be numbered <code>1.1</code>, while according to the formal system the first version should be numbered <code>0.0</code>. The problem that arises with version <code>0.0</code> is purely communicative, since versions starting with 0 are usually considered not stable.</p>
+<p>This ambiguity is very manifest in the versioning environment, where it is taken for granted that the first version of a software is numbered <code>1.0</code>. According to the common numbering system the first version should be numbered <code>1.1</code> while according to the formal system the first version should be numbered <code>0.0</code>. The problem that arises with version <code>0.0</code> is purely communicative since versions starting with 0 are usually considered not stable.</p>
 
-<p>I think that the correct way of numbering versions is that starting from <code>0.0</code>, but I also consider <code>1.0</code> acceptable as the first stable version. This latter is an harmless decision, and can spare many disagreements with marketing people.</p>
+<p>I think that the correct way of numbering versions is that starting from <code>0.0</code>, but I also consider <code>1.0</code> acceptable as the first stable version. This latter is a harmless decision and can spare many disagreements with marketing people.</p>
 
 <h2>Incompatibility and versioning</h2>
 
@@ -1925,33 +1925,33 @@
 
 <p>Let’s make a simple example taken from the everyday life of a common computer user. I write a document using Microsoft Word 2007 and save it in the native format, namely docx. Then I send the file to another person, who can only access Word 2003 and he or she cannot open it. Why? Simply because the changes introduced in Office 2007 to the file format are incompatible, that is they change the file format to such an extent that a previous version of the software cannot even show a part of the content.</p>
 
-<p>As you can imagine the fields where incompatibility problems can arise are many. Speaking in general <em>every part of a software (or hardware) that get in contact with the outside world can be affected by incompatibility issues</em>. That parts are altogether known as interfaces. According to the field of application you can have network interfaces, programming interfaces, hardware interfaces, etc.</p>
+<p>As you can imagine, the fields where incompatibility problems can arise are many. Speaking in general <em>every part of a software (or hardware) that get in contact with the outside world can be affected by incompatibility issues</em>. That parts are altogether known as interfaces. According to the field of application you can have network interfaces, programming interfaces, hardware interfaces, etc.</p>
 
-<p>An example borrowed from the hardware world is the following. If you design a new version of a hard drive, replacing the head with a totally new component that does not suffer from crashes, this is not incompatible with the previous version of the disk. Indeed hard disk heads do not get in contact with other external components so the change is called transparent, that is <em>invisible to an external observer</em>. The new version of the hard drive can replace an old version without requiring changes to the hosting computer. On the contrary, if you replace the old IDE connector of the drive with a brand new SATA one you change a component that exchanges information with the outside world, namely the main and most important hard disk interface. That can represent a compatibility issue, since to use the new hard disk model you probably have to replace the old IDE-only motherboard of your computer.</p>
+<p>An example borrowed from the hardware world is the following. If you design a new version of a hard drive, replacing the head with a totally new component that does not suffer from crashes, this is not incompatible with the previous version of the disk. Indeed hard disk heads do not get in contact with other external components, so the change is called transparent, that is <em>invisible to an external observer</em>. The new version of the hard drive can replace an old version without requiring changes to the hosting computer. On the contrary, if you replace the old IDE connector of the drive with a brand new SATA one you change a component that exchanges information with the outside world, namely the main and most important hard disk interface. That can represent a compatibility issue since to use the new hard disk model you probably have to replace the old IDE-only motherboard of your computer.</p>
 
-<p>The versioning system of choice, thus, has to deal even with possible incompatibilities of our software’s interfaces, besides the maintenance aspects described above.</p>
+<p>The versioning system of choice, thus, has to deal even with possible incompatibilities of our software’s interfaces, besides the maintenance aspects previously described.</p>
 
-<p>Not every change made to interfaces produces an incompatibility. A <strong>backward compatible interface</strong> is able to act both as the new version and the old one (or ones), either automatically or manually driven. The aforementioned Office 2007 is backward compatible with Office 2003, since it can automatically read the old file format and can manually be driven to save a file in that format.</p>
+<p>Not every change made to interfaces produces an incompatibility. A <strong>backward compatible interface</strong> is able to act both as the new version and the old one (or ones), either automatically or manually driven. The aforementioned Office 2007 is backward compatible with Office 2003 since it can automatically read the old file format and can manually be driven to save a file in that format.</p>
 
 <p>Pay attention that <em>users take for granted that your software is backward compatible with its previous versions</em>, so any incompatibility must be avoided if possible. When not, clearly state it in the documentation.</p>
 
 <h2>Internal and external version numbers</h2>
 
-<p>As stated before a version number is intimately bound to the way a software is maintained and distributed. A development team might however produce a substantial number of intermediate versions between two official releases, so it is important to tell apart external version numbers, that bear a communication towards the user, from internal ones, that transmit a communication towards the development team. Clearly each external version number will be coupled with one or more internal ones, but the opposite is not true.</p>
+<p>As stated before, a version number is intimately bound to the way a software is maintained and distributed. A development team might however produce a substantial number of intermediate versions between two official releases, so it is important to tell apart external version numbers that bear a communication towards the user, from internal ones that transmit a communication towards the development team. Clearly each external version number will be coupled with one or more internal ones, but the opposite is not true.</p>
 
-<p>So external version numbers address the user, thus they should above all permit to clearly identify the extent of changes made to the software, while using a schema as simple as possible. External version numbers can also be simple text labels, as happened when the successor of Windows 2000 was named Windows XP. As for internal version numbers, on the other hand, requirements change so the versioning schema changes accordingly and might become very complex.</p>
+<p>So external version numbers address the user; thus they should above all permit to identify the extent of changes made to the software while using a schema as simple as possible. External version numbers can also be simple text labels as happened when the successor of Windows 2000 was named Windows XP. As for internal version numbers, on the other hand, requirements change, so the versioning schema changes accordingly and might become very complex.</p>
 
-<p>Not realizing this difference between version numbers might introduce confusion and errors, and it could be better to completely avoid that users get in contact with internal version numbers.</p>
+<p>Not realizing this difference between version numbers might introduce confusion and errors, and completely avoiding that users get in contact with internal version numbers could be a better choice.</p>
 
 <p>Let’s dive a little more into the reasons a development group has to adopt a versioning system and into the different possibilities it faces.</p>
 
-<p>First of all it is useful to state again that the need that drives the decision of labelling the produced software is that of being able to quickly find information about the production context. Such data change according to the development process, but I can list some common elements: author and date, hardware requirements, changes from last version, potential compatibility issues or unresolved bugs.</p>
+<p>First of all it is useful to state again that the need that drives the decision of labelling the produced software is that of being able to find quickly information about the production context. Such data change according to the development process, but I can list some common elements: author and date, hardware requirements, changes from the last version, potential compatibility issues or unresolved bugs.</p>
 
-<p>The version number shall not necessarily contain such information directly. It can however encompass some of them, those data that the development team considers useful to be more visible.</p>
+<p>The version number shall not necessarily contain such information directly. It can however encompass some of them, those data that the development team considers useful to be visible.</p>
 
-<p>I think it is very wrong to give version number components a meaning of importance, as it happens to external ones. Internal version numbers must represent a measurable quantity or precise steps of a procedure. Examples of measurable quantities are dates, a progressive number, the compatibility of some interfaces, the number of commits from the last version, while examples of procedure steps are labels such as alpha, beta, test, if these labels have a clear meaning in the software development cycle.</p>
+<p>I think it is very wrong to give version number components a meaning of importance as it happens to external ones. Internal version numbers must represent a measurable quantity or precise steps of a procedure. Examples of measurable quantities are dates, a progressive number, the compatibility of some interfaces, the number of commits from the last version while examples of procedure steps are labels such as alpha, beta, test, if these labels have a clear meaning in the software development cycle.</p>
 
-<p>For instance an internal versioning schema could be the following</p>
+<p>For instance, an internal versioning schema could be the following</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>&lt;date: YYYYMMDD_hhmmss&gt;-&lt;commits&gt;</span></code></pre></td></tr></table></div></figure>
@@ -1967,13 +1967,13 @@
 
 <p>where the three numbers assume a very clear compatibility meaning. The part called <code>code</code> is a progressive number that shows changes that do not affect any interface. This encompasses changes like optimizations and changes in internal algorithms.</p>
 
-<p>The central number <code>abi</code> signals a change in the binary interface (ABI, Application Binary Interface), that is it shows that changes happened that makes it necessary to recompile software that uses this library, without having to modify it. A typical example is given by the format change of a data type such as a structure. Function prototypes are the same as before but an already compiled code would pass an incompatible data type.</p>
+<p>The central number (<code>abi</code>) signals a change in the binary interface (ABI, Application Binary Interface) that is it shows that changes happened that makes it necessary to recompile software that uses this library, without having to modify it. A typical example is given by the format change of a data type such as a structure. Function prototypes are the same as before, but an already compiled code would pass an incompatible data type.</p>
 
-<p>The third and leftmost number <code>api</code> is linked to incompatibilities in the programming interface (API, Application Programming Interface). A classic example of API in a library is the set of all function prototypes. Changing the prototype of a function creates a big incompatibility issue, and this requires to adapt and recompile the softwares that use the library.</p>
+<p>The third and leftmost number (<code>api</code>) is linked to incompatibilities in the programming interface (API, Application Programming Interface). A classic example of API in a library is the set of all function prototypes. Changing the prototype of a function creates a big incompatibility issue, and this requires to adapt and recompile the softwares that use the library.</p>
 
-<p>According to this schema a library moving from version <code>5.6.1</code> to version <code>5.6.2</code> may be installed without any further check, while the subsequent release <code>6.0.0</code> is going to require a deep review of the release notes before installing it, perhaps requiring also the update of other software that uses it.</p>
+<p>According to this schema a library moving from version <code>5.6.1</code> to version <code>5.6.2</code> may be installed without any further check while the subsequent release <code>6.0.0</code> is going to require a deep review of the release notes before installing it, perhaps requiring also the update of other software that uses it.</p>
 
-<p>The two examples are very different since the two schemes try to solve different needs. Indeed, your mileage may vary according to your needs or the environment where you work. In my development team, for instance, a reduced version of the second example is used, which  consists of just the API and CODE numbers, since the ABI break cases are so rare that can be handled as API breaks.</p>
+<p>The two examples are very different since the two schemes try to solve different needs. Indeed, your mileage may vary according to your needs or the environment where you work. In my development team, for instance, a reduced version of the second example is used, which  consists of just the API and CODE numbers since the ABI break cases are so rare that can be handled as API breaks.</p>
 
 <h4>The dangerous major/minor system</h4>
 
@@ -1983,31 +1983,31 @@
 </pre></td><td class='code'><pre><code class=''><span class='line'>&lt;major&gt;.&lt;minor&gt;.&lt;build&gt;.&lt;revision&gt;</span></code></pre></td></tr></table></div></figure>
 
 
-<p>where major is explicitly described with these words <em>“A higher version number might indicate a major rewrite of a product where backward compatibility cannot be assumed”</em>, while minor <em>“indicates significant enhancement with the intention of backward compatibility. This higher minor version number might indicate a point release of a product or a fully backward-compatible new version of a product”</em>.</p>
+<p>where major is explicitly described with these words <em>“A higher version number might indicate a major rewrite of a product where backward compatibility cannot be assumed”</em> while minor <em>“indicates significant enhancement with the intention of backward compatibility. This higher minor version number might indicate a point release of a product or a fully backward-compatible new version of a product”</em>.</p>
 
 <p>What I consider dangerous in this description are the words <em>might</em>, <em>major rewrite</em>, <em>assumed</em>, <em>significant enhancement</em>, <em>intention</em>.</p>
 
 <p>These words, indeed, express indefinite and unsteady concepts. A team that uses this schema without a previous specification is going to end up asking whether a given version with a new major number is incompatible or not, or if the changes made to some code are “major” or only “significant”.</p>
 
-<p>The team that wants to use the .NET versioning system must first of all write a document where the meaning of such words and cases are clearly described, how to deal with incompatibilities, etc. Alas, the .NET system reflects one of the most widespread concepts about versioning, namely that versions have to do with the user&#8217;s feeling about the changes, thus the major/minor nomenclature. User&#8217;s perception of the changes in the software must be encompassed by an external number, that should use a simpler schema.</p>
+<p>The team that wants to use the .NET versioning system must first of all write a document where the meaning of such words and cases are clearly described, how to deal with incompatibilities, etc. Alas, the .NET system reflects one of the most widespread concepts about versioning, namely that versions have to do with the user&#8217;s feeling about the changes, thus the major/minor nomenclature. User&#8217;s perception of the changes in the software must be encompassed by an external number that should use a simpler schema.</p>
 
 <p>This can never be stated enough: <strong>internal version numbers must come from measurable quantities.</strong></p>
 
 <h2>Versioning is a discipline</h2>
 
-<p>Versioning is not a set of fixed rules, but a <strong>methodology</strong>. When a development group follows a new methodology it both adopts and adapts it. Adopting means shifting the work procedures to follow those proposed by the methodology, while adapting means changing the methodology to fit the environment where it is supposed to be used.</p>
+<p>Versioning is not a set of fixed rules, but a <strong>methodology</strong>. When a development group follows a new methodology it both adopts and adapts it. Adopting means shifting the work procedures to follow those proposed by the methodology while adapting means changing the methodology to fit the environment where it is supposed to be used.</p>
 
-<p>Versioning is a <strong>discipline</strong>, a way of thinking, where rules are the product of general concepts modelled after the scope and the environment where they are used. So the versioning scheme of a product can vary in the course of time, since product or user requirements change.</p>
+<p>Versioning is a <strong>discipline</strong>, a way of thinking, where rules are the product of general concepts modelled after the scope and the environment where they are used. So the versioning scheme of a product can vary in the course of time since product or user requirements change.</p>
 
-<p>Software is one of the environment where design is faster, always changing, pronged and distributed among several developers, so many things need to be versioned, not just the final product. This latter, indeed, could have a lifecycle of several years, but in the meantime bug fixes could be released, experimental code produced, tools and documentation enhanced. All those things can be versioned and many times they have to. <strong>Always pay attention that the method for dealing with an object is imposed by the object itself, so the versioning scheme is imposed by the versioned object.</strong> Your documentation probably needs a different schema from a software tool.</p>
+<p>Software is one of the environment where design is faster, always changing, pronged and distributed among several developers, so many things need to be versioned, not just the final product. This latter, indeed, could have a lifecycle of several years, but in the meantime bug fixes could be released, experimental code produced, tools and documentation enhanced. All those things can be, and many times they have to be versioned. <strong>Always pay attention that the method for dealing with an object is imposed by the object itself, so the versioning scheme is imposed by the versioned object.</strong> Your documentation probably needs a different schema from a software tool.</p>
 
-<p>So the following guidelines must be shaped on the specific needs of the development group, and these are forced by the product, the size of the team, the market and several other surrounding conditions each team manager should take account of.</p>
+<p>So the following guidelines must be shaped on the specific needs of the development group, and these are forced by the product, the size of the team, the market and several other surrounding conditions of which each team manager should take account.</p>
 
 <ol>
 <li><p><strong>Versioning rules and procedures should take account not only of current needs but also of future ones</strong>, to avoid as much as possible to be forced to change them. As usual in design it is recommended to consider the matter from several points of view and to explore different “what if?” scenarios. Doing this a team can both create a system that will last a long time and identify those cases where the system will fail. This way it is already known under which conditions the system will not satisfy the needs; those conditions, if forecasted, can be thus confronted with a clear change path in mind.</p></li>
 <li><p><strong>Versioning rules must be clearly explained</strong> and written in an easily accessible document (e.g. on an intranet in HTML format). Rules must be short. Use cases and frequently asked questions should be attached.</p></li>
-<li><p><strong>Versioning rules must be quickly changed if no more suitable</strong> for the use cases the team has to deal with. One of the Extreme Programming sayings, “embrace change”, must be the spirit of any rule system which aims to be useful. That spirit integrates the first point given above, since everyone can come across an unexpected condition and be in the need of modifying the previous design choices.</p></li>
-<li><p><strong>The change of versioning rules should be fully backward compatible if possible</strong>. Every time the system evolves should thus become a superset of the previous rules. This way the technical shock originated by the change can be easily absorbed. Obviously, as already stated, there are many conditions in which backward compatibility is not possible. In such cases the two systems should possibly be marked so that a version number is unequivocally connected to one of them (using a prefix, for example). The date when the new systems takes over the old one must be recorded.</p></li>
+<li><p><strong>Versioning rules must be quickly changed if they are no more suitable</strong> for the use cases with which the team has to deal. One of the Extreme Programming sayings, “embrace change”, must be the spirit of any rule system which aims to be useful. That spirit integrates the first point given above since everyone can come across an unexpected condition and be in need of modifying the previous design choices.</p></li>
+<li><p><strong>The change of versioning rules should be fully backward compatible if possible</strong>. Every time the system evolves, it should thus become a superset of the previous rules. This way the technical shock originated by the change can be easily absorbed. Obviously, as already stated, there are many conditions in which backward compatibility is not possible. In such cases, the two systems should possibly be marked so that a version number is unequivocally connected to one of them (using a prefix, for example). The date when the new systems takes over the old one must be recorded.</p></li>
 </ol>
 
 
@@ -2024,38 +2024,38 @@
     <id>http://lgiordani.github.com/blog/2013/02/28/concurrent-programming-5</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
-<p>In the past articles we introduced the concept of concurrent programming and studied a first solution to the problem of intercommunication: semaphores. As explained, the use of semaphores allows us to manage the access to shared resources, and this is a first and very simple form of synchronization. In this issue we will go one step further introducing a richer tool for concurrent programming: <em>message queues</em>.</p>
+<p>In the past articles we introduced the concept of concurrent programming and studied a first solution to the problem of intercommunication: semaphores. As explained, the use of semaphores allows us to manage access to shared resources, and this is a first and very simple form of synchronization. In this issue, we will go one step further introducing a richer tool for concurrent programming: <em>message queues</em>.</p>
 
 <!-- more -->
 
 
 <h2>Limits of semaphores</h2>
 
-<p>Ruling the access to a resource through semaphores is a good form of synchronization, though it is very limited. Indeed it prevents two or more processes simultaneously modifying shared data but does not allow them to exchange information.</p>
+<p>Ruling access to a resource through semaphores is a good form of synchronization, even if it is very limited. Indeed it prevents two or more processes simultaneously modifying shared data but does not allow them to exchange information.</p>
 
-<p>Moreover, the basic use of semaphores does not guarantee the absence of dangerous situations. As an example remember that in a multitasking environment we do not know in advance which process will be executed and when. This means that a resource could be inaccessible for a process since it is always blocked by other processes.</p>
+<p>Moreover, the basic use of semaphores does not guarantee the absence of dangerous situations. As an example remember that, in a multitasking environment, we do not know in advance which process will be executed and when. This means that a resource could be inaccessible for a process since it is always blocked by other processes.</p>
 
 <p>Thus, while being a good tool in the multitasking programmer&#8217;s bag, semaphores are not the final solution to his or her problems. So we now introduce a new tool which plays a big role in multitasking and distributed systems called <strong>message queues</strong>.</p>
 
 <h2>Message queues theory</h2>
 
-<p>Since message queues are one of the most important structures in computer science let us dive into them at a slow pace. So first of all, what is a <strong>message</strong> in this context? Simply stated, a message is some <strong>data</strong> with a given <strong>format</strong>, which is a complex form to say everything. Indeed in the context of communication between processes, or computers, a message is a stream of bits which must be formatted according to a previously agreed format, where format means a set of rules the stream of bit must obey.</p>
+<p>Since message queues are one of the most important structures in computer science, let us dive into them at a slow pace. So first of all, what is a <strong>message</strong> in this context? Simply stated, a message is some <strong>data</strong> with a given <strong>format</strong>, which is a complex form to say everything. Indeed in the context of communication between processes, or computers, a message is a stream of bits which must be formatted according to a previously agreed format, where format means a set of rules the stream of bit must obey.</p>
 
-<p>For example we could simply state that a message is a raw extended <a href="http://en.wikipedia.org/wiki/ASCII">ASCII</a> string: this means that the stream must contain a multiple of 8 bits (since each extended ASCII character is represented by 8 bits). Our format is very simple, in this case, but it is enough to state that a message made of 377 bit is invalid. Through the format specification a message can also encompass entire files, and there is in general no limit to the size.</p>
+<p>For example, we could simply state that a message is a raw extended <a href="http://en.wikipedia.org/wiki/ASCII">ASCII</a> string: this means that the stream must contain a multiple of 8 bits (since each extended ASCII character is represented by 8 bits). Our format is very simple, in this case, but it is enough to state that a message made of 377 bit is invalid. We can also make a message encompass entire files, and there is in general no limit to the size.</p>
 
-<p>Now we have a definition of message. What is a <strong>queue</strong>? A queue is a list structure, where a given number of <em>homogeneous</em> objects can be stored. An object can be inserted in the list (<strong>push</strong>ed) and extracted from it (<strong>pop</strong>ped). Usually a queue in the messaging environment is a FIFO (First In First Out) one, meaning that the first object pushed is the first object popped. There is a plenty of mathematical and computer science theory about queues, buffers, FIFO, LIFO and other list types and we will not review here such topics. Just a notice, to open further research by the reader: the stack, one of the most important concepts in programming, is also a memory buffer, or a queue, where the computer stores function calls and local variables.</p>
+<p>Now we have a definition of message. What is a <strong>queue</strong>? A queue is a list structure, where a given number of <em>homogeneous</em> objects can be stored. An object can be inserted in the list (<strong>push</strong>ed) and extracted from it (<strong>pop</strong>ped). Usually a queue in the messaging environment is a FIFO (First In First Out) one, meaning that the first object pushed is the first object popped. There is a plenty of mathematical and computer science theory about queues, buffers, FIFO, LIFO and other list types, and we will not review such topics here. Just a notice, to open further research by the reader: the stack, one of the most important concepts in programming, is also a memory buffer, or a queue, where the computer stores function calls and local variables.</p>
 
 <p>So message queues are buffers where arbitrary (but homogeneous) objects called messages can be stored for a later retrieval.</p>
 
-<p>Every process can create one or more queues and every process can send a message to one of them. The only prerequisite is that the unique identificator of the queue must be known. Since we are now working with processes spawned by a fork operation to let each process know the identificator of a queue it is enough to create the queue before executing <code>fork()</code>.</p>
+<p>Every process can create one or more queues and every process can send a message to one of them. The only prerequisite is that the unique identifier of the queue must be known. Since we are now working with processes spawned by a fork operation, each process can know the identifier of a queue if the queue has been created before executing <code>fork()</code>.</p>
 
-<p>With the identificator of a queue it is also possible to read messages from it. Messages can be accessed sequentially, reading the messages in chronological order (from the oldest, the first, to the most recent, the last arrived), but selectively, that is considering only the messages of a certain type: this last feature give us a sort of control on the priority of the messages we read.</p>
+<p>The knowledge of a queue identifier makes it is also possible to read messages from it. Messages can be accessed sequentially, reading the messages in chronological order (from the oldest, the first, to the most recent, the last arrived), but selectively, that is considering only the messages of a certain type: this last feature give us a sort of control on the priority of the messages we read.</p>
 
 <p>Queues, therefore, can be used to implement several communication scenarios, from the simplest ones where all processes send messages to and read messages from the same queue, to more complex solutions such as a full mail system between processes.</p>
 
-<p>Irrespective of the communication framework we set for our processes, synchronization can now be performed through a richer tool. Processes needing synchronization can exchange messages to establish the correct timings schedule when performing actions. Messages, thus, do not replace semaphores, but cover functionalities that they cannot provide, as already seen.</p>
+<p>Irrespective of the communication framework we set for our processes, synchronization can now be performed through a richer tool. Processes needing synchronization can exchange messages to establish the correct timings schedule when performing actions. Messages, thus, do not replace semaphores, but, as already seen, cover functionalities that they cannot provide.</p>
 
-<p>Before we can switch to implement message queues in C language it is necessary to speak about another problem related to messages: the need of a <em>communication protocol</em>.</p>
+<p>Before we can switch to implement message queues in C language, it is necessary to speak about another problem related to messages: the need of a <em>communication protocol</em>.</p>
 
 <h2>Creating a protocol</h2>
 
@@ -2063,16 +2063,16 @@
 
 <p>In <a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">the past article</a> we implemented a very simple protocol when instructing processes to access a resource according to the status of a semaphore. This latter is also modified as part of the protocol itself.</p>
 
-<p>As already stated in a past article, there is no difference between interprocess communication on the same machine or in a distributed environment (multiple machines): indeed, every network protocol (TCP/IP, DNS, SMTP, just to cite to most famous ones) is built on a message exchange architecture.</p>
+<p>As already stated in a past article, there is no difference between interprocess communication on the same machine or in a distributed environment (multiple machines): indeed, every network protocol (TCP/IP, DNS, SMTP, just to cite some of the most famous) is built on a message exchange architecture.</p>
 
-<p>This is a simple example of a protocol based on message exchange: two processes A and B are executing concurrently and processing different data. Once they end the processing they have to merge their results. Here synchronization problems arise: what process actually does the merging? If the process in charge of the merging operation is process A, for example, the merging protocol can be described by these time charts, one for each process</p>
+<p>This is a simple example of a protocol based on message exchange: two processes, A and B, are executing concurrently and processing different data. Once they end the processing they have to merge their results. Here, synchronization problems arise: what process actually does the merging? If the process in charge of the merging operation is the process A, for example, the merging protocol can be described by these time charts, one for each process</p>
 
 <h4>PROCESS B</h4>
 
 <ol>
 <li>Work with your data</li>
 <li>When you finish send a message to A</li>
-<li>When A answers begin sending it your results</li>
+<li>When A answers, begin sending it your results</li>
 </ol>
 
 
@@ -2086,13 +2086,13 @@
 </ol>
 
 
-<p>Choosing the merger process is in this case totally arbitrary. This however can be a very important part of a protocol.</p>
+<p>Choosing the merger process is in this case totally arbitrary. This, however, can be a very important part of a protocol.</p>
 
-<p>This protocol is simply extensible to the case of n processes: every process but A works with its own data and then send a message to A. When A answers the other process sends its results: the only process modified in this generalization is A, since it has to receive messages from multiple processes instead of just one.</p>
+<p>This protocol is extensible ina simple way to the case of n processes: every process but A works with its own data and then send a message to A. When A answers, the other process sends its results: the only process modified in this generalization is A since it has to receive messages from multiple processes instead of just one.</p>
 
 <h2>System V Message Queues</h2>
 
-<p>Now it is the time to speak about implementing these concepts in a Linux operating system environment. As already said we have a set of primitives that allow us to manage the structures related to message queues and they are very similar to those dedicated to semaphore management, already described in <a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">the past article</a>.</p>
+<p>Now it is the time to speak about implementing these concepts in a Linux operating system environment. As already said we have a set of primitives that allow us to manage the structures related to message queues, and they are very similar to those dedicated to semaphore management, already described in <a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">the past article</a>.</p>
 
 <p>The structure used to describe a message is <code>msgbuf</code> and is declared in <code>linux/msg.h</code></p>
 
@@ -2111,7 +2111,7 @@
 
 <p>The field <code>mtype</code> represents the type of the message and is a strictly positive number: the correspondence between numbers and message types has to be set in advance and is part of the protocol definition.</p>
 
-<p>The second field represents the content of the message. With the standard definition no real message can be held inside it, because the space is too little (just one byte). This is just a placeholder, since the real structure used to describe messages can be redefined in order to contain complex data. An example of redefinition is the following</p>
+<p>The second field represents the content of the message. With the standard definition, no real message can be held inside it because the space is too little (just one byte). This is just a placeholder since the real structure used to describe messages can be redefined in order to contain complex data. An example of redefinition is the following</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -2137,9 +2137,9 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>In the same file there are other interesting limits such as <code>MSGMNB</code>, the maximum total size of a queue, which in Linux is set by default to 16384. That means that a queue containing 2 messages is already full.</p>
+<p>In the same file, there are other interesting limits such as <code>MSGMNB</code>, the maximum total size of a queue, which in Linux is set by default to 16384. That means that a queue containing 2 messages is already full.</p>
 
-<p>A short notice about kernel parameters such as <code>MSGMAX</code>, <code>MSGMNB</code> and others: kernel parameters can obviously be changed by modifying the source code and recompiling the kernel, that is generating a custom Linux kernel. Varying some parameters, however, can be dangerous for the portability of your programs. Indeed, if you increase the maximum size of a message to, say, 16384 bytes, in order to host big messages, your application will crash on a kernel without that modification, where the maximum size is still 8192. Kernel parameters can also be changed at runtime through the <code>/proc</code> filesystem and the sysctl interface: these topics are very rich and important and thus deserve a larger space. For the time being I let the reader research about them.</p>
+<p>A short notice about kernel parameters such as <code>MSGMAX</code>, <code>MSGMNB</code> and others: kernel parameters can obviously be changed by modifying the source code and recompiling the kernel, that is generating a custom Linux kernel. Varying some parameters, however, can be dangerous for the portability of your programs. Indeed, if you increase the maximum size of a message to, say, 16384 bytes, in order to host big messages, your application will crash on a kernel without that modification, where the maximum size is still 8192. Kernel parameters can also be changed at runtime through the <code>/proc</code> filesystem and the sysctl interface: these topics are very rich and important and thus deserve a larger space. For the time being, I let the reader research about them.</p>
 
 <h4>Create a queue</h4>
 
@@ -2164,7 +2164,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>where <code>msqid</code> is the identifier of the queue, <code>msgp</code> is a pointer to the message we have to send, <code>msgz</code> the size of the message in bytes (excluding the length of the <code>mtype</code> field, which is 4 bytes) and <code>msgflg</code> a flag related to the waiting policy.</p>
 
-<p>Here <code>msgp</code> is a pointer to a <code>struct msgbuf</code>. Since that structure has been redefined, however, our actual call will contain a pointer to a variable of the redefined type.</p>
+<p>Here, <code>msgp</code> is a pointer to a <code>struct msgbuf</code>. However, since that structure has been redefined, our actual call will contain a pointer to a variable of the redefined type.</p>
 
 <p>The length of the message in bytes can be easily be found as</p>
 
@@ -2175,7 +2175,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>where <code>struct message</code> is our redefinition of <code>struct msgbuf</code>.</p>
 
-<p>Waiting policies are similar to those introduced for semaphores. This time the policy is used when the queue is full. If <code>msgflg</code> is set to <code>IPC_NOWAIT</code> the sender process will not wait for some available space and will exit with an error code.</p>
+<p>Waiting policies are similar to those introduced for semaphores. This time the policy is used when the queue is full. If <code>msgflg</code> is set to <code>IPC_NOWAIT</code>, the sender process will not wait for some available space and will exit with an error code.</p>
 
 <h4>Read messages</h4>
 
@@ -2197,11 +2197,11 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>where the command <code>cmd</code> to remove the queue is <code>IPC_RMID</code>. Other two commands, <code>IPC_STAT</code> and <code>IPC_SET</code> are available through <code>msgctl()</code> but they are not interesting now.</p>
+<p>where the command <code>cmd</code> to remove the queue is <code>IPC_RMID</code>. Other two commands, <code>IPC_STAT</code> and <code>IPC_SET</code>, are available through <code>msgctl()</code>, but they are not interesting now.</p>
 
 <h2>Putting it all together</h2>
 
-<p>Let&#8217;s test all these concepts with a simple program which creates a message queue, sends a message to it, reads the message and cancels the queue. After the message has been read a comparison between the original values and the read ones is performed to check that the system is working.</p>
+<p>Let&#8217;s test all these concepts with a simple program which creates a message queue, sends a message to it, reads the message and cancels the queue. After the message has been read, a comparison between the original values and the ones in the message is performed to check that the system is working.</p>
 
 <figure class='code'><figcaption><span>queues1  (queues1.c)</span> <a href='http://lgiordani.github.com/downloads/code/queues1.c'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
@@ -2501,7 +2501,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <h2>Conclusions</h2>
 
-<p>In this article we introduced a new IPC structure called message queue, and the related concepts of message and protocol. These concepts are very important and are going to be the foundation stone of a project we will realize step by step in the future articles: a simple telephone switch simulator.</p>
+<p>In this article, we introduced a new IPC structure called message queue and the related concepts of message and protocol. These concepts are very important and are going to be the foundation stone of a project we will realize step by step in the future articles: a simple telephone switch simulator.</p>
 
 <h2>Past articles</h2>
 
@@ -2522,16 +2522,16 @@ and grant access to the owner and group users). The returned integer is called q
     <id>http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
-<p>In the past issue of this series of articles about concurrent programming we started to concern ourselves with the problems of synchronization between processes. In this installment we will investigate further the subject introducing some structures and functions collectively known as <em>Unix System V IPC</em>.</p>
+<p>In the past issue, of this series of articles about concurrent programming we started to concern ourselves with the problems of synchronization between processes. In this installment, we will investigate further the subject introducing some structures and functions collectively known as <em>Unix System V IPC</em>.</p>
 
 <!--more-->
 
 
 <h2>IPC: InterProcess Communication</h2>
 
-<p>Communication between processes, either running on the same machine or over a network, is one of the most interesting topics in computer science and, despite its age, new solutions to this problem keep arising. With the widespread availability of Internet access the subject is now a little shifted towards pure network communication, which represents just a part of the techniques known as <strong>IPC</strong>: InterProcess Communication.</p>
+<p>Communication between processes, either running on the same machine or over a network, is one of the most interesting topics in computer science and, despite its age, new solutions to this problem keep arising. With the widespread availability of Internet access, the subject is now a little shifted towards pure network communication, which represents just a part of the techniques known as <strong>IPC</strong>: InterProcess Communication.</p>
 
-<p>This abbreviation encompasses several different scopes in the field of multiprocessing, the most important ones being <strong>synchronization</strong>, <strong>shared data management</strong> and <strong>messaging</strong>. In this article we will focus on local IPC, i.e. communication between processes running on the same machine. The underlying concepts and techniques, however, can be easily applied to a network environment too, but they require a layer to manage network communication, which is out of the scope of this series.</p>
+<p>This abbreviation encompasses several different scopes in the field of multiprocessing, the most important ones being <strong>synchronization</strong>, <strong>shared data management</strong> and <strong>messaging</strong>. In this article, we will focus on local IPC, i.e. communication between processes running on the same machine. The underlying concepts and techniques, however, can be easily applied to a network environment too, but they require a layer to manage network communication, which is out of the scope of this series.</p>
 
 <h2>More on synchronization</h2>
 
@@ -2539,7 +2539,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>Let&#8217;s reconsider and formalize the example given in the last post. Say we create two different processes working on the same data. If the two processes just read the same data from memory (or disk) no problems can arise: data are static, and accessing does not change them. So the execution of the two processes is called <strong>consistent</strong>, which highlights that repeated executions or executions spanning a long time will always result in the same system behaviour.</p>
 
-<p>If now one of the processes wants to modify data different situations can come up, depending on the actual timing of the operations. Say we have two processes <code>A</code> and <code>B</code> and an element <code>d</code>; process <code>A</code> increases element <code>d</code> by 1, while process <code>B</code> prints the element value on the screen. In a sort of metalanguage we could express this situation with the following syntax</p>
+<p>If now one of the processes wants to modify data different situations can come up, depending on the actual timing of the operations. Say we have two processes <code>A</code> and <code>B</code> and an element <code>d</code>; process <code>A</code> increases element <code>d</code> by 1 while process <code>B</code> prints the element value on the screen. In a sort of metalanguage, we could express this situation with the following syntax</p>
 
 <figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class=''><span class='line'>A { d-&gt;d+1 } & B { d-&gt;output }</span></code></pre></td></tr></table></div></figure>
@@ -2565,15 +2565,15 @@ and grant access to the owner and group users). The returned integer is called q
 </span><span class='line'>(A) d = 6</span></code></pre></td></tr></table></div></figure>
 
 
-<p>As you can see, different timings can lead to different results; let&#8217;s pretend that element <code>d</code> is the amount of money in your bank account and you will suddenly realize the importance of the matter. Such a reliance of data on timing or system conditions is know as <strong>data inconsistency</strong>.</p>
+<p>As you can see, different timings can lead to different results; let&#8217;s pretend that element <code>d</code> is the amount of money in your bank account, and you will suddenly realize the importance of the matter. Such a reliance of data on timing or system conditions is known as <strong>data inconsistency</strong>.</p>
 
-<p>As we already described, waiting is a trivial form of synchronization that can solve this problem. However it is as simple as inefficient, as it blocks the execution of one process, while the other is operating and this happens even if the blocked process is no more operating on shared data. The block is indeed based on the simple assumption that one process could lead to data inconsistency.</p>
+<p>As we already described, waiting is a trivial form of synchronization that can solve this problem. However it is as simple as inefficient as it blocks the execution of one process while the other is operating and this happens even if the blocked process is no more operating on shared data. The block is indeed based on the simple assumption that one process could lead to data inconsistency.</p>
 
-<p>It is thus necessary to increase the <strong>granularity</strong> of this block. Granularity is the scope of an action: the higher is the granularity, the narrowest is the scope. So we have to restrict the scope of the block, which by now covers the whole process.</p>
+<p>It is thus necessary to increase the <strong>granularity</strong> of this block. Granularity is the scope of an action: the higher is the granularity the narrowest is the scope. So we have to restrict the scope of the block, which by now covers the whole process.</p>
 
 <h2>System V keys</h2>
 
-<p>A part of the IPC structures introduced by Unix System V is explicitly dedicated to resource identification, that is the capability of labelling arbitrary objects and to limit access management to them. This is done through the use of the so-called <em>SysV IPC Keys</em>: a <strong>key</strong>, in this context, is a number used to univocally identify an IPC structure. An IPC key can be generated by <code>ftok()</code></p>
+<p>A part of the IPC structures introduced by Unix System V is explicitly dedicated to resource identification, the capability of labelling arbitrary objects and limiting access management to them. This is done through the use of the so-called <em>SysV IPC Keys</em>: a <strong>key</strong>, in this context, is a number used to identify univocally an IPC structure. An IPC key can be generated by <code>ftok()</code></p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">key_t</span> <span class="nf">ftok</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span> <span class="kt">int</span> <span class="n">proj_id</span><span class="p">);</span>
@@ -2586,21 +2586,21 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>The idea of traffic light can be profitably borrowed to control access to resources. A <strong>semaphore</strong>, in the IPC world, is a structure capable of containing a positive or null integer and which manages a queue of processes waiting for a particular condition of the semaphore itself.</p>
 
-<p>Despite their simplicity, the power of semaphores is big, thus their correct use is not trivial. We will therefore start writing code without error control, just to focus on the real subject. Please remember that in real world applications error control code can vary from 40% up to 80% of the total amount, so bear in mind that code without error control is good only for the purpose of understanding concepts.</p>
+<p>Despite their simplicity, the power of semaphores is big, thus their correct use is not trivial. We will therefore start writing code without error control, just to focus on the real subject. Please remember that in real world applications, error control code can vary from 40% up to 80% of the total amount, so bear in mind that code without error control is good only for the purpose of understanding concepts.</p>
 
-<p>The first possible use of a semaphore is that of access controller: the value of the semaphore represents the number of processes that can concurrently access the resource. Every time a process access the resource it decrements the value of the semaphore and every time a process releases the resource it increments the value. If the resource is exclusive (that is only one process can access the resource at a time) the maximum value of the semaphore will be 1.</p>
+<p>The first possible use of a semaphore is that of access controller: the value of the semaphore represents the number of processes that can concurrently access the resource. Every time a process access the resource it decrements the value of the semaphore and every time a process releases the resource it increments the value. If the resource is exclusive (that is only one process can access the resource at a time), the maximum value of the semaphore will be 1.</p>
 
-<p>A second use of the semaphore is that of resource counter. The value in this case is the number of resources available to processes, e.g. memory cells, network connections, and so on. As you can easily understand using a resource is equivalent to locking its access.</p>
+<p>A second use of the semaphore is that of resource counter. The value in this case is the number of resources available to processes, e.g. memory cells, network connections, and so on. As you can easily understand, using a resource is equivalent to locking its access.</p>
 
 <p>Let&#8217;s consider a practical case where both the uses of semaphores will be useful.</p>
 
-<p>We build a buffer of length L where n processes W1,&#8230;, Wn can write to, but from which just one process R can read. Say also that just one process can access the buffer at a given time T. As you can easily understand W processes can write at any time except when the buffer is full, while the process R can read at any time except when the buffer is empty.</p>
+<p>We build a buffer of length L where n processes W1,&#8230;, Wn can write to, but from which just one process R can read. Say also that just one process can access the buffer at a given time T. As you can easily understand W processes can write at any time except when the buffer is full while the process R can read at any time except when the buffer is empty.</p>
 
-<p>This buffer could be easily managed in a standard single task environment by declaring 2 flags, the first to signal overflow and the second to signal underflow. But we are in a multitasking environment now, so flags declared before the fork operation are not shared between processes (each process has its own copy of the flags, and they are not linked). So we have to use a shared structure and this is where IPC semaphores take the field.</p>
+<p>This buffer could be easily managed in a standard single task environment by declaring 2 flags, the first to signal overflow and the second to signal underflow. We are in a multitasking environment now, so flags declared before the fork operation are not shared between processes (each process has its own copy of the flags, and they are not linked). So we have to use a shared structure, and this is where IPC semaphores take the field.</p>
 
-<p>We can declare three semaphores: the first one will manage the access to the buffer, while the second and third will keep track of how many elements are in the buffer (later it will become clear why two semaphores are not sufficient).</p>
+<p>We can declare three semaphores: the first one will manage access to the buffer while the second and third will keep track of how many elements are in the buffer (later it will become clear why two semaphores are not sufficient).</p>
 
-<p>Given that the access to the buffer is exclusive the first semaphore will be a binary one (which value thus will be 0 or 1), while the second and the third will have values linked to the length of the buffer.</p>
+<p>Given that access to the buffer is exclusive the first semaphore will be a binary one (which value thus will be 0 or 1) while the second and the third will have values linked to the length of the buffer.</p>
 
 <p>In C language the SysV primitive to create a semaphore is</p>
 
@@ -2609,7 +2609,7 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>where <code>key</code> is an IPC key created with <code>ftok()</code>, <code>nsems</code> is the number of semaphores we want to create and <code>semflg</code> a set of flags controlling the access to the semaphores. Access to IPC structures is ruled by a 12 bit system which is almost identical to the Unix file system access control, but we will not dive into it. As you can also notice <code>semget()</code> manages sets of semaphores, which helps us keeping the code compact.</p>
+<p>where <code>key</code> is an IPC key created with <code>ftok()</code>, <code>nsems</code> is the number of semaphores we want to create and <code>semflg</code> a set of flags controlling access to the semaphores. Access to IPC structures is ruled by a 12 bit system which is almost identical to the Unix file system access control, but we will not dive into it. As you can also notice <code>semget()</code> manages sets of semaphores, which helps us to keep the code compact.</p>
 
 <p>Let&#8217;s review the full code to create a semaphore</p>
 
@@ -2652,7 +2652,7 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Do not compile and execute it by now. As you can see from the <code>#include</code> statements IPC structures are provided by the operating system itself and not by the standard C library. The key is created by passing to <code>ftok()</code> a file that certainly exists in the system and the PID of the current process. To know more about permission flags check the manual page for <code>semget()</code>.</p>
+<p>Do not compile and execute it by now. As you can see from the <code>#include</code> statements, IPC structures are provided by the operating system itself and not by the standard C library. The key is created by passing to <code>ftok()</code> a file that certainly exists in the system and the PID of the current process. To know more about permission flags check the manual page for <code>semget()</code>.</p>
 
 <p>Let&#8217;s go on learning to manage and remove semaphores; the primitive used to interact with a semaphore is</p>
 
@@ -2788,7 +2788,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <h2>Semaphores - part 2</h2>
 
-<p>Time to effectively use the semaphore: the function that allows to performs operations on a semaphore is</p>
+<p>Time to use effectively the semaphore: the function that allows to performs operations on a semaphore is</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">semop</span><span class="p">(</span><span class="kt">int</span> <span class="n">semid</span><span class="p">,</span> <span class="k">struct</span> <span class="n">sembuf</span> <span class="o">*</span><span class="n">sops</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">nsops</span><span class="p">);</span>
@@ -2813,19 +2813,19 @@ and grant access to the owner and group users). The returned integer is called q
 <p>For the time being we will always set <code>sem_flg</code> to 0. Operations are always integers and obey the following rules</p>
 
 <ol>
-<li><p><code>sem_op</code> &lt; 0 This signals that you want to decrease the semaphore value, or in other words lock one of the resources controlled by it. If the value of the semaphore can be decremented without becoming negative it will be and the process running <code>semop()</code> continues. Otherwise the calling process falls in a sleep status until the semaphore has that number of resources available.</p></li>
-<li><p><code>sem_op</code> = 0 This signals that you are waiting for the semaphore to reach value zero, that is the condition where no resources are available. The calling process falls in a sleep status until that moment.</p></li>
+<li><p><code>sem_op</code> &lt; 0 This signals that you want to decrease the semaphore value, or in other words lock one of the resources controlled by it. If the value of the semaphore can be decremented without becoming negative it will be and the process running <code>semop()</code> continues. Otherwise, the calling process falls in a sleep status until the semaphore has that number of resources available.</p></li>
+<li><p><code>sem_op</code> = 0 This signals that you are waiting for the semaphore to reach value zero; that is the condition where no resources are available. The calling process falls in a sleep status until that moment.</p></li>
 <li><p><code>sem_op</code> > 0 This signals that you want increase the semaphore value, or in other words release the given number of resources.</p></li>
 </ol>
 
 
-<p>Now we can write some code to implement the buffer example given above. We are going to create 5 processes called W (writers) and a process called R (reader). Each W process tries to lock the resource (the buffer) through a semaphore and if the buffer is not full, adds an element and releases the lock. The R process tries to lock the buffer, removes an element if available (buffer not empty) and releases the lock.</p>
+<p>Now we can write some code to implement the buffer example previously given. We are going to create 5 processes called W (writers) and a process called R (reader). Each W process tries to lock the resource (the buffer) through a semaphore, and if the buffer is not full, adds an element and releases the lock. The R process tries to lock the buffer, removes an element if available (buffer not empty) and releases the lock.</p>
 
-<p>Since we did not yet talk about shared memory we have to simulate read and write operation, i.e. pretend the operation has been performed. This is necessary since each process has its own memory space and cannot access that of another process. So each process has its own copy of the buffer and the copies are not linked each other. Later in this series we will talk about techniques to share memory regions between processes.</p>
+<p>Since we did not yet talk about shared memory we have to simulate read and write operation, i.e. pretend the operation has been performed. This is necessary since each process has its own memory space and cannot access that of another process. So each process has its own copy of the buffer, and the copies are not linked each other. Later in this series we will talk about techniques that allow sharing memory regions between processes.</p>
 
-<p>As already stated we need 3 semaphores: the first acts as access controller and its maximum value is 1, while the other two manage overflow and underflow conditions. A single semaphore could not handle both conditions, since <code>semop()</code> acts one-way only.</p>
+<p>As already stated, we need 3 semaphores: the first acts as access controller and its maximum value is 1 while the other two manage overflow and underflow conditions. A single semaphore could not handle both conditions, since <code>semop()</code> acts one-way only.</p>
 
-<p>Let&#8217;s clarify this latter statement before looking at the code. Say we have a single semaphore to manage over- and underflow conditions, with a value equal to the number of empty spaces in the buffer. Each time a W process fills the buffer it can decrease the semaphore value by one unit, until the value reaches 0, which represents the condition of full buffer. This way, however the empty buffer condition cannot be managed since the R process can increment the value of the semaphore without any limit. Semaphores, indeed, just control the lower boundary and not the upper one.</p>
+<p>Let&#8217;s clarify this latter statement before looking at the code. Say we have a single semaphore to manage over- and underflow conditions, with a value equal to the number of empty spaces in the buffer. Each time a W process fills the buffer it can decrease the semaphore value by one unit until the value reaches 0, which represents the condition of full buffer. This way however the empty buffer condition cannot be managed since the R process can increment the value of the semaphore without any limit. Semaphores, indeed, just control the lower boundary and not the upper one.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3057,7 +3057,7 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>These four lines of code declare the actions we will use later on the semaphore set. The first two are single actions, while the second two are double ones. The first action, <code>lock_res</code>, is used to lock the buffer: as you can see the semaphore number 0 is decremented by 1 and in case of busy resource the strategy is waiting (the last 0 in the action). The second action releases the buffer and is the mirror image of the first one.</p>
+<p>These four lines of code declare the actions we will use later on the semaphore set. The first two are single actions while the second two are double ones. The first action, <code>lock_res</code>, is used to lock the buffer: as you can see the semaphore number 0 is decremented by 1 and in case of busy resource the strategy is waiting (the last 0 in the action). The second action releases the buffer and is the mirror image of the first one.</p>
 
 <p>The third and fourth actions are specular too; each of them is an array of two actions, the first on the semaphore number 1 and the second on the semaphore number 2; while the first one is incremented the second is decremented and vice versa. The policy is changed from the first two actions: <code>IPC_NOWAIT</code> forces the process to continue execution, in contrast with the previous case, when the process was put on hold.</p>
 
@@ -3127,7 +3127,7 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Child process code (a writer) tries first of all to lock the buffer using <code>lock_res</code>; once the control over the resource has been acquired it performs the <code>push</code> action and writes on the standard output a meaningful message. Otherwise it signals that the buffer is full. The last action it performs is to release the resource through <code>rel_res</code>.</p>
+<p>Child process code (a writer) tries first of all to lock the buffer using <code>lock_res</code>; once the control over the resource has been acquired it performs the <code>push</code> action and writes on the standard output a meaningful message. Otherwise, it signals that the buffer is full. The last action it performs is to release the resource through <code>rel_res</code>.</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3170,7 +3170,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <h2>Conclusions</h2>
 
-<p>In the next article we will introduce and deal with atomicity, which is a very important concept in concurrent programming and database systems. We will also introduce a new IPC structure, which has a broad use in distributed systems: message queues.</p>
+<p>In the next article, we will introduce and deal with atomicity, which is a very important concept in concurrent programming and database systems. We will also introduce a new IPC structure, which has a broad use in distributed systems: message queues.</p>
 
 <h2>Past articles</h2>
 
@@ -3193,9 +3193,9 @@ and grant access to the owner and group users). The returned integer is called q
     <id>http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
-<p>In the first article we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second article we met the fundamental fork operation and wrote our first multitasking code. In this article we will go ahead and introduce ourselves in the topic of synchronization: the problem we face now indeed is to release the full power of multitasking, that is to share the work between processes.</p>
+<p>In the first article, we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second article, we met the fundamental fork operation and wrote our first multitasking code. In this article, we will go ahead and introduce ourselves in the topic of synchronization: the problem we face now indeed is to release the full power of multitasking, that is to share the work between processes.</p>
 
-<p>In the first part of the article I want to make a step back to the basics of multitasking to clarify the single/multiple CPU theme. Then we will start talking about shared data between processes, first looking at the problems arising and then writing some code.</p>
+<p>In the first part of the article, I want to make a step back to the basics of multitasking to clarify the single/multiple CPU theme. Then we will start talking about shared data between processes, first looking at the problems arising and then writing some code.</p>
 
 <!--more-->
 
@@ -3206,25 +3206,25 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>Let&#8217;s clarify this statement. A single CPU can execute only one operation at a time, so running two processes means to run the first one for a little time, then switch to execute the second one and so on. As already stated, this interlacing operation is what we call multitasking, and it is clear that such a technique slows down the interlaced processes: since each of the two processes runs for half the time (the other half being spent by the other process), the result is a process that runs half the speed.</p>
 
-<p>If you add to this that a switch operation does not come for free, because some time is spent by the operating system replacing the current process with the other one, you suddenly realize that multitasking is a double-edged sword: on one side it gives us the chance to run multiple programs at the same time, on the other side it slows down the execution of the whole system.</p>
+<p>If you add to this that a switch operation does not come for free, because some time is spent by the operating system replacing the current process with the other one, you suddenly realize that multitasking is a double-edged sword: on one side, it gives us the chance to run multiple programs at the same time, on the other side, it slows down the execution of the whole system.</p>
 
 <p>This issue can only be solved by using multiple CPUs or multiple cores (the two are not exactly the same), either on the same physical machine or on different ones.</p>
 
-<p>So if you are writing an algorithm to process an image in foreground, that is for a user that is waiting in front of the screen, you could profitably split it in many parts, each of which will process a tile of the whole image. This way the user could have a glance at the whole result while it is being computed. The same technique counts if for example you are computing statistics about a set of data: since some computations last longer than others you could split them among different processes, so that the user can immediately obtain the faster ones.</p>
+<p>So, if you are writing an algorithm to process an image in foreground, that is for a user that is waiting in front of the screen, you could split it profitably in many parts, each of which will process a tile of the whole image. This way the user could have a glance at the whole result while it is being computed. The same technique counts if, for example, you are computing statistics about a set of data: since some computations last longer than others you could split them among different processes so that the user can immediately obtain the faster ones.</p>
 
-<p>But if you are writing code that runs in background, that is without the user being there waiting for the results, you should never split it in different processes if you are working on a single CPU. That way you are just tangling up the code and wasting the CPU cycles to switch between processes without any real benefit.</p>
+<p>If, on the contrary, you are writing code that runs in background without the user being there waiting for the results, you should never split it in different processes if you are working on a single CPU. That way you are just tangling up the code and wasting the CPU cycles to switch between processes without any real benefit.</p>
 
 <h2>Working together</h2>
 
-<p>Being our processes running at the very same time on different CPUs or just interlaced on a single one, a completely new set of problems arises if the two have to work on the same data.</p>
+<p>Being our processes running at the very same time on different CPUs or just interlacing on a single one, a completely new set of problems arises if the two have to work on the same data.</p>
 
-<p>Just imagine this very common scenario: two processes share a common storage area in memory where partial results of their computations can be temporarily saved. So each process writes data on the storage area, then runs computing other data and last loads previously saved data to finalize its work. What happens if, in the meantime, the second process wrote some of its temporary data  on the same area? The first process has no way to figure out that the loaded data is not correct, and this can lead to catastrophic results. The worst thing about such a bug, as quite always in the multitasking environment, is that such a problem can arise or not, depending on input, times, status of the running machine and so on. This class of problems is usually known as race condition and is one of the most subtle and dangerous bug forms, since it is difficult to spot, to reproduce and sometimes to automatically test.</p>
+<p>Just imagine this very common scenario: two processes share a common storage area in memory where partial results of their computations can be temporarily saved. So each process writes data on the storage area, then runs computing other data and last loads previously saved data to finalize its work. What happens if, in the meantime, the second process wrote some of its temporary data  on the same area? The first process has no way to figure out that the loaded data is not correct, and this can lead to catastrophic results. The worst thing about such a bug, as quite always in the multitasking environment, is that such a problem can arise or not, depending on input, times, status of the running machine and so on. This class of problems is usually known as race condition and is one of the most subtle and dangerous bug forms since it is difficult to spot, to reproduce and sometimes to test automatically.</p>
 
 <p>A little search about the Therac-25 accident (1987) can clearly exemplify the extent of the problem that such a bug can cause.</p>
 
 <h2>Basic synchronization</h2>
 
-<p>The simplest form of synchronization is waiting, that is a process sits down until another process finishes running, then runs its own code. The system call that allows a process to wait for another to end is</p>
+<p>The simplest form of synchronization is waiting; that is, a process sits down until another process finishes running, then runs its own code. The system call that allows a process to wait for another to end is</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">pid_t</span> <span class="n">waitpid</span> <span class="p">(</span><span class="n">pid_t</span> <span class="n">PID</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">STATUS_PTR</span><span class="p">,</span> <span class="kt">int</span> <span class="n">OPTIONS</span><span class="p">)</span>
@@ -3313,13 +3313,13 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Looking at it you can realize a very important thing about <code>waitpid()</code>: it is a so-called <strong>blocking system call</strong>, that is something that keeps running until a certain condition is met. In this case, <code>waitpid()</code> keeps doing nothing until the child ends. So waiting is a blocking synchronization technique.</p>
+<p>Looking at it you can realize a very important thing about <code>waitpid()</code>: it is a so-called <strong>blocking system call</strong>; that is something that keeps running until a certain condition is met. In this case, <code>waitpid()</code> keeps doing nothing until the child ends. So waiting is a blocking synchronization technique.</p>
 
 <h2>Relationships</h2>
 
 <p>Speaking about parents and children there are two more type of processes we can find in the system: <strong>orphans</strong> and <strong>zombies</strong>. A process is orphaned when the parent terminates while it is still running, according to the real meaning of the word orphan; in such a case the orphan process is adopted by <code>init</code>, the first process in the system, thus becoming one of its children.</p>
 
-<p>Zombie processes, on the contrary, are already terminated but they have not been waited by the parent. In other words they are not running, but the operating system still holds their data to allow the parent to collect the exit status.</p>
+<p>Zombie processes, on the contrary, are already terminated, but they have not been waited by the parent. In other words, they are not running, but the operating system still holds their data to allow the parent to collect the exit status.</p>
 
 <p>A simple demonstration of the zombie status can be done with the following code</p>
 
@@ -3387,11 +3387,11 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>Multitasking is a fundamental technique, which must be however used with care; as any other technology, it cannot solve every problem, neither its introduction comes completely for free.</p>
 
-<p>Synchronization between processes is something which must be carefully considered and implemented, since errors in this field can lead to devious bugs.</p>
+<p>Synchronization between processes is something which must be carefully considered and implemented since errors in this field can lead to devious bugs.</p>
 
 <p>Last you met two new types of processes, orphans and zombies, and learned why they can be found in the system.</p>
 
-<p>In the next article we will study some classical synchronization problems and introduce the basic InterProcess Communication (IPC) structures and techniques Unix systems make available to programmers.</p>
+<p>In the next article, we will study some classical synchronization problems and introduce the basic InterProcess Communication (IPC) structures and techniques Unix systems make available to programmers.</p>
 
 <h2>Past articles</h2>
 
@@ -3414,7 +3414,7 @@ and grant access to the owner and group users). The returned integer is called q
     <id>http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
-<p>In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.</p>
+<p>In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards, we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.</p>
 
 <!--more-->
 
@@ -3431,7 +3431,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>Processes, like every resource in a computer, are managed by the kernel. This is a part of the operating system that runs continuously in background, exposing functions to other programs that allow them to obtain, manage and release resources such as memory, disk space and CPU time. One of the things the kernel exposes to the hosted programs is the process management, which stands for structures that represent the current status of processes in the system. Using the libc the programmer can easily access those structures in a read-only way.</p>
 
-<p>Let&#8217;s start with the simple concept of PID, the Process IDentifier we described in the past issue of this series. In the libc the <code>pid_t</code> type is defined as an integer capable of containing a pid. To show this we will now take a little tour of the glibc source code: we will cover the whole path this time only, just to highlight both the chances given us by the source code and the complexity of a project like glibc.</p>
+<p>Let us start with the simple concept of PID, the Process IDentifier we described in the past issue of this series. In the libc, the <code>pid_t</code> type is defined as an integer capable of containing a pid. To show this we will now take a little tour of the glibc source code: we will cover the whole path this time only, just to highlight both the chances given us by the source code and the complexity of a project like glibc.</p>
 
 <p>We can find the initial definition of <code>pid_t</code> here</p>
 
@@ -3457,7 +3457,7 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Notice that even the typedef keyword is defined by a macro (remember that the C preprocessor is a little more than a text macro replacement tool); this definition in particular avoids compiler warning when using the <code>long long</code> type which is not supported by all versions of the C standard. <code>S32</code> stands for “signed 32 bits”, as you can read in the code documentation.</p>
+<p>Notice that even the typedef keyword is defined by a macro (remember that the C preprocessor is a little more than a text macro replacement tool); this definition in particular avoids compiler warning when using the <code>long long</code> type which is not supported by all versions of the C standard. <code>S32</code> stands for “signed 32 bits” as you can read in the code documentation.</p>
 
 <p>The last macro <code>__PID_T_TYPE</code> can be found here</p>
 
@@ -3526,15 +3526,15 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>If this operation returns errors make sure you installed gcc and libc headers; refer to your distribution knowledge base to solve this task.</p>
 
-<p>The compiler will build an executable named <code>print_pid</code> (since the current directory is probably not in the system path you can run it with <code>./print_pid</code>). Executing the program we will have no great surprises: it prints out a positive number and, if executed more than once, this number will likely increase progressively; this is not mandatory, however, because another process could be created between two executions of <code>print_pid</code>. Try for example to execute <code>print_pid</code>, then <code>ps</code> and then <code>print_pid</code> again.</p>
+<p>The compiler will build an executable named <code>print_pid</code> (since the current directory is probably not in the system path you can run it with <code>./print_pid</code>). Executing the program we will have no great surprises: it prints out a positive number and if you executes it more than once this number will likely increase progressively; this is not mandatory, however, because another process could be created between two executions of <code>print_pid</code>. Try for example to execute <code>print_pid</code>, then <code>ps</code> and then <code>print_pid</code> again.</p>
 
 <h2>Forking</h2>
 
 <p>Now it is time to meet one of the most important concepts in the field of operating systems, that is the concept of forking.</p>
 
-<p>Forking in general means that one thing splits in two and each part acts like an independent being. At the very moment of the split the two entities are the same, exactly the same, except for the fact that they live in two different spaces. This computer science concept can be retrieved in nature when a simple organism generates a clone of itself. After the cloning the two organisms are the exact copy, but they can be told apart, since they are two things (the right one and the left one, for example). Back to the operating system world we find the very same problem when a process forks; after the fork operation we have two processes with two different PIDs, but the two contain the same program at the same execution point.</p>
+<p>Forking in general means that one thing splits in two and each part acts like an independent being. At the very moment of the split the two entities are the same, exactly the same, except for the fact that they live in two different spaces. This computer science concept can be retrieved in nature when a simple organism generates a clone of itself. After the cloning the two organisms are the exact copy, but they can be told apart since they are two things (the right one and the left one for example). Back to the operating system world we find the very same problem when a process forks; after the fork operation we have two processes with two different PIDs, but the two contain the same program at the same execution point.</p>
 
-<p>So, when a program (running as process A) creates another process (B) the two are identical, that is they have the same code, the memory full of the same data (not the same memory, since the memory regions are different) and the same processor status. From this point on the two can continue in two different ways, just like our cloning organisms, for example depending on the user&#8217;s input or some other data. The process A is called the <strong>parent</strong> process while B is the <strong>child</strong> process; now you can begin to better understand the name <em>parent of all the processes</em> given to init. The function which creates a new process is</p>
+<p>So, when a program (running as process A) creates another process (B) the two are identical, that is they have the same code, the memory full of the same data (not the same memory, since the memory regions are different) and the same processor status. From this point on the two can continue in two different ways, just like our cloning organisms, for example depending on the user&#8217;s input or some other data. The process A is called the <strong>parent</strong> process while B is the <strong>child</strong> process; now you can begin to understand better the name <em>parent of all the processes</em> given to init. The function which creates a new process is</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">pid_t</span> <span class="n">fork</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
@@ -3545,13 +3545,13 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>Well, the answer is as simple as unuseful: one of the two. The decision about which process has to be executed is taken by a part of the operating system called scheduler, and it pays no attention if a process is the parent or the child, following an algorithm based on other parameters.</p>
 
-<p>If we are writing processes that implement a service (such as serving network connections) we need nothing more: the two processes are the same, they behave the same way, so by cloning the process we just incremented the number of service providers. This is usually done by Web servers such as Apache, which spawns a copy of itself to serve incoming connections.</p>
+<p>If we are writing processes that implement a service (such as serving network connections) we need nothing more: the two processes are the same and they behave the same way, so by cloning the process we just incremented the number of service providers. This is usually done by Web servers such as Apache, which spawns a copy of itself to serve incoming connections.</p>
 
 <h2>Parent and child</h2>
 
 <p>Sometimes, anyway, it is fundamental to know what process is in execution: after the fork both processes are at the same execution point (that is just after the <code>fork()</code> call) so how can them tell if they are the parent or the child one?</p>
 
-<p>In order to clarify this question let&#8217;s look at the following algorithm:</p>
+<p>In order to clarify this question let us look at the following algorithm:</p>
 
 <ol>
 <li>fork</li>
@@ -3593,7 +3593,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>It&#8217;s time to write the first real example of multitasking code: you can save it in a <code>fork_demo.c</code> file and compile it as we did before.</p>
 
-<p>The program will fork itself and both the parent and the child will write something on the screen; the final output will be the interlaced output of the two (if all goes right).</p>
+<p>The program will fork itself, and both the parent and the child will write something on the screen; the final output will be the interlaced output of the two (if all goes right).</p>
 
 <figure class='code'><figcaption><span>fork_demo.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -3646,13 +3646,13 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>Lines number 01-03 contain the includes for the necessary libraries (standard I/O, multitasking).</p>
 
-<p>The main function returns an integer (as always in GNU), which normally is zero if the program reached the end without errors or an error code if something goes wrong; let&#8217;s state this time all will run without errors (we can later add some error control code, when the basic concepts will be clear).</p>
+<p>The main function returns an integer (as always in GNU), which normally is zero if the program reached the end without errors or an error code if something goes wrong; let us state this time all will run without errors (we can later add some error control code, when the basic concepts will be clear).</p>
 
-<p>Then we define the data type containing a pid (line 06) and an integer working as counter for loops (line 07). At line 09 we call <code>fork()</code> which will return zero to the program executed in the child process and the pid of the child process to the parent; the test is at line 11. Now the code at lines 12-15 will be executed in the child process, while the rest (lines 18-22) will be executed in the parent. Note that we omitted the <code>else</code> statement since the child code ends with a <code>return</code>, thus there is no way for the child to execute the code of the parent.</p>
+<p>Then we define the data type containing a pid (line 06) and an integer working as counter for loops (line 07). At line 09 we call <code>fork()</code> and it will return zero to the program executed in the child process and the pid of the child process to the parent; the test is at line 11. Now the code at lines 12-15 will be executed in the child process while the rest (lines 18-22) will be executed in the parent. Note that we omitted the <code>else</code> statement since the child code ends with a <code>return</code>; thus there is no way for the child to execute the code of the parent.</p>
 
 <p>The two parts simply write 8 times on the standard output the string <code>-child-</code> or <code>+parent+</code>, depending on which process executes it, and then end returning 0. Executing the program will perhaps let you unsatisfied: the result is likely not to be a real mix between the two strings, and this due to the speed of execution of such a short loop. The scheduler runs the parent or the child for a quantum of time which is enough for the process to end the loop; thus probably your output will be a list of <code>+parent+</code> strings followed by a list of <code>-child-</code> ones, or the contrary.</p>
 
-<p>To better highlight the interlacing effect we can insert a random delay before each <code>printf()</code> call: we can do this with <code>sleep()</code> and <code>rand()</code> functions</p>
+<p>To highlight the interlacing effect we can insert a random delay before each <code>printf()</code> call: we can do this with <code>sleep()</code> and <code>rand()</code> functions</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">sleep</span><span class="p">(</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">4</span><span class="p">)</span>
@@ -3711,13 +3711,13 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>As always when dealing with multitasking code, your output is probably different from mine, and will also be different between consecutive executions. Try also to change the parameters of the program, such as the sleep time or the number of loops.</p>
+<p>As always when dealing with multitasking code, your output is probably different from mine and will also be different between consecutive executions. Try also to change the parameters of the program, such as the sleep time or the number of loops.</p>
 
 <h2>Why forking</h2>
 
 <p>Thinking carefully about the parent and child example a question arises: why should I write code that forks, with all the intricacies it entails, when I could simply write two different programs and run them, letting the operating system to deal with their simultaneous execution?</p>
 
-<p>This is a very interesting question and the answer is very simple, though the underlying concept is rather complex. When you run a program the shell or the GUI follows a pattern called <strong>fork-and-exec</strong>: first it forks, then the child process executes the desired program. The reason of this behaviour is that the <code>exec</code> family of system calls replace the running program with a new program but do not change the PID. So the tasks are divided between system calls: <code>fork</code> creates a new process, while <code>exec</code> loads the given program into the newly created process.</p>
+<p>This is a very interesting question, and the answer is very simple, though the underlying concept is rather complex. When you run a program the shell or the GUI follows a pattern called <strong>fork-and-exec</strong>: first it forks, then the child process executes the desired program. The reason of this behaviour is that the <code>exec</code> family of system calls replace the running program with a new program but do not change the PID. So the tasks are divided between system calls: <code>fork</code> creates a new process while <code>exec</code> loads the given program into the newly created process.</p>
 
 <h2>DOS and Windows</h2>
 
@@ -3725,7 +3725,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <h2>Conclusion</h2>
 
-<p>Starting from the knowledge of process you stepped into the fundamental Unix concept of forking, learning to tell apart parent and child processes and running your first multitasking-based program. You also started to understand how complex can some operating system issues be, and how different the solution to them provided by real world OSs.</p>
+<p>Starting from the knowledge of processes you stepped into the fundamental Unix concept of forking, learning to tell apart parent and child processes and running your first multitasking-based program. You also started to understand how complex can some operating system issues be, and that real world OSs can provide very different solutions to them.</p>
 
 <p>In the next article we will start to look after processes synchronization and data sharing between processes.</p>
 
@@ -3750,9 +3750,9 @@ and grant access to the owner and group users). The returned integer is called q
     <id>http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
-<p><em>This series of articles on concurrent programming have been already published on LinuxFocus from November 2002 and have been now carefully reviewed. Feel free to notify me any error you will find.</em></p>
+<p><em>I already published this series of articles on concurrent programming on LinuxFocus from November 2002 and now I carefully reviewed them. Feel free to notify me any error you will find.</em></p>
 
-<p>The purpose of this article (and the following ones in this series) is to introduce the reader to the concept of multitasking and to its implementation in the Linux operating system. Thus, we will start from the theoretical concepts at the base of multitasking and from those we will move towards advanced concept like multithreading and interprocess communication. Along this path we will practice some code and some Linux internals, trying to constantly exemplify how concepts are realized in a real world operating system.</p>
+<p>The purpose of this article (and the following ones in this series) is to introduce the reader to the concept of multitasking and to its implementation in the Linux operating system. Thus, we will start from the theoretical concepts at the base of multitasking and from those we will move towards advanced concept like multithreading and interprocess communication. We will practice some code and some Linux internals along this path, and I will try constantly to exemplify how real world operating system realize the concepts I am introducing.</p>
 
 <!--more-->
 
@@ -3767,45 +3767,45 @@ and grant access to the owner and group users). The returned integer is called q
 </ul>
 
 
-<p>Even if the articles are written using a Linux machine, many concepts are shared by any Unix-like operating system, most notably Mac OS X. Pay however attention to the fact that while any Unix-like system behaves the same way (more or less), its internal structures and code can be significantly different. On the other hand OSs of the DOS and Windows family share some concepts with Unix-like ones but behave very differently.</p>
+<p>Even if I wrote the articles using a Linux machine, any Unix-like operating system, most notably Mac OS X, shares the concepts I will present. However, pay attention to the fact that while any Unix-like system behaves the same way (more or less), its internal structures and code can be significantly different. On the other hand OSs of the DOS and Windows family share some concepts with Unix-like ones but behave very differently.</p>
 
-<p>One of the biggest positive apects of dealing with an open source operating system like Linux is the possibility to look at the code: this allow us to uncover the internal working of a system that runs on the most important data center of the planet.</p>
+<p>One of the biggest positive aspects of dealing with an open source operating system like Linux is the possibility to look at the code: this allow us to uncover the internal working of a system that runs on the most important data center of the planet.</p>
 
 <h2>Introduction</h2>
 
-<p>One of the most important turning points in the history of operating systems was the concept of multiprogramming, a technique for interlacing the execution of several programs in order to gain a more constant use of the system&#8217;s resources. Let&#8217;s think about a simply workstation, where a user can execute at the same time a word processor, an audio player, a print queue, a web browser and more, and we can understand the importance of this technique. As we will discover this little list is only a minimal part of the set of programs that are currently executing on our machine, even though they are the most visible ones.</p>
+<p>One of the most decisive turning points in the history of operating systems was the concept of multiprogramming, a technique for interlacing the execution of several programs in order to gain a more constant use of the system&#8217;s resources. Let us think about a simple workstation, where a user can execute at the same time a word processor, an audio player, a print queue, a web browser and more, and we can understand the importance of this technique. As we will discover this little list is only a minimal part of the set of programs that are currently executing on the machine, even though they are the most visible ones.</p>
 
 <h2>The concept of process</h2>
 
-<p>In order to interlace programs a remarkable change of the operating system is necessary; in order to avoid conflicts between running programs an unavoidable choice is to encapsulate each of them with all the information needed for their execution.</p>
+<p>In order to interlace programs, a remarkable change of the operating system is necessary; in order to avoid conflicts between running programs an unavoidable choice is to encapsulate each of them with all the information needed for their execution.</p>
 
-<p>Before we explore what happens in our operating system let&#8217;s give some technical nomenclature: given a running program, at a given time the <strong>code</strong>
-is the set of instructions which it&#8217;s made of, the <strong>memory space</strong> the part of machine memory taken up by its code and data and the <strong>processor status</strong> the value of the microprocessor&#8217;s parameters, such as the registers, the flags or the Program Counter (the address of the next instruction to be executed).</p>
+<p>Before we explore what happens in the operating system let us give some technical nomenclature: given a running program, at a given time the <strong>code</strong>
+is the set of instructions which it is made of while the <strong>memory space</strong> is the part of machine memory taken up by its code and data. The <strong>processor status</strong> is the value of the microprocessor&#8217;s parameters, such as the registers, the flags or the Program Counter (the address of the next instruction to be executed).</p>
 
-<p>Given a tern of objects made of code, memory space and processor status we can define a <strong>running program</strong>. If at a given time during the operation of the machine we save this information and replace them with the same set taken from another running program, the flow of the latter will continue from the point at which it was stopped: doing this once with the first program and once with the second realizes the interlacing we described before. The tern of objects we used is named <strong>process</strong> (or <strong>task</strong>), a concept which has to do with that of program, yet being an extension of it.</p>
+<p>Given a tern of objects made of code, memory space and processor status we can define a <strong>running program</strong>. If at a given time during the operation of the machine we save this information and replace them with the same set taken from another running program, the flow of the latter will continue from the point at which it was stopped: doing this once with the first program and once with the second realizes the interlacing previously described. We name <strong>process</strong> (or <strong>task</strong>) the tern of objects we used, a concept which has to do with that of program, yet being an extension of it.</p>
 
-<p>Let&#8217;s explain what was happening to the workstation we spoke about in the introduction: at each moment only one task is in execution (there is only one microprocessor with just one core and it cannot do two things at the same time), and the machine executes part of its code; after a certain amount of time named <strong>quantum</strong> the running process is suspended, its tern of objects is saved and replaced by those of another waiting process, whose code will be executed for a quantum of time, and so on. This mechanism is what we call multitasking (or multiprocessing).</p>
+<p>Let us explain what was happening to the workstation we spoke about in the introduction: only one task is in execution at each moment (there is only one microprocessor with just one core and it cannot do two things at the same time), and the machine executes part of its code. After a certain amount of time named <strong>quantum</strong> the running process is suspended, its tern of objects is saved and replaced by those of another waiting process, whose code will be executed for a quantum of time, and so on. This mechanism is what we call multitasking (or multiprocessing).</p>
 
 <p>As stated before the introduction of multitasking causes a set of problems, most of which are not trivial, such as the management of the waiting processes queues (called <strong>scheduling</strong>); nevertheless those problems have to do with the architecture of each operating system, and are not the topic of the current article.</p>
 
 <h2>Processes in Linux and Unix</h2>
 
-<p>Let&#8217;s discover something about the processes running on our machine. The command which gives us such informations is ps which is an acronym for Process Status. Opening a normal text shell and typing the ps command we will obtain an output such as</p>
+<p>Let us discover something about the processes running on the machine. The command which gives us such information is ps which is an acronym for Process Status. Opening a normal text shell and typing the ps command we will obtain an output such as</p>
 
 <pre><code>PID TTY          TIME CMD
 2241 ttyp4    00:00:00 bash
 2346 ttyp4    00:00:00 ps
 </code></pre>
 
-<p>I state in advance that this list is not complete, but let&#8217;s concentrate ourself on this for the moment: ps has given us the list of each process running on the current terminal. We recognize in the last column the name the process is started with (such as &#8220;firefox&#8221; for Mozilla Firefox and &#8220;gcc&#8221; for the GNU Compiler Collection). Obviously &#8220;ps&#8221; appears in the list because it was running when the list of running processes was made out. The other listed process is the Bourne Again Shell, the shell running on the terminal.</p>
+<p>I state in advance that this list is not complete, but let us concentrate ourself on this for the moment: ps has given us the list of each process running on the current terminal. We recognize in the last column the name the process is started with (such as &#8220;firefox&#8221; for Mozilla Firefox and &#8220;gcc&#8221; for the GNU Compiler Collection). Obviously &#8220;ps&#8221; appears in the list because it was running when it compiled the list of running processes. The other listed process is the Bourne Again Shell, the shell running on the terminal.</p>
 
-<p>Let&#8217;s leave out for the moment the information about TIME and TTY and let&#8217;s look at PID, the Process IDentifier. The pid is a strictly positive number (not zero) which is univocally assigned to each running process; once the process has been terminated the pid can be reused, but we are guaranteed that during the execution of a process its pid remains the same, and that it is unique. All this implies that the output each of you will
-obtain from the ps command will probably be different from that in the example above.</p>
+<p>Let us leave out for the moment the information about TIME and TTY and let us look at PID, the Process IDentifier. The pid is a strictly positive number (not zero) the operating system assigns univocally to each running process; once the process terminated the pid can be reused, but the OS guarantees that the pid of a process remains the same during its execution and that it is unique. All this implies that the output each of you will
+obtain from the ps command will probably be different from that in the above example.</p>
 
-<p>Just to check this latter sentence, let&#8217;s open another shell without closing the first one and type the ps command: this time the output gives the same list of processes but with
+<p>Just to check this latter sentence, let us open another shell without closing the first one and type the ps command: this time the output gives the same list of processes but with
 different pid numbers, showing that they are two different processes even if the program they executes is the same.</p>
 
-<p>We can also obtain a list of all processes running on our Linux box: the ps command man page says that the switch -e means &#8220;select all processes&#8221;. Let&#8217;s type &#8220;ps -e&#8221; in a terminal and ps will print out a long list formatted as seen above. In order to comfortably analyze this list we can redirect the output of ps in the ps.log file:</p>
+<p>We can also obtain a list of all processes running on a Linux box: the ps command man page says that the switch -e means &#8220;select all processes&#8221;. Let us type &#8220;ps -e&#8221; in a terminal and ps will print out a long list formatted as previously seen. In order to analyze in a comfortable way this list we can redirect the output of ps in the ps.log file:</p>
 
 <pre><code>ps -e &gt; ps.log
 </code></pre>
@@ -3814,15 +3814,15 @@ different pid numbers, showing that they are two different processes even if the
 
 <p>That list contains not only processes started by us (through the command line or our graphical environment of choice), but also a set of processes, some of which with strange names: the number and the identity of the listed processes depends on the configuration of your system, but there are some common things.</p>
 
-<p>First of all, no matter what type of configuration you gave to the system, the process with pid equal to 1 is always &#8220;init&#8221;, the so called father of all the processes. Wait, wait, I hear you screaming “What about fatherhood among processes?”. This concept will become clear later, when we will talk about forking and the way new processes are spawned in the system. By now just note that the fact that init owns the pid number 1 tells us that it is the first process executed by a Unix-like operating system.</p>
+<p>First of all, no matter how you configured the system, the process with pid equal to 1 is always &#8220;init&#8221;, the so called father of all the processes. Wait, wait, I hear you screaming “What about fatherhood among processes?”. This concept will become clear later, when we will talk about forking and the way the system spawns new processes. By now just note that the fact that init owns the pid number 1 tells us that it is the first process executed by a Unix-like operating system.</p>
 
-<p>Another thing we can easily note is the presence of many processes, whose name ends with a &#8220;d&#8221;: they are the so called &#8220;daemons&#8221; and are some of the most important processes of the system. Since this is just an introductory article we will not diffusely talk about deamons now: just say they are programs that sit waiting for specific events and when one of those events occur the daemons waiting for it perform some actions. An typical example of a daemon is sshd, which establishes or refuses SSH connections upon external requests.</p>
+<p>Another thing we can easily note is the presence of many processes, whose name ends with a &#8220;d&#8221;: they are the so called &#8220;daemons&#8221; and are some of the most important processes of the system. Since this is just an introductory article we will not diffusely talk about deamons now: just say they are programs that sit waiting for specific events and when one of those events occur the daemons waiting for it perform some actions. A typical example of a daemon is sshd, which establishes or refuses SSH connections upon external requests.</p>
 
-<p>The existence of daemons make even more clear why multitasking is vital for a modern operating system: since there are many peripherals and connections to manage, through multitasking we can run many small specialized programs (call them deamons, services, components), each of which knows only how to manage that specific object. This is a typical concept of the Unix world, summarized by the sentence “do one thing and do it well”.</p>
+<p>The existence of daemons makes even clearer why multitasking is vital for a modern operating system: since there are many peripherals and connections to manage, through multitasking we can run many small specialized programs (call them deamons, services, components), each of which knows only how to manage that specific object. This is a typical concept of the Unix world, summarized by the sentence “do one thing and do it well”.</p>
 
 <h2>Conclusion</h2>
 
-<p>Now you have been introduced to the meaning of multitasking and to the reason of its implementation. You started to familiarize with the concept of process and the related jargon and discovered a little about the internal working of the operating system by looking at all the processes running in it.</p>
+<p>This article introduced you to the meaning of multitasking and to the reason of its implementation. You started to familiarize with the concept of process and the related jargon and discovered a little about the internal working of the operating system by looking at all the processes running in it.</p>
 
 <p>Next article will dig into the fundamental concept of process forking, both from the theoretical point of view and with real C examples. We will also later talk about interprocess communication, multithreading, multiple CPUs and cores and scheduling.</p>
 

@@ -138,7 +138,7 @@
 
 <div class="entry-content"><h2>Abstract</h2>
 
-<p>In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.</p>
+<p>In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards, we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.</p>
 
 <!--more-->
 
@@ -155,7 +155,7 @@
 
 <p>Processes, like every resource in a computer, are managed by the kernel. This is a part of the operating system that runs continuously in background, exposing functions to other programs that allow them to obtain, manage and release resources such as memory, disk space and CPU time. One of the things the kernel exposes to the hosted programs is the process management, which stands for structures that represent the current status of processes in the system. Using the libc the programmer can easily access those structures in a read-only way.</p>
 
-<p>Let&#8217;s start with the simple concept of PID, the Process IDentifier we described in the past issue of this series. In the libc the <code>pid_t</code> type is defined as an integer capable of containing a pid. To show this we will now take a little tour of the glibc source code: we will cover the whole path this time only, just to highlight both the chances given us by the source code and the complexity of a project like glibc.</p>
+<p>Let us start with the simple concept of PID, the Process IDentifier we described in the past issue of this series. In the libc, the <code>pid_t</code> type is defined as an integer capable of containing a pid. To show this we will now take a little tour of the glibc source code: we will cover the whole path this time only, just to highlight both the chances given us by the source code and the complexity of a project like glibc.</p>
 
 <p>We can find the initial definition of <code>pid_t</code> here</p>
 
@@ -181,7 +181,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Notice that even the typedef keyword is defined by a macro (remember that the C preprocessor is a little more than a text macro replacement tool); this definition in particular avoids compiler warning when using the <code>long long</code> type which is not supported by all versions of the C standard. <code>S32</code> stands for “signed 32 bits”, as you can read in the code documentation.</p>
+<p>Notice that even the typedef keyword is defined by a macro (remember that the C preprocessor is a little more than a text macro replacement tool); this definition in particular avoids compiler warning when using the <code>long long</code> type which is not supported by all versions of the C standard. <code>S32</code> stands for “signed 32 bits” as you can read in the code documentation.</p>
 
 <p>The last macro <code>__PID_T_TYPE</code> can be found here</p>
 
@@ -250,15 +250,15 @@
 
 <p>If this operation returns errors make sure you installed gcc and libc headers; refer to your distribution knowledge base to solve this task.</p>
 
-<p>The compiler will build an executable named <code>print_pid</code> (since the current directory is probably not in the system path you can run it with <code>./print_pid</code>). Executing the program we will have no great surprises: it prints out a positive number and, if executed more than once, this number will likely increase progressively; this is not mandatory, however, because another process could be created between two executions of <code>print_pid</code>. Try for example to execute <code>print_pid</code>, then <code>ps</code> and then <code>print_pid</code> again.</p>
+<p>The compiler will build an executable named <code>print_pid</code> (since the current directory is probably not in the system path you can run it with <code>./print_pid</code>). Executing the program we will have no great surprises: it prints out a positive number and if you executes it more than once this number will likely increase progressively; this is not mandatory, however, because another process could be created between two executions of <code>print_pid</code>. Try for example to execute <code>print_pid</code>, then <code>ps</code> and then <code>print_pid</code> again.</p>
 
 <h2>Forking</h2>
 
 <p>Now it is time to meet one of the most important concepts in the field of operating systems, that is the concept of forking.</p>
 
-<p>Forking in general means that one thing splits in two and each part acts like an independent being. At the very moment of the split the two entities are the same, exactly the same, except for the fact that they live in two different spaces. This computer science concept can be retrieved in nature when a simple organism generates a clone of itself. After the cloning the two organisms are the exact copy, but they can be told apart, since they are two things (the right one and the left one, for example). Back to the operating system world we find the very same problem when a process forks; after the fork operation we have two processes with two different PIDs, but the two contain the same program at the same execution point.</p>
+<p>Forking in general means that one thing splits in two and each part acts like an independent being. At the very moment of the split the two entities are the same, exactly the same, except for the fact that they live in two different spaces. This computer science concept can be retrieved in nature when a simple organism generates a clone of itself. After the cloning the two organisms are the exact copy, but they can be told apart since they are two things (the right one and the left one for example). Back to the operating system world we find the very same problem when a process forks; after the fork operation we have two processes with two different PIDs, but the two contain the same program at the same execution point.</p>
 
-<p>So, when a program (running as process A) creates another process (B) the two are identical, that is they have the same code, the memory full of the same data (not the same memory, since the memory regions are different) and the same processor status. From this point on the two can continue in two different ways, just like our cloning organisms, for example depending on the user&#8217;s input or some other data. The process A is called the <strong>parent</strong> process while B is the <strong>child</strong> process; now you can begin to better understand the name <em>parent of all the processes</em> given to init. The function which creates a new process is</p>
+<p>So, when a program (running as process A) creates another process (B) the two are identical, that is they have the same code, the memory full of the same data (not the same memory, since the memory regions are different) and the same processor status. From this point on the two can continue in two different ways, just like our cloning organisms, for example depending on the user&#8217;s input or some other data. The process A is called the <strong>parent</strong> process while B is the <strong>child</strong> process; now you can begin to understand better the name <em>parent of all the processes</em> given to init. The function which creates a new process is</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">pid_t</span> <span class="n">fork</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
@@ -269,13 +269,13 @@
 
 <p>Well, the answer is as simple as unuseful: one of the two. The decision about which process has to be executed is taken by a part of the operating system called scheduler, and it pays no attention if a process is the parent or the child, following an algorithm based on other parameters.</p>
 
-<p>If we are writing processes that implement a service (such as serving network connections) we need nothing more: the two processes are the same, they behave the same way, so by cloning the process we just incremented the number of service providers. This is usually done by Web servers such as Apache, which spawns a copy of itself to serve incoming connections.</p>
+<p>If we are writing processes that implement a service (such as serving network connections) we need nothing more: the two processes are the same and they behave the same way, so by cloning the process we just incremented the number of service providers. This is usually done by Web servers such as Apache, which spawns a copy of itself to serve incoming connections.</p>
 
 <h2>Parent and child</h2>
 
 <p>Sometimes, anyway, it is fundamental to know what process is in execution: after the fork both processes are at the same execution point (that is just after the <code>fork()</code> call) so how can them tell if they are the parent or the child one?</p>
 
-<p>In order to clarify this question let&#8217;s look at the following algorithm:</p>
+<p>In order to clarify this question let us look at the following algorithm:</p>
 
 <ol>
 <li>fork</li>
@@ -317,7 +317,7 @@
 
 <p>It&#8217;s time to write the first real example of multitasking code: you can save it in a <code>fork_demo.c</code> file and compile it as we did before.</p>
 
-<p>The program will fork itself and both the parent and the child will write something on the screen; the final output will be the interlaced output of the two (if all goes right).</p>
+<p>The program will fork itself, and both the parent and the child will write something on the screen; the final output will be the interlaced output of the two (if all goes right).</p>
 
 <figure class='code'><figcaption><span>fork_demo.c</span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
@@ -370,13 +370,13 @@
 
 <p>Lines number 01-03 contain the includes for the necessary libraries (standard I/O, multitasking).</p>
 
-<p>The main function returns an integer (as always in GNU), which normally is zero if the program reached the end without errors or an error code if something goes wrong; let&#8217;s state this time all will run without errors (we can later add some error control code, when the basic concepts will be clear).</p>
+<p>The main function returns an integer (as always in GNU), which normally is zero if the program reached the end without errors or an error code if something goes wrong; let us state this time all will run without errors (we can later add some error control code, when the basic concepts will be clear).</p>
 
-<p>Then we define the data type containing a pid (line 06) and an integer working as counter for loops (line 07). At line 09 we call <code>fork()</code> which will return zero to the program executed in the child process and the pid of the child process to the parent; the test is at line 11. Now the code at lines 12-15 will be executed in the child process, while the rest (lines 18-22) will be executed in the parent. Note that we omitted the <code>else</code> statement since the child code ends with a <code>return</code>, thus there is no way for the child to execute the code of the parent.</p>
+<p>Then we define the data type containing a pid (line 06) and an integer working as counter for loops (line 07). At line 09 we call <code>fork()</code> and it will return zero to the program executed in the child process and the pid of the child process to the parent; the test is at line 11. Now the code at lines 12-15 will be executed in the child process while the rest (lines 18-22) will be executed in the parent. Note that we omitted the <code>else</code> statement since the child code ends with a <code>return</code>; thus there is no way for the child to execute the code of the parent.</p>
 
 <p>The two parts simply write 8 times on the standard output the string <code>-child-</code> or <code>+parent+</code>, depending on which process executes it, and then end returning 0. Executing the program will perhaps let you unsatisfied: the result is likely not to be a real mix between the two strings, and this due to the speed of execution of such a short loop. The scheduler runs the parent or the child for a quantum of time which is enough for the process to end the loop; thus probably your output will be a list of <code>+parent+</code> strings followed by a list of <code>-child-</code> ones, or the contrary.</p>
 
-<p>To better highlight the interlacing effect we can insert a random delay before each <code>printf()</code> call: we can do this with <code>sleep()</code> and <code>rand()</code> functions</p>
+<p>To highlight the interlacing effect we can insert a random delay before each <code>printf()</code> call: we can do this with <code>sleep()</code> and <code>rand()</code> functions</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">sleep</span><span class="p">(</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="mi">4</span><span class="p">)</span>
@@ -435,13 +435,13 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>As always when dealing with multitasking code, your output is probably different from mine, and will also be different between consecutive executions. Try also to change the parameters of the program, such as the sleep time or the number of loops.</p>
+<p>As always when dealing with multitasking code, your output is probably different from mine and will also be different between consecutive executions. Try also to change the parameters of the program, such as the sleep time or the number of loops.</p>
 
 <h2>Why forking</h2>
 
 <p>Thinking carefully about the parent and child example a question arises: why should I write code that forks, with all the intricacies it entails, when I could simply write two different programs and run them, letting the operating system to deal with their simultaneous execution?</p>
 
-<p>This is a very interesting question and the answer is very simple, though the underlying concept is rather complex. When you run a program the shell or the GUI follows a pattern called <strong>fork-and-exec</strong>: first it forks, then the child process executes the desired program. The reason of this behaviour is that the <code>exec</code> family of system calls replace the running program with a new program but do not change the PID. So the tasks are divided between system calls: <code>fork</code> creates a new process, while <code>exec</code> loads the given program into the newly created process.</p>
+<p>This is a very interesting question, and the answer is very simple, though the underlying concept is rather complex. When you run a program the shell or the GUI follows a pattern called <strong>fork-and-exec</strong>: first it forks, then the child process executes the desired program. The reason of this behaviour is that the <code>exec</code> family of system calls replace the running program with a new program but do not change the PID. So the tasks are divided between system calls: <code>fork</code> creates a new process while <code>exec</code> loads the given program into the newly created process.</p>
 
 <h2>DOS and Windows</h2>
 
@@ -449,7 +449,7 @@
 
 <h2>Conclusion</h2>
 
-<p>Starting from the knowledge of process you stepped into the fundamental Unix concept of forking, learning to tell apart parent and child processes and running your first multitasking-based program. You also started to understand how complex can some operating system issues be, and how different the solution to them provided by real world OSs.</p>
+<p>Starting from the knowledge of processes you stepped into the fundamental Unix concept of forking, learning to tell apart parent and child processes and running your first multitasking-based program. You also started to understand how complex can some operating system issues be, and that real world OSs can provide very different solutions to them.</p>
 
 <p>In the next article we will start to look after processes synchronization and data sharing between processes.</p>
 

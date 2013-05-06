@@ -6,7 +6,7 @@
 	<title>Concurrent programming - 3 - The digital cat</title>
     <meta name="author" content="Leonardo Giordani">
     
-	<meta name="description" content="Abstract In the first article we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second &hellip;">
+	<meta name="description" content="Abstract In the first article, we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -138,9 +138,9 @@
 
 <div class="entry-content"><h2>Abstract</h2>
 
-<p>In the first article we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second article we met the fundamental fork operation and wrote our first multitasking code. In this article we will go ahead and introduce ourselves in the topic of synchronization: the problem we face now indeed is to release the full power of multitasking, that is to share the work between processes.</p>
+<p>In the first article, we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second article, we met the fundamental fork operation and wrote our first multitasking code. In this article, we will go ahead and introduce ourselves in the topic of synchronization: the problem we face now indeed is to release the full power of multitasking, that is to share the work between processes.</p>
 
-<p>In the first part of the article I want to make a step back to the basics of multitasking to clarify the single/multiple CPU theme. Then we will start talking about shared data between processes, first looking at the problems arising and then writing some code.</p>
+<p>In the first part of the article, I want to make a step back to the basics of multitasking to clarify the single/multiple CPU theme. Then we will start talking about shared data between processes, first looking at the problems arising and then writing some code.</p>
 
 <!--more-->
 
@@ -151,25 +151,25 @@
 
 <p>Let&#8217;s clarify this statement. A single CPU can execute only one operation at a time, so running two processes means to run the first one for a little time, then switch to execute the second one and so on. As already stated, this interlacing operation is what we call multitasking, and it is clear that such a technique slows down the interlaced processes: since each of the two processes runs for half the time (the other half being spent by the other process), the result is a process that runs half the speed.</p>
 
-<p>If you add to this that a switch operation does not come for free, because some time is spent by the operating system replacing the current process with the other one, you suddenly realize that multitasking is a double-edged sword: on one side it gives us the chance to run multiple programs at the same time, on the other side it slows down the execution of the whole system.</p>
+<p>If you add to this that a switch operation does not come for free, because some time is spent by the operating system replacing the current process with the other one, you suddenly realize that multitasking is a double-edged sword: on one side, it gives us the chance to run multiple programs at the same time, on the other side, it slows down the execution of the whole system.</p>
 
 <p>This issue can only be solved by using multiple CPUs or multiple cores (the two are not exactly the same), either on the same physical machine or on different ones.</p>
 
-<p>So if you are writing an algorithm to process an image in foreground, that is for a user that is waiting in front of the screen, you could profitably split it in many parts, each of which will process a tile of the whole image. This way the user could have a glance at the whole result while it is being computed. The same technique counts if for example you are computing statistics about a set of data: since some computations last longer than others you could split them among different processes, so that the user can immediately obtain the faster ones.</p>
+<p>So, if you are writing an algorithm to process an image in foreground, that is for a user that is waiting in front of the screen, you could split it profitably in many parts, each of which will process a tile of the whole image. This way the user could have a glance at the whole result while it is being computed. The same technique counts if, for example, you are computing statistics about a set of data: since some computations last longer than others you could split them among different processes so that the user can immediately obtain the faster ones.</p>
 
-<p>But if you are writing code that runs in background, that is without the user being there waiting for the results, you should never split it in different processes if you are working on a single CPU. That way you are just tangling up the code and wasting the CPU cycles to switch between processes without any real benefit.</p>
+<p>If, on the contrary, you are writing code that runs in background without the user being there waiting for the results, you should never split it in different processes if you are working on a single CPU. That way you are just tangling up the code and wasting the CPU cycles to switch between processes without any real benefit.</p>
 
 <h2>Working together</h2>
 
-<p>Being our processes running at the very same time on different CPUs or just interlaced on a single one, a completely new set of problems arises if the two have to work on the same data.</p>
+<p>Being our processes running at the very same time on different CPUs or just interlacing on a single one, a completely new set of problems arises if the two have to work on the same data.</p>
 
-<p>Just imagine this very common scenario: two processes share a common storage area in memory where partial results of their computations can be temporarily saved. So each process writes data on the storage area, then runs computing other data and last loads previously saved data to finalize its work. What happens if, in the meantime, the second process wrote some of its temporary data  on the same area? The first process has no way to figure out that the loaded data is not correct, and this can lead to catastrophic results. The worst thing about such a bug, as quite always in the multitasking environment, is that such a problem can arise or not, depending on input, times, status of the running machine and so on. This class of problems is usually known as race condition and is one of the most subtle and dangerous bug forms, since it is difficult to spot, to reproduce and sometimes to automatically test.</p>
+<p>Just imagine this very common scenario: two processes share a common storage area in memory where partial results of their computations can be temporarily saved. So each process writes data on the storage area, then runs computing other data and last loads previously saved data to finalize its work. What happens if, in the meantime, the second process wrote some of its temporary data  on the same area? The first process has no way to figure out that the loaded data is not correct, and this can lead to catastrophic results. The worst thing about such a bug, as quite always in the multitasking environment, is that such a problem can arise or not, depending on input, times, status of the running machine and so on. This class of problems is usually known as race condition and is one of the most subtle and dangerous bug forms since it is difficult to spot, to reproduce and sometimes to test automatically.</p>
 
 <p>A little search about the Therac-25 accident (1987) can clearly exemplify the extent of the problem that such a bug can cause.</p>
 
 <h2>Basic synchronization</h2>
 
-<p>The simplest form of synchronization is waiting, that is a process sits down until another process finishes running, then runs its own code. The system call that allows a process to wait for another to end is</p>
+<p>The simplest form of synchronization is waiting; that is, a process sits down until another process finishes running, then runs its own code. The system call that allows a process to wait for another to end is</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 </pre></td><td class='code'><pre><code class='c'><span class='line'><span class="n">pid_t</span> <span class="n">waitpid</span> <span class="p">(</span><span class="n">pid_t</span> <span class="n">PID</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">STATUS_PTR</span><span class="p">,</span> <span class="kt">int</span> <span class="n">OPTIONS</span><span class="p">)</span>
@@ -258,13 +258,13 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Looking at it you can realize a very important thing about <code>waitpid()</code>: it is a so-called <strong>blocking system call</strong>, that is something that keeps running until a certain condition is met. In this case, <code>waitpid()</code> keeps doing nothing until the child ends. So waiting is a blocking synchronization technique.</p>
+<p>Looking at it you can realize a very important thing about <code>waitpid()</code>: it is a so-called <strong>blocking system call</strong>; that is something that keeps running until a certain condition is met. In this case, <code>waitpid()</code> keeps doing nothing until the child ends. So waiting is a blocking synchronization technique.</p>
 
 <h2>Relationships</h2>
 
 <p>Speaking about parents and children there are two more type of processes we can find in the system: <strong>orphans</strong> and <strong>zombies</strong>. A process is orphaned when the parent terminates while it is still running, according to the real meaning of the word orphan; in such a case the orphan process is adopted by <code>init</code>, the first process in the system, thus becoming one of its children.</p>
 
-<p>Zombie processes, on the contrary, are already terminated but they have not been waited by the parent. In other words they are not running, but the operating system still holds their data to allow the parent to collect the exit status.</p>
+<p>Zombie processes, on the contrary, are already terminated, but they have not been waited by the parent. In other words, they are not running, but the operating system still holds their data to allow the parent to collect the exit status.</p>
 
 <p>A simple demonstration of the zombie status can be done with the following code</p>
 
@@ -332,11 +332,11 @@
 
 <p>Multitasking is a fundamental technique, which must be however used with care; as any other technology, it cannot solve every problem, neither its introduction comes completely for free.</p>
 
-<p>Synchronization between processes is something which must be carefully considered and implemented, since errors in this field can lead to devious bugs.</p>
+<p>Synchronization between processes is something which must be carefully considered and implemented since errors in this field can lead to devious bugs.</p>
 
 <p>Last you met two new types of processes, orphans and zombies, and learned why they can be found in the system.</p>
 
-<p>In the next article we will study some classical synchronization problems and introduce the basic InterProcess Communication (IPC) structures and techniques Unix systems make available to programmers.</p>
+<p>In the next article, we will study some classical synchronization problems and introduce the basic InterProcess Communication (IPC) structures and techniques Unix systems make available to programmers.</p>
 
 <h2>Past articles</h2>
 
