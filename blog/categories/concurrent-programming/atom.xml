@@ -4,7 +4,7 @@
   <title><![CDATA[Category: concurrent programming | The digital cat]]></title>
   <link href="http://lgiordani.github.com/blog/categories/concurrent-programming/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.com/"/>
-  <updated>2013-05-06T20:01:02+02:00</updated>
+  <updated>2013-05-31T17:01:18+02:00</updated>
   <id>http://lgiordani.github.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,231 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Error handling in Erlang - a primer]]></title>
+    <link href="http://lgiordani.github.com/blog/2013/05/30/error-handling-in-erlang-a-primer/"/>
+    <updated>2013-05-30T11:41:00+02:00</updated>
+    <id>http://lgiordani.github.com/blog/2013/05/30/error-handling-in-erlang-a-primer</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p>This article aims to summarize Erlang error handling both in sequential and in concurrent environments. The targets of this article are novices that, like me, make their first steps into the beautiful world of Erlang. Moreover, I always find that trying to explain things makes me understand them better.</p>
+
+<p>Disclaimer (for Erlang gurus): I'm a complete Erlang novice so please be indulgent with me while you read my thoughts. Corrections and suggestions are welcome!</p>
+
+<!--more-->
+
+
+<h2>Introduction</h2>
+
+<p>Recently I started studying Erlang; coming from a pure imperative background (C, C++, and Python) I have to say that Erlang has been a surprise and a joy. I did not find something so innovative since long, even if the pure functional part of the language was not totally new since it is available in Python too.</p>
+
+<p>The concept of runtime <em>system</em>, with a support for concurrency built in the language itself, the pattern matching idea and the recursion as a way to implement loops are all very intriguing, so learning them is fun (pun intended, if you do not get it review Erlang anonymous functions).</p>
+
+<p>One of the innovative concepts that ploughed through my imperative mind was that of <em>defensive programming</em> under its formulation in the Erlang tenet "Let it crash". This was something new, partly because I rarely found advice on system organization while learning the foundations of a programming language and partly because about 80% of the code I write has the task of avoiding programs to crash.</p>
+
+<p>I found <a href="http://mazenharake.wordpress.com/2009/09/14/let-it-crash-the-right-way/">this very interesting post</a> of Mazen Harake on the subject. Basically, he clarifies that the Erlang philosophy is not that of just let errors happen and propagate: the point is that the programmer should deal only with errors that are <em>documented</em>. This means that the code specification includes that error as a possibility. Well, it is not my intention to state something already well explained: go and read Mazen's post.</p>
+
+<p>Anyway, before discussing the Erlang way of dealing with code errors, it is necessary to firmly grasp syntax and structures that the language provides.</p>
+
+<h2>Exceptions in Erlang</h2>
+
+<p>The simplest way to make something go wrong when dealing with a computer is to treat it like a sentient being. Joking apart, a good way to crash a program is to execute a division by zero.</p>
+
+<p>``` erlang
+1> 1/0.
+** exception error: bad argument in an arithmetic expression</p>
+
+<pre><code> in operator  '/'/2
+    called as 1 / 0
+</code></pre>
+
+<p>2>
+```</p>
+
+<p>As you can see Erlang does not get mad at your provocation and simply <strong>raises and exception</strong>, i.e. signals that something went wrong, giving some details about why and where it happened. This is not different from what other languages, like Python, do.</p>
+
+<p>```python</p>
+
+<blockquote><blockquote><blockquote><p>1/0
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+ZeroDivisionError: integer division or modulo by zero</p>
+
+<p>```</p></blockquote></blockquote></blockquote>
+
+<p>So exceptions are in Erlang, as in other languages, a "reserved channel" the language uses to propagate errors. If you code in C, you cannot leverage something like exceptions and must rely on return values. This means that you have to format the results of your functions so that they can host a wrong result too and end up returning an <code>int</code> with the error code while functions results are managed by reference.</p>
+
+<p>Back to Erlang. Exceptions crash you program, i.e. they make your program immediately stop, reporting the error to the system process that executed it (usually the OS GUI or a textual shell). Indeed the Erlang shell crashed when you tried to reach for the infinity.</p>
+
+<p>``` erlang
+1> self().
+&lt;0.32.0>
+2> 1/0.
+** exception error: bad argument in an arithmetic expression</p>
+
+<pre><code> in operator  '/'/2
+    called as 1 / 0
+</code></pre>
+
+<p>3> self().
+&lt;0.35.0>
+4>
+<code>``
+Remember that in Erlang</code>self()` gives you the Erlang PID of the process (not the operating system's one). As you can see the Eshell process crashed and was restarted by some magic behind the scenes.</p>
+
+<p>I hear you mumble that, well, world is not perfect, and errors happen. So how do we deal with this? Shall we crash every time something wrong occurs in our code or is there some way to unravel the knot and happily continue running the code?</p>
+
+<p>This seems to be a question that even Erlang creators wanted to answer, and their answer was: you can, but you shouldn't always. By now, let us drop the "you shouldn't always" part and learn the basics; you can stop an exception before it crashes your pretty program. Before diving into stopping exceptions techniques, let me review the types of exception you may encounter.</p>
+
+<h2>Exception types</h2>
+
+<p>There are three types (or classes) of exceptions in Erlang: <em>throw</em>, <em>error</em>, and <em>exit</em>.</p>
+
+<p>The first, throw, identifies an exception that a called function voluntarily raises (throwing it at you); such exceptions shall be documented, i.e. the documentation of the function you are calling shall state that this exception may be raised and specify under what conditions this may happen. "Shall" here means that if the programmer does not document the exception all sorts of curses will be casted on his or her code forever. As a Python programmer I strongly advice you to read "shall" as "must".</p>
+
+<p>The second exception type, error, signals that something very bad happened in the system, something that was unexpected to the author of the code raising the exception. Even if this type of exception can be raised explicitly, it is usually raised by the Erlang run-time system. If you recall the first example of this post, the division by zero, you can now understand why the shell printed "exception error"; that exception has not been raised by an instruction in the code of the Erlang shell, but from the run-time system itself. This type of exception also contains a stack trace, but I will not cover it in this article.</p>
+
+<p>The third and last exception type, exit, means that your code is being told to stop immediately.</p>
+
+<p>As you can see the real difference between the three types is the communication intent, not a special behaviour. So from the pure theoretical point of view an error exception can be replaced by a throw exception without any side effect. Obviously, the communication intent is not negligible: indeed, as explained before, throw exceptions are usually documented while errors are not intended for being formalized.</p>
+
+<p>In addition to a class, exceptions encompass a <em>reason</em>, that is a valid Erlang item (an atom, an integer, a pid, ...). The reason carries the explanation of the exception, i.e. a detailed insight in what really happened.</p>
+
+<h2>Dealing with exceptions</h2>
+
+<p>Now that we got acquainted with Erlang exception types we may step further into exception management structures and learn how to stop exceptions from crashing our programs. The way of managing exceptions raised by a function called in our code should be familiar to Python, C++, java and Ruby developers (and to many others, probably); the basic Erlang syntax is</p>
+
+<p><code>erlang
+try &lt;expressions&gt; of
+  &lt;result_pattern_matching&gt;
+catch
+  &lt;exception_pattern_matching&gt;
+after
+  &lt;after_expressions&gt;
+end
+</code></p>
+
+<p>The large part of this structure is well known. Here, <code>&lt;expressions&gt;</code> is a series of Erlang expressions, comma-separated as usual; the <code>&lt;result_pattern_matching&gt;</code> part is a classical Erlang pattern matching structure, just like that you write in a case construct; last, the <code>&lt;after_expressions&gt;</code> is a series of Erlang expressions. The <code>&lt;exception_pattern_matching&gt;</code> part has a slightly new syntax we will cover in a moment.</p>
+
+<p>The structure works like in other languages: the <code>&lt;expressions&gt;</code> code is evaluated and the result is pattern matched against <code>&lt;result_pattern_matching&gt;</code> and the result is returned by the whole <code>try</code> statement. If an exception is raised when evaluating <code>&lt;expressions&gt;</code>, it is pattern matched against the code listed in <code>&lt;exception_pattern_matching&gt;</code> and the relative code is executed. Regardless of what happens in the try/catch part the code in <code>&lt;after_expressions&gt;</code> is executed, and its result is not returned.</p>
+
+<p>The exception matching code has a syntax that is very similar to that of the usual pattern matching, but exceptions are listed in the new form <code>ExceptionType:Reason</code>, where type and reason have been already described in the previous section. When the exception is a run-time error the reason is one of the values listed <a href="http://erlang.org/doc/reference_manual/errors.html#exit_reasons">here</a>.</p>
+
+<p>So the complete form of a try/catch statement in Erlang is the following, where <code>Expressions</code> is always a comma-separated list of Erlang expressions.</p>
+
+<p><code>erlang
+try Expression1,...,ExpressionN of
+  Pattern1 [when Guard1] -&gt; PatternExpressions1;
+  Pattern2 [when Guard2] -&gt; PatternExpressions2;
+  ...
+  PatternN [when GuardN] -&gt; PatternExpressionN
+catch
+  ExceptionType:Reason1 [when ExceptionGuard1] -&gt; ExceptionExpressions1;
+  ExceptionType:Reason2 [when ExceptionGuard2] -&gt; ExceptionExpressions2;
+  ...
+  ExceptionType:ReasonN [when ExceptionGuardN] -&gt; ExceptionExpressionsN
+after
+  AfterExpressions
+end.
+</code></p>
+
+<p>Exceptions pattern matching allows the use of the do-not-care variable <code>_</code> not only for reasons but for also for types. So the following syntax catches all exceptions of type ExceptionType</p>
+
+<p><code>erlang
+...
+catch
+  ExceptionType: _ -&gt; ExceptionExpressions1;
+end
+</code></p>
+
+<p>while the following catches all exceptions</p>
+
+<p><code>erlang
+...
+catch
+  _:_ -&gt; ExceptionExpressions1;
+end
+</code></p>
+
+<p>I will not cover here the old-style error handling mechanism with <code>catch</code>; the interested reader can find it documented <a href="http://erlang.org/doc/reference_manual/expressions.html#id79206">here</a>.</p>
+
+<h2>Returning values from try/catch statements</h2>
+
+<p>Try/catch statements return the value of the last expression executed, that is one of <code>PatternExpression1</code>,...,<code>PatternExpressionN</code> if no exception is raised, or one of <code>ExceptionExpressions1</code>,...,<code>ExceptionExpressionsN</code>. This means that we can assign the value of the whole expression to a variable</p>
+
+<p><code>erlang
+Result = try Expression of ... end.
+</code></p>
+
+<p>Remember that <code>AfterExpressions</code> are always executed, but their final value is not returned by the statement.</p>
+
+<p>Since a lot of times you want to return the result of the expression after the <code>try</code> keyword, you can omit the <code>of</code> part</p>
+
+<p><code>erlang
+try Expressions
+catch
+ ...
+end.
+</code></p>
+
+<h2>Raising exceptions</h2>
+
+<p>Erlang provides three different BIFs to raise exceptions, profitably called like the exception type they raise: <code>throw/1</code>, <code>erlang:error/1</code>, and <code>exit/1</code>. As you see, <code>error/1</code> is not automatically imported by the system and must be called in its full form. This is a hint for us programmers: <code>error/1</code> is there and can be used, but it is not something you should need often; otherwise, you misunderstood what an error exception is in Erlang.</p>
+
+<p>So in most cases, if your code encounters an error condition and you need to raise an exception, you end up using <code>throw/1</code> or <code>exit/1</code>. The argument of these functions is the reason of the exception: remember that you can format the reason you attach to your exception to match your needs, you only need to document it.</p>
+
+<p><code>erlang
+my_function(Somebadvalue) -&gt; throw({badvalue, Somebadvalue}).
+</code></p>
+
+<p>Pay attention, however, that exceptions are a double-edged sword; the fact that they return values through a reserved channel is powerful, but can lead to subtle bugs and to long debug sessions. The advice in Erlang is to spare throw() for some special cases and to try always to communicate the failure through standard function results. This is, however, part of a coding philosophy that cannot be examined in depth here.</p>
+
+<h2>Exceptions and exit signals</h2>
+
+<p>Erlang is a run-time system, not just a language; as such, it has built-in structures and concepts that are usually provided by libraries in other languages. One of these concepts is the dependency between processes, which may be realized through <em>links</em> (and <em>monitors</em>, but I am not going to introduce them in this article). Process linking in Erlang means a very simple thing: when two processes are linked they die together, i.e. when one of the two terminates abnormally the other one is terminated too. A process can link to more than one other process, and the dying behaviour is propagated among all them.</p>
+
+<p>What is the point of this structure? In Erlang, you are encouraged to spawn processes to accomplish tasks, even the simplest ones. Thus, you can easily end up with a multitude of processes working together to perform some action, and if one of them crashes it is likely that others should exit too, being them dependent from it. This is not mandatory; it is all up to you to decide what processes have to be linked, but if they are they must die together.</p>
+
+<p>How is this accomplished? Linked processes are connected by a hidden communication channel, which carries information about their termination with so-called <em>exit signals</em>. Exit signals are invisible to the programmer, and when a process receives one of them it simply terminates, spreading the news under the form of other exit signals.</p>
+
+<h4>Process termination and reasons</h4>
+
+<p>Exit signals are always sent when a process dies, but they carry a reason for its termination, just like exceptions. This reason is very important for the subsequent events concerning processes linked to the dying one.</p>
+
+<p>First of all let us look at process termination. A process in Erlang can terminate normally or abnormally: the former happens when it has no more code to execute or when it raises an exception passing as reason the atom <code>normal</code>; the latter occurs when a raised exception has a reason different from the atom <code>normal</code>.</p>
+
+<p>So an exit signal process contains either the atom <code>normal</code> or another reason, and it travels from the terminating process to each linked process. When it hits one of them, if the reason is not <code>normal</code> the process is terminated and sends its own exit signals to its linked processes with the same reason of the incoming one. The result is that the entire network of linked processes terminates automatically.</p>
+
+<p>The best way to terminate a process with a reason is to execute the BIF <code>exit(Reason)</code>. This BIF has also the form of arity 2 where you pass the pid of a process <code>exit(Pid, Reason)</code>: the addressed process will get an exit signal with the given reason. A caveat: when using <code>exit/1</code> the exit signal will contain the pid of the terminating process, when using <code>exit/2</code> the exit signal will contain the pid of the target process.</p>
+
+<h4>Stopping exit signals</h4>
+
+<p>Having a way to stop an entire group of processes when one of them crashes is a big benefit, but it could be a good thing to be able to stop the propagation somewhere. Obviously, if processes are not linked they do not influence each other when terminating, but this also means that no one notices that a process terminated, which in turn means that no one will be restarting it.</p>
+
+<p>The whole point of linking processes is indeed the control over terminating processes. If a process runs there is a reason and if it crashes the system should investigate why it crashed and possibly restart it.</p>
+
+<p>Erlang gives a process the chance to receive an abnormal exit signal from a process it is linked to, without forcing it to terminate: in Erlang speech this is called <em>trapping exit signals</em> or <em>trapping exits</em>. When a process traps exits the incoming exit signals coming from linked processes are converted by the run-time system into messages that the process can fetch with a <code>receive</code> construct. Thus, a process trapping exits can be notified that a linked process died without being affected by this.</p>
+
+<p>A process can start trapping exits by executing the BIF <code>process_flag(trap_exit, true)</code>. It is a best practice to call it at the beginning of the process and to avoid turning it off during the execution since it makes the system difficult to debug.</p>
+
+<p>Once the BIF has been executed, an exit signal with the reason <code>Reason</code> coming from another process is converted in an incoming message under the form <code>{'EXIT', Pid, Reason}</code>, where Pid is the pid of the terminated process.</p>
+
+<h4>Unstoppable exit signals</h4>
+
+<p>Now we can convert a process so that it does not terminate with its linked processes. This has a downside: if the process contains errors such as infinite loops or if for some reason we need to stop the entire system, the processes that trap exits cannot be stopped. For this reason, Erlang provides the special atom <code>kill</code> as a reason for an exit signal.</p>
+
+<p>An exit signal containing the reason <code>kill</code> cannot be trapped; thus the exit signal is unstoppable. Unconditionally terminating the entire network is however something dangerous, so when a process terminates because of an incoming <code>kill</code> exit signal it will send to its linked processes a <code>killed</code> exit signal, which can be possibly trapped.</p>
+
+<h2>Conclusions</h2>
+
+<p>The aim of the article was to give an overview of error handling in Erlang: not everything has been covered, but a novice should find here almost everything he or she needs to step into this part of the language.</p>
+
+<p>There is obviously much more than this in the Erlang treasure chest. If the whole link and exit signals stuff thrilled you like it did with me, I promise you that OTP behavious (sorry, behaviors) will take your breath away.</p>
+
+<p>Keep in touch for other Erlang articles on <a href="/blog/categories/erlang/">this page</a>.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 6]]></title>
@@ -1741,288 +1966,6 @@ sleep(2);
 <p><a href="/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 
 <p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Concurrent programming - 2]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2/"/>
-    <updated>2013-02-04T10:35:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2</id>
-    <content type="html"><![CDATA[<h2>Abstract</h2>
-
-<p>In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards, we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.</p>
-
-<!--more-->
-
-
-<h2>The C standard library</h2>
-
-<p>The C standard library, nicknamed libc, is a collection of functions for the C language which has been standardized by ANSI and later by ISO. An implementation of it can be found in any major compiler or operating system, especially Unix-like ones.</p>
-
-<p>In the GNU ecosystem, which Linux distributions are grounded on, the library is implemented by glibc (GNU libc). The library reached version 2.17 in December 2012 and is free software released under LGPL, a less restrictive version of the GPL which most notably allows the use of the library by non-GPL software, even proprietary one.</p>
-
-<p>You can find and navigate glibc sources <a href="http://sourceware.org/git/?p=glibc.git;a=summary">here</a></p>
-
-<h2>C language and PIDs</h2>
-
-<p>Processes, like every resource in a computer, are managed by the kernel. This is a part of the operating system that runs continuously in background, exposing functions to other programs that allow them to obtain, manage and release resources such as memory, disk space and CPU time. One of the things the kernel exposes to the hosted programs is the process management, which stands for structures that represent the current status of processes in the system. Using the libc the programmer can easily access those structures in a read-only way.</p>
-
-<p>Let us start with the simple concept of PID, the Process IDentifier we described in the past issue of this series. In the libc, the <code>pid_t</code> type is defined as an integer capable of containing a pid. To show this we will now take a little tour of the glibc source code: we will cover the whole path this time only, just to highlight both the chances given us by the source code and the complexity of a project like glibc.</p>
-
-<p>We can find the initial definition of <code>pid_t</code> here</p>
-
-<p>``` c posix/sys/types.h http://sourceware.org/git/?p=glibc.git;a=blob;f=posix/sys/types.h;h=33c2176d0f0b38f1a81bf8c76d38f08d2ab38675;hb=HEAD link</p>
-
-<h1>ifndef __pid_t_defined</h1>
-
-<p>typedef __pid_t pid_t;</p>
-
-<h1>define __pid_t_defined</h1>
-
-<h1>endif</h1>
-
-<p>```</p>
-
-<p>As you can see the definition of the type is protected by multiple header inclusion, as usual in the C world. The underlying <code>__pid_t</code> type is then defined here</p>
-
-<p>``` c bits/types.h http://sourceware.org/git/?p=glibc.git;a=blob;f=bits/types.h;h=dc7b784f965749c44257bf030508d6642c07dec7;hb=HEAD link</p>
-
-<h1>define __STD_TYPE typedef</h1>
-
-<h1>define __S32_TYPE int</h1>
-
-<p><strong>STD_TYPE </strong>PID_T_TYPE __pid_t; /<em> Type of process identifications.  </em>/
-```</p>
-
-<p>Notice that even the typedef keyword is defined by a macro (remember that the C preprocessor is a little more than a text macro replacement tool); this definition in particular avoids compiler warning when using the <code>long long</code> type which is not supported by all versions of the C standard. <code>S32</code> stands for “signed 32 bits” as you can read in the code documentation.</p>
-
-<p>The last macro <code>__PID_T_TYPE</code> can be found here</p>
-
-<p>``` c bits/typesizes.h http://sourceware.org/git/?p=glibc.git;a=blob;f=bits/typesizes.h;h=8268b90276700a382db37331be1d8ef5a516403d;hb=HEAD link</p>
-
-<h1>define <strong>PID_T_TYPE            </strong>S32_TYPE</h1>
-
-<p>```</p>
-
-<p>The heavy use of defines and compiler features made by glibc code allows the library to be compiled on very different architectures.</p>
-
-<h2>Telling the PID</h2>
-
-<p>Let us now discover the function which give us the knowledge of the pid of the process containing our program</p>
-
-<p><code>c
-pid_t getpid (void);
-</code></p>
-
-<p>which is defined with <code>pid_t</code> in <code>unistd.h</code> and <code>sys/types.h</code>. The libc simply uses the system call called <code>getpid</code> and its real implementation can be found in the kernel source</p>
-
-<p>``` c kernel/timer.c http://git.kernel.org/?p=linux/kernel/git/torvalds/linux.git;a=blob;f=kernel/timer.c;h=367d008584823a6fe01ed013cda8c3693fcfd761;hb=HEAD link
-SYSCALL_DEFINE0(getpid)
-{</p>
-
-<pre><code>return task_tgid_vnr(current);
-</code></pre>
-
-<p>}
-```</p>
-
-<p>We can now write a program whose aim is to print on the standard output its own pid. With an editor of your choice write the following code</p>
-
-<p>``` c print_pid.c</p>
-
-<h1>include &lt;unistd.h></h1>
-
-<h1>include &lt;sys/types.h></h1>
-
-<h1>include &lt;stdio.h></h1>
-
-<p>int main() {
-  pid_t pid;</p>
-
-<p>  pid = getpid();
-  printf("The pid assigned to the process is %d\n", pid);</p>
-
-<p>  return 0;
-}
-```</p>
-
-<p>Save the program as print_pid.c and compile it</p>
-
-<p><code>bash
-gcc -o print_pid print_pid.c
-</code></p>
-
-<p>If this operation returns errors make sure you installed gcc and libc headers; refer to your distribution knowledge base to solve this task.</p>
-
-<p>The compiler will build an executable named <code>print_pid</code> (since the current directory is probably not in the system path you can run it with <code>./print_pid</code>). Executing the program we will have no great surprises: it prints out a positive number and if you executes it more than once this number will likely increase progressively; this is not mandatory, however, because another process could be created between two executions of <code>print_pid</code>. Try for example to execute <code>print_pid</code>, then <code>ps</code> and then <code>print_pid</code> again.</p>
-
-<h2>Forking</h2>
-
-<p>Now it is time to meet one of the most important concepts in the field of operating systems, that is the concept of forking.</p>
-
-<p>Forking in general means that one thing splits in two and each part acts like an independent being. At the very moment of the split the two entities are the same, exactly the same, except for the fact that they live in two different spaces. This computer science concept can be retrieved in nature when a simple organism generates a clone of itself. After the cloning the two organisms are the exact copy, but they can be told apart since they are two things (the right one and the left one for example). Back to the operating system world we find the very same problem when a process forks; after the fork operation we have two processes with two different PIDs, but the two contain the same program at the same execution point.</p>
-
-<p>So, when a program (running as process A) creates another process (B) the two are identical, that is they have the same code, the memory full of the same data (not the same memory, since the memory regions are different) and the same processor status. From this point on the two can continue in two different ways, just like our cloning organisms, for example depending on the user's input or some other data. The process A is called the <strong>parent</strong> process while B is the <strong>child</strong> process; now you can begin to understand better the name <em>parent of all the processes</em> given to init. The function which creates a new process is</p>
-
-<p><code>c
-pid_t fork(void)
-</code></p>
-
-<p>The number returned is a pid, but it deserves a particular attention. We said that the first process duplicates itself splitting in a parent and a child, which will then execute interlacing themselves with the other running processes, doing different works; but immediately after the duplication which process will be executed, the parent or the child?</p>
-
-<p>Well, the answer is as simple as unuseful: one of the two. The decision about which process has to be executed is taken by a part of the operating system called scheduler, and it pays no attention if a process is the parent or the child, following an algorithm based on other parameters.</p>
-
-<p>If we are writing processes that implement a service (such as serving network connections) we need nothing more: the two processes are the same and they behave the same way, so by cloning the process we just incremented the number of service providers. This is usually done by Web servers such as Apache, which spawns a copy of itself to serve incoming connections.</p>
-
-<h2>Parent and child</h2>
-
-<p>Sometimes, anyway, it is fundamental to know what process is in execution: after the fork both processes are at the same execution point (that is just after the <code>fork()</code> call) so how can them tell if they are the parent or the child one?</p>
-
-<p>In order to clarify this question let us look at the following algorithm:</p>
-
-<ol>
-<li>fork</li>
-<li>if you are the child then execute ...</li>
-<li>if you are the parent then execute ...</li>
-</ol>
-
-
-<p>which could represent in a sort of metalanguage the code of our program. The question can be expressed this way: “You have been cloned. Who are you, the original one or the clone?”</p>
-
-<p>The answer is once again very simple: the <code>fork()</code> function returns 0 to the child process and the child's PID to the parent. So it is enough to test if the returned PID is zero and we will know what process is executing the current code. Putting it in C language we obtain</p>
-
-<p>``` c
-int main() {</p>
-
-<pre><code>pid_t pid;
-pid = fork();
-
-if (pid == 0)
-{
-    code of the child process
-}
-else {
-    code of the parent process
-}
-</code></pre>
-
-<p>}
-```</p>
-
-<p>It's time to write the first real example of multitasking code: you can save it in a <code>fork_demo.c</code> file and compile it as we did before.</p>
-
-<p>The program will fork itself, and both the parent and the child will write something on the screen; the final output will be the interlaced output of the two (if all goes right).</p>
-
-<p>``` c fork_demo.c</p>
-
-<h1>include &lt;unistd.h></h1>
-
-<h1>include &lt;sys/types.h></h1>
-
-<h1>include &lt;stdio.h></h1>
-
-<p>int main() {</p>
-
-<pre><code>pid_t pid;
-int i;
-
-pid = fork();
-
-if (pid == 0){
-    for (i = 0; i &lt; 8; i++){
-        printf("-child-\n");
-    }
-    return 0;
-}
-
-for (i = 0; i &lt; 8; i++){
-    printf("+parent+\n");
-}
-
-return 0;
-</code></pre>
-
-<p>}
-```</p>
-
-<p>Lines number 01-03 contain the includes for the necessary libraries (standard I/O, multitasking).</p>
-
-<p>The main function returns an integer (as always in GNU), which normally is zero if the program reached the end without errors or an error code if something goes wrong; let us state this time all will run without errors (we can later add some error control code, when the basic concepts will be clear).</p>
-
-<p>Then we define the data type containing a pid (line 06) and an integer working as counter for loops (line 07). At line 09 we call <code>fork()</code> and it will return zero to the program executed in the child process and the pid of the child process to the parent; the test is at line 11. Now the code at lines 12-15 will be executed in the child process while the rest (lines 18-22) will be executed in the parent. Note that we omitted the <code>else</code> statement since the child code ends with a <code>return</code>; thus there is no way for the child to execute the code of the parent.</p>
-
-<p>The two parts simply write 8 times on the standard output the string <code>-child-</code> or <code>+parent+</code>, depending on which process executes it, and then end returning 0. Executing the program will perhaps let you unsatisfied: the result is likely not to be a real mix between the two strings, and this due to the speed of execution of such a short loop. The scheduler runs the parent or the child for a quantum of time which is enough for the process to end the loop; thus probably your output will be a list of <code>+parent+</code> strings followed by a list of <code>-child-</code> ones, or the contrary.</p>
-
-<p>To highlight the interlacing effect we can insert a random delay before each <code>printf()</code> call: we can do this with <code>sleep()</code> and <code>rand()</code> functions</p>
-
-<p><code>c
-sleep(rand()%4)
-</code></p>
-
-<p>this make the program sleep for a random number of seconds between 0 and 3. Now the child code looks like</p>
-
-<p>``` c
-for (i = 0; i &lt; 8; i++){</p>
-
-<pre><code>sleep (rand()%4);
-printf("-child-\n");
-</code></pre>
-
-<p>}
-```</p>
-
-<p>and the same for the parent's code. Save it as <code>fork_demo2.c</code>, compile and execute. It is slower now, and we notice a difference in the output string order, and more differences between an execution and the previous one. For example my output is</p>
-
-<p><code>bash
-$ ./fork_demo2
--child-
-+parent+
-+parent+
--child-
--child-
-+parent+
-+parent+
--child-
--child-
-+parent+
-+parent+
--child-
--child-
--child-
-+parent+
-+parent+
-</code></p>
-
-<p>As always when dealing with multitasking code, your output is probably different from mine and will also be different between consecutive executions. Try also to change the parameters of the program, such as the sleep time or the number of loops.</p>
-
-<h2>Why forking</h2>
-
-<p>Thinking carefully about the parent and child example a question arises: why should I write code that forks, with all the intricacies it entails, when I could simply write two different programs and run them, letting the operating system to deal with their simultaneous execution?</p>
-
-<p>This is a very interesting question, and the answer is very simple, though the underlying concept is rather complex. When you run a program the shell or the GUI follows a pattern called <strong>fork-and-exec</strong>: first it forks, then the child process executes the desired program. The reason of this behaviour is that the <code>exec</code> family of system calls replace the running program with a new program but do not change the PID. So the tasks are divided between system calls: <code>fork</code> creates a new process while <code>exec</code> loads the given program into the newly created process.</p>
-
-<h2>DOS and Windows</h2>
-
-<p>Operating systems of the DOS and Windows family do not provide a <code>fork</code> mechanism but a <code>spawn</code> family of system calls, which directly implement the fork-and-exec technique; this is a good example of the different implementation OSs make of common computer science concepts: while both implement multitasking and let many processes run concurrently, the way this target is reached can vary significantly.</p>
-
-<h2>Conclusion</h2>
-
-<p>Starting from the knowledge of processes you stepped into the fundamental Unix concept of forking, learning to tell apart parent and child processes and running your first multitasking-based program. You also started to understand how complex can some operating system issues be, and that real world OSs can provide very different solutions to them.</p>
-
-<p>In the next article we will start to look after processes synchronization and data sharing between processes.</p>
-
-<h2>Past articles</h2>
-
-<p><a href="/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
-
-<h2>Next articles</h2>
-
-<p><a href="/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
-
-<p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
-
-<p><a href="/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 ]]></content>
   </entry>
   
