@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[The digital cat]]></title>
-  <link href="http://lgiordani.github.com/atom.xml" rel="self"/>
-  <link href="http://lgiordani.github.com/"/>
-  <updated>2013-05-31T17:01:18+02:00</updated>
-  <id>http://lgiordani.github.com/</id>
+  <link href="http://lgiordani.github.io/atom.xml" rel="self"/>
+  <link href="http://lgiordani.github.io/"/>
+  <updated>2013-06-03T08:46:01+02:00</updated>
+  <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Error handling in Erlang - a primer]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/05/30/error-handling-in-erlang-a-primer/"/>
+    <link href="http://lgiordani.github.io/blog/2013/05/30/error-handling-in-erlang-a-primer/"/>
     <updated>2013-05-30T11:41:00+02:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/05/30/error-handling-in-erlang-a-primer</id>
+    <id>http://lgiordani.github.io/blog/2013/05/30/error-handling-in-erlang-a-primer</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>This article aims to summarize Erlang error handling both in sequential and in concurrent environments. The targets of this article are novices that, like me, make their first steps into the beautiful world of Erlang. Moreover, I always find that trying to explain things makes me understand them better.</p>
@@ -281,15 +281,15 @@
 
 <p>There is obviously much more than this in the Erlang treasure chest. If the whole link and exit signals stuff thrilled you like it did with me, I promise you that OTP behavious (sorry, behaviors) will take your breath away.</p>
 
-<p>Keep in touch for other Erlang articles on <a href="http://lgiordani.github.com/blog/categories/erlang/">this page</a>.</p>
+<p>Keep in touch for other Erlang articles on <a href="http://lgiordani.github.io/blog/categories/erlang/">this page</a>.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 6]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/04/23/concurrent-programming-6/"/>
+    <link href="http://lgiordani.github.io/blog/2013/04/23/concurrent-programming-6/"/>
     <updated>2013-04-23T08:29:00+02:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/04/23/concurrent-programming-6</id>
+    <id>http://lgiordani.github.io/blog/2013/04/23/concurrent-programming-6</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>Issue 5 of this series ended with a small program where two processes exchanged ten numbers through a message queue, thus being a synchronized producer-consumer couple. This time I am going to show and comment the code of a very simple communication simulator written in C. The code leverages IPC queues to allow multiple processes to talk each other while running concurrently.</p>
@@ -1144,11 +1144,11 @@
 <p>The 5 files of this small program can be downloaded here:</p>
 
 <ul>
-<li><a href="http://lgiordani.github.com/downloads/code/ipc_demo/layer1.h">layer1.h</a></li>
-<li><a href="http://lgiordani.github.com/downloads/code/ipc_demo/layer1.c">layer1.c</a></li>
-<li><a href="http://lgiordani.github.com/downloads/code/ipc_demo/layer2.h">layer2.h</a></li>
-<li><a href="http://lgiordani.github.com/downloads/code/ipc_demo/layer2.c">layer2.c</a></li>
-<li><a href="http://lgiordani.github.com/downloads/code/ipc_demo/main.c">main.c</a></li>
+<li><a href="http://lgiordani.github.io/downloads/code/ipc_demo/layer1.h">layer1.h</a></li>
+<li><a href="http://lgiordani.github.io/downloads/code/ipc_demo/layer1.c">layer1.c</a></li>
+<li><a href="http://lgiordani.github.io/downloads/code/ipc_demo/layer2.h">layer2.h</a></li>
+<li><a href="http://lgiordani.github.io/downloads/code/ipc_demo/layer2.c">layer2.c</a></li>
+<li><a href="http://lgiordani.github.io/downloads/code/ipc_demo/main.c">main.c</a></li>
 </ul>
 
 
@@ -1176,23 +1176,23 @@
 
 <h2>Past articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Python Generators - From Iterators to Cooperative Multitasking - 3]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/"/>
+    <link href="http://lgiordani.github.io/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/"/>
     <updated>2013-03-29T13:25:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3</id>
+    <id>http://lgiordani.github.io/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3</id>
     <content type="html"><![CDATA[<h2>Introduction</h2>
 
 <p>In this third issue we move on uncovering how generators can be the foundation of a cooperative multitasking system and show some code that implements it. Before we face this topic we will talk shortly about another interesting use of generators, namely generator expressions chains.</p>
@@ -1256,7 +1256,7 @@
 
 <p>To make the object more easily inheritable and extendable we can refactor it a little</p>
 
-<figure class='code'><figcaption><span> (mthread.py)</span> <a href='http://lgiordani.github.com/downloads/code/python-generators/mthread.py'>download</a></figcaption>
+<figure class='code'><figcaption><span> (mthread.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/mthread.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1344,7 +1344,7 @@
 
 <p>So the first implementation of the scheduler is the following:</p>
 
-<figure class='code'><figcaption><span> (scheduler.py)</span> <a href='http://lgiordani.github.com/downloads/code/python-generators/scheduler.py'>download</a></figcaption>
+<figure class='code'><figcaption><span> (scheduler.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/scheduler.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1396,7 +1396,7 @@
 
 <p>We can test the microthreads and the scheduler with this simple code</p>
 
-<figure class='code'><figcaption><span> (test_scheduler.py)</span> <a href='http://lgiordani.github.com/downloads/code/python-generators/test_scheduler.py'>download</a></figcaption>
+<figure class='code'><figcaption><span> (test_scheduler.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/test_scheduler.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1473,7 +1473,7 @@
 
 <p>The scheduler could however be more flexible, specifically it could be converted to a microthread itself. The scheduler, when executed, will return a generator, and each call of its <code>next()</code> method will run one of its microthreads. After this the scheduler will freeze and give control back.</p>
 
-<figure class='code'><figcaption><span> (mscheduler.py)</span> <a href='http://lgiordani.github.com/downloads/code/python-generators/mscheduler.py'>download</a></figcaption>
+<figure class='code'><figcaption><span> (mscheduler.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/mscheduler.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1531,7 +1531,7 @@
 
 <p>These little changes allow the scheduler to be run into another scheduler, thus enabling us to create a hierarchy to easily build complex systems. At the same time the scheduler can be used as usual simply calling its <code>next()</code> method in a for loop.</p>
 
-<figure class='code'><figcaption><span> (test_mscheduler.py)</span> <a href='http://lgiordani.github.com/downloads/code/python-generators/test_mscheduler.py'>download</a></figcaption>
+<figure class='code'><figcaption><span> (test_mscheduler.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/test_mscheduler.py'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -1594,8 +1594,8 @@
 <h2>Past articles</h2>
 
 <ul>
-<li><a href="http://lgiordani.github.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
-<li><a href="http://lgiordani.github.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
+<li><a href="http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
+<li><a href="http://lgiordani.github.io/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
 </ul>
 
 ]]></content>
@@ -1603,9 +1603,9 @@
   
   <entry>
     <title type="html"><![CDATA[Python Generators - From Iterators to Cooperative Multitasking - 2]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/"/>
+    <link href="http://lgiordani.github.io/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/"/>
     <updated>2013-03-26T14:05:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2</id>
+    <id>http://lgiordani.github.io/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2</id>
     <content type="html"><![CDATA[<h2>Introduction</h2>
 
 <p>After the recap of the iteration process in Python, in this post we will introduce the concept of generator, which aims to solve some problems that arise from the use of iterators.</p>
@@ -1890,14 +1890,14 @@
 <h2>Past articles</h2>
 
 <ul>
-<li><a href="http://lgiordani.github.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
+<li><a href="http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
 </ul>
 
 
 <h2>Next articles</h2>
 
 <ul>
-<li><a href="http://lgiordani.github.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
+<li><a href="http://lgiordani.github.io/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
 </ul>
 
 ]]></content>
@@ -1905,9 +1905,9 @@
   
   <entry>
     <title type="html"><![CDATA[Python generators - from iterators to cooperative multitasking]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/"/>
+    <link href="http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/"/>
     <updated>2013-03-25T10:41:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking</id>
+    <id>http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking</id>
     <content type="html"><![CDATA[<h2>Introduction</h2>
 
 <p>Python is a language that in 11 years of life has been through a very remarkable development and the introduction of several new features, sometimes borrowed from other languages, sometimes arisen from the needs of developers and heavily discussed before being officially implemented. One of these improvements concerns generators, a concept which can be found in the computer science environment since the 70s; it has been implemented in Python from version 2.2 (2001) and became popular from version 2.3 (2003).</p>
@@ -2088,8 +2088,8 @@
 <h2>Next articles</h2>
 
 <ul>
-<li><a href="http://lgiordani.github.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
-<li><a href="http://lgiordani.github.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
+<li><a href="http://lgiordani.github.io/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
+<li><a href="http://lgiordani.github.io/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
 </ul>
 
 ]]></content>
@@ -2097,9 +2097,9 @@
   
   <entry>
     <title type="html"><![CDATA[Versioning - An underrated discipline]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/03/20/versioning-an-underrated-discipline/"/>
+    <link href="http://lgiordani.github.io/blog/2013/03/20/versioning-an-underrated-discipline/"/>
     <updated>2013-03-20T10:02:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/03/20/versioning-an-underrated-discipline</id>
+    <id>http://lgiordani.github.io/blog/2013/03/20/versioning-an-underrated-discipline</id>
     <content type="html"><![CDATA[<h2>Overture</h2>
 
 <p>Everyone uses a computer has to deal in their everyday life with software version numbers, and even who deals with computers just as bare user shall sooner or later introduce the word <em>version</em> in their speech. Alas, this made it one of those concepts so pervading that it is now taken for granted, and this is so widespread that even professionals often forget or do not even know the complexity of the matter behind. This article is an attempt to shine a light on this topic.</p>
@@ -2285,15 +2285,15 @@
 
 <h2>Finale</h2>
 
-<p>As you can see there is much to say about this subject, and this article only scratches the surface of the matter. However, I hope it helped you to have a big picture of the different aspects that hide behind those apparently simple labels or numbers called versions. Stay tuned for future articles on this topic through the <a href="http://lgiordani.github.com/blog/categories/versioning/">versioning</a> tag.</p>
+<p>As you can see there is much to say about this subject, and this article only scratches the surface of the matter. However, I hope it helped you to have a big picture of the different aspects that hide behind those apparently simple labels or numbers called versions. Stay tuned for future articles on this topic through the <a href="http://lgiordani.github.io/blog/categories/versioning/">versioning</a> tag.</p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 5]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/02/28/concurrent-programming-5/"/>
+    <link href="http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5/"/>
     <updated>2013-02-28T17:49:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/02/28/concurrent-programming-5</id>
+    <id>http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>In the past articles we introduced the concept of concurrent programming and studied a first solution to the problem of intercommunication: semaphores. As explained, the use of semaphores allows us to manage access to shared resources, and this is a first and very simple form of synchronization. In this issue, we will go one step further introducing a richer tool for concurrent programming: <em>message queues</em>.</p>
@@ -2333,7 +2333,7 @@
 
 <p>A <strong>protocol</strong> is a set of rules which control the interaction of elements in a set. Every time you must regulate the exchange of information between two or more actors in a scenario you need a protocol, even when dealing with humans and not computers.</p>
 
-<p>In <a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">the past article</a> we implemented a very simple protocol when instructing processes to access a resource according to the status of a semaphore. This latter is also modified as part of the protocol itself.</p>
+<p>In <a href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4">the past article</a> we implemented a very simple protocol when instructing processes to access a resource according to the status of a semaphore. This latter is also modified as part of the protocol itself.</p>
 
 <p>As already stated in a past article, there is no difference between interprocess communication on the same machine or in a distributed environment (multiple machines): indeed, every network protocol (TCP/IP, DNS, SMTP, just to cite some of the most famous) is built on a message exchange architecture.</p>
 
@@ -2364,7 +2364,7 @@
 
 <h2>System V Message Queues</h2>
 
-<p>Now it is the time to speak about implementing these concepts in a Linux operating system environment. As already said we have a set of primitives that allow us to manage the structures related to message queues, and they are very similar to those dedicated to semaphore management, already described in <a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">the past article</a>.</p>
+<p>Now it is the time to speak about implementing these concepts in a Linux operating system environment. As already said we have a set of primitives that allow us to manage the structures related to message queues, and they are very similar to those dedicated to semaphore management, already described in <a href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4">the past article</a>.</p>
 
 <p>The structure used to describe a message is <code>msgbuf</code> and is declared in <code>linux/msg.h</code></p>
 
@@ -2422,7 +2422,7 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>which receives as arguments an IPC key (see <a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">issue 4</a>) and some flags, which by now can be set to <code>IPC_CREAT | 0660</code> (create the queue if it does not exist
+<p>which receives as arguments an IPC key (see <a href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4">issue 4</a>) and some flags, which by now can be set to <code>IPC_CREAT | 0660</code> (create the queue if it does not exist
 and grant access to the owner and group users). The returned integer is called queue identifier and is unique in the system.</p>
 
 <h4>Send messages</h4>
@@ -2475,7 +2475,7 @@ and grant access to the owner and group users). The returned integer is called q
 
 <p>Let&#8217;s test all these concepts with a simple program which creates a message queue, sends a message to it, reads the message and cancels the queue. After the message has been read, a comparison between the original values and the ones in the message is performed to check that the system is working.</p>
 
-<figure class='code'><figcaption><span>queues1  (queues1.c)</span> <a href='http://lgiordani.github.com/downloads/code/queues1.c'>download</a></figcaption>
+<figure class='code'><figcaption><span>queues1  (queues1.c)</span> <a href='http://lgiordani.github.io/downloads/code/queues1.c'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -2637,11 +2637,11 @@ and grant access to the owner and group users). The returned integer is called q
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Now we can create two processes and let them communicate through a message queue. Remembering forking concepts explained in the <a href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2">issue 2</a> you can recall that the child process, when created, receives a copy of the memory of its parent. This means that creating the queue before the fork operation results in both the parent and the child knowing the right queue identifier and thus capable of access it.</p>
+<p>Now we can create two processes and let them communicate through a message queue. Remembering forking concepts explained in the <a href="http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2">issue 2</a> you can recall that the child process, when created, receives a copy of the memory of its parent. This means that creating the queue before the fork operation results in both the parent and the child knowing the right queue identifier and thus capable of access it.</p>
 
 <p>The following code creates a queue, then forks the execution. The child generates a random number, prints it on the standard output and sends them to the parent, which in turn prints it on the screen.</p>
 
-<figure class='code'><figcaption><span>queues2  (queues2.c)</span> <a href='http://lgiordani.github.com/downloads/code/queues2.c'>download</a></figcaption>
+<figure class='code'><figcaption><span>queues2  (queues2.c)</span> <a href='http://lgiordani.github.io/downloads/code/queues2.c'>download</a></figcaption>
  <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
@@ -2777,21 +2777,21 @@ and grant access to the owner and group users). The returned integer is called q
 
 <h2>Past articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 4]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4/"/>
+    <link href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4/"/>
     <updated>2013-02-13T10:50:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4</id>
+    <id>http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>In the past issue, of this series of articles about concurrent programming we started to concern ourselves with the problems of synchronization between processes. In this installment, we will investigate further the subject introducing some structures and functions collectively known as <em>Unix System V IPC</em>.</p>
@@ -3446,23 +3446,23 @@ and grant access to the owner and group users). The returned integer is called q
 
 <h2>Past articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
 
 <h2>Next articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 3]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3/"/>
+    <link href="http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3/"/>
     <updated>2013-02-06T12:25:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3</id>
+    <id>http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>In the first article, we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second article, we met the fundamental fork operation and wrote our first multitasking code. In this article, we will go ahead and introduce ourselves in the topic of synchronization: the problem we face now indeed is to release the full power of multitasking, that is to share the work between processes.</p>
@@ -3667,23 +3667,23 @@ and grant access to the owner and group users). The returned integer is called q
 
 <h2>Past articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
 
 <h2>Next articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 2]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2/"/>
+    <link href="http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2/"/>
     <updated>2013-02-04T10:35:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2</id>
+    <id>http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>In the past article I introduced the concept of process and how important it is for our operating system: in this new issue of the Concurrent Programming series we will go on and begin to write multitasking code; we will start from one of the basic concepts of the whole picture, the forking operation. Afterwards, we will start to introduce the problem of process synchronization and communication, which we will deeply face in a later instalment.</p>
@@ -4003,23 +4003,23 @@ and grant access to the owner and group users). The returned integer is called q
 
 <h2>Past articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
 
 <h2>Next articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 ]]></content>
   </entry>
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 1]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1/"/>
+    <link href="http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1/"/>
     <updated>2013-01-31T16:47:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/01/31/concurrent-programming-1</id>
+    <id>http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p><em>I already published this series of articles on concurrent programming on LinuxFocus from November 2002 and now I carefully reviewed them. Feel free to notify me any error you will find.</em></p>
@@ -4102,13 +4102,13 @@ different pid numbers, showing that they are two different processes even if the
 
 <h2>Next articles</h2>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
 
-<p><a href="http://lgiordani.github.com/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
+<p><a href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
 ]]></content>
   </entry>
   

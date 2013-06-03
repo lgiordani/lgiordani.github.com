@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: generators | The digital cat]]></title>
-  <link href="http://lgiordani.github.com/blog/categories/generators/atom.xml" rel="self"/>
-  <link href="http://lgiordani.github.com/"/>
-  <updated>2013-05-31T17:01:18+02:00</updated>
-  <id>http://lgiordani.github.com/</id>
+  <link href="http://lgiordani.github.io/blog/categories/generators/atom.xml" rel="self"/>
+  <link href="http://lgiordani.github.io/"/>
+  <updated>2013-06-03T08:46:01+02:00</updated>
+  <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Python Generators - From Iterators to Cooperative Multitasking - 3]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/"/>
+    <link href="http://lgiordani.github.io/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/"/>
     <updated>2013-03-29T13:25:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3</id>
+    <id>http://lgiordani.github.io/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3</id>
     <content type="html"><![CDATA[<h2>Introduction</h2>
 
 <p>In this third issue we move on uncovering how generators can be the foundation of a cooperative multitasking system and show some code that implements it. Before we face this topic we will talk shortly about another interesting use of generators, namely generator expressions chains.</p>
@@ -396,9 +396,9 @@ Number: 3
   
   <entry>
     <title type="html"><![CDATA[Python Generators - From Iterators to Cooperative Multitasking - 2]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/"/>
+    <link href="http://lgiordani.github.io/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/"/>
     <updated>2013-03-26T14:05:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2</id>
+    <id>http://lgiordani.github.io/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2</id>
     <content type="html"><![CDATA[<h2>Introduction</h2>
 
 <p>After the recap of the iteration process in Python, in this post we will introduce the concept of generator, which aims to solve some problems that arise from the use of iterators.</p>
@@ -639,9 +639,9 @@ d = dict(z for z in zip(keys, values))
   
   <entry>
     <title type="html"><![CDATA[Python generators - from iterators to cooperative multitasking]]></title>
-    <link href="http://lgiordani.github.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/"/>
+    <link href="http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/"/>
     <updated>2013-03-25T10:41:00+01:00</updated>
-    <id>http://lgiordani.github.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking</id>
+    <id>http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking</id>
     <content type="html"><![CDATA[<h2>Introduction</h2>
 
 <p>Python is a language that in 11 years of life has been through a very remarkable development and the introduction of several new features, sometimes borrowed from other languages, sometimes arisen from the needs of developers and heavily discussed before being officially implemented. One of these improvements concerns generators, a concept which can be found in the computer science environment since the 70s; it has been implemented in Python from version 2.2 (2001) and became popular from version 2.3 (2003).</p>
