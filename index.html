@@ -6,7 +6,7 @@
 	<title>The digital cat</title>
     <meta name="author" content="Leonardo Giordani">
     
-	<meta name="description" content="Published on: Jun 20th, 2013 Tags: concurrent programming, erlang Posted by Leonardo Giordani Abstract One of the first really challenging problems &hellip;">
+	<meta name="description" content="Published on: Jul 18th, 2013 Tags: c++, git, qt Posted by Leonardo Giordani Libgit2 is &#8220;a portable, pure C implementation of the Git core &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -108,6 +108,63 @@
 <!-- begin toload --> 
     <div id="content" class="inner">
         
+
+
+    <article class="post">
+<h2 class="title">
+  
+    <a href="/blog/2013/07/18/libqgit2-a-qt-wrapper-for-libgit2/">
+      
+      Libqgit2: A Qt Wrapper for Libgit2</a>
+</h2>
+<div class="entry-content">
+  <div class="meta">
+    <div class="date">Published on: 
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2013-07-18T10:51:00+02:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time></div>
+    <div class="tags">Tags: 
+
+
+	<a class='category' href='/blog/categories/c-plus-plus/'>c++</a>, <a class='category' href='/blog/categories/git/'>git</a>, <a class='category' href='/blog/categories/qt/'>qt</a>
+
+
+</div>
+  </div>
+  
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="/about" rel="author">Leonardo Giordani</a></span></span>
+
+  <p><a href="http://libgit2.github.com/">Libgit2</a> is &#8220;a portable, pure C implementation of the Git core methods&#8221; started in 2008 by Shawn O. Pearce. It is successfully used in both commercial an open source projects and wrapped in many languages (among the others Ruby, C#, Python). In 2011 Laszlo Papp from KDE started the libqgit2 project, aiming to port libgit2 features to C++/Qt. Sadly, lately the development slowed down a little and the library could not compile against the latest libgit2.</p>
+
+<p>Being interested in using libgit2 in Qt/KDE projects, I am trying to restart the development.
+I managed to update the library to libgit2 0.19.0 (latest version), and you can find the <a href="https://github.com/lgiordani/libqgit2">code on GitHub</a>. Feel free to fork it and work on it, but remember that this is just an unofficial repository.</p>
+
+<p>Official repository is hosted by <a href="https://projects.kde.org/projects/playground/libs/libqgit2/repository/">KDE Projects</a> and I&#8217;m managing to update it too.</p>
+
+<p>At the moment, the library just wraps the main libgit2 objects and functions (git &#8220;plumbing&#8221;).
+Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a Qt one, so any help is greatly appreciated.</p>
+
+<p>Stay tuned for updates!</p>
+
+  
+  
+</div>
+
+<div class="meta">
+  
+</div>
+</article>
 
 
     <article class="post">
@@ -558,58 +615,6 @@
 
   
   <a href="/blog/2013/02/13/concurrent-programming-4/" class="more-link">Read on &rarr;</a>
-</div>
-
-<div class="meta">
-  
-</div>
-</article>
-
-
-    <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/02/06/concurrent-programming-3/">
-      
-      Concurrent Programming - 3</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-02-06T12:25:00+01:00" pubdate data-updated="true">Feb 6<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/concurrent-programming/'>concurrent programming</a>, <a class='category' href='/blog/categories/operating-systems/'>operating systems</a>
-
-
-</div>
-  </div>
-  
-  
-
-<span class="byline author vcard">Posted by <span class="fn"><a href="/about" rel="author">Leonardo Giordani</a></span></span>
-
-  <h2>Abstract</h2>
-
-<p>In the first article, we stepped into the world of multitasking, going over its meaning and the reasons behind its existence. In the second article, we met the fundamental fork operation and wrote our first multitasking code. In this article, we will go ahead and introduce ourselves in the topic of synchronization: the problem we face now indeed is to release the full power of multitasking, that is to share the work between processes.</p>
-
-<p>In the first part of the article, I want to make a step back to the basics of multitasking to clarify the single/multiple CPU theme. Then we will start talking about shared data between processes, first looking at the problems arising and then writing some code.</p>
-
-
-  
-  <a href="/blog/2013/02/06/concurrent-programming-3/" class="more-link">Read on &rarr;</a>
 </div>
 
 <div class="meta">
