@@ -4,7 +4,7 @@
   <title><![CDATA[Category: postage | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/postage/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-07-26T17:38:44+02:00</updated>
+  <updated>2013-07-26T17:42:44+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -25,6 +25,9 @@
 <p>Most notably it provides a handler mechanism for consumers that makes message processing a breeze.</p>
 
 <p>Postage is freely available under the GPL2. It is based on the pika BlockingConnection since I had no experience with other adapters. If you want to hack it, feel free to <a href="https://github.com/lgiordani/postage">fork it on Github</a> and submit a pull request.</p>
+
+<!--more-->
+
 
 <h2>A simple ping example</h2>
 
