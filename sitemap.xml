@@ -2,7 +2,7 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1/</loc>
-        <lastmod>2013-07-18T10:50:14+02:00</lastmod>
+        <lastmod>2013-07-18T15:46:47+02:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2/</loc>
@@ -61,16 +61,22 @@
         <lastmod>2013-07-18T11:40:39+02:00</lastmod>
     </url>
     <url>
+        <loc>
+            http://lgiordani.github.io/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/
+        </loc>
+        <lastmod>2013-07-26T17:38:08+02:00</lastmod>
+    </url>
+    <url>
         <loc>http://lgiordani.github.io/about/</loc>
         <lastmod>2013-06-20T18:46:34+02:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/archives/</loc>
-        <lastmod>2013-07-18T11:40:39+02:00</lastmod>
+        <lastmod>2013-07-26T17:38:08+02:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/</loc>
-        <lastmod>2013-07-18T11:40:39+02:00</lastmod>
+        <lastmod>2013-07-26T17:38:08+02:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/search.html</loc>
