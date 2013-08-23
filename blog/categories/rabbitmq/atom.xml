@@ -4,7 +4,7 @@
   <title><![CDATA[Category: rabbitmq | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/rabbitmq/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-08-23T17:05:44+02:00</updated>
+  <updated>2013-08-23T17:09:57+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -21,6 +21,9 @@
     <content type="html"><![CDATA[<p>Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.</p>
 
 <p>Now some time has passed since I started, and reading the <a href="http://www.rabbitmq.com/getstarted.html">RabbitMQ tutorials</a> again I can see that these properties are no mystery. However, in this short post I want to clearly point out three different uses of direct exchanges, in the hope that other novices will be helped to better understand those powerful components of an AMQP system.</p>
+
+<!--more-->
+
 
 <h2>Movie cast</h2>
 
