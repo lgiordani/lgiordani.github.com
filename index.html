@@ -6,7 +6,7 @@
 	<title>The digital cat</title>
     <meta name="author" content="Leonardo Giordani">
     
-	<meta name="description" content="Published on: Aug 21st, 2013 Tags: amqp, rabbitmq Posted by Leonardo Giordani Everyone who started using AMQP learned from the very beginning that &hellip;">
+	<meta name="description" content="Published on: Aug 21st, 2013 Tags: amqp, rabbitmq Posted by Leonardo Giordani EDIT: thanks to Alvaro Videla that pointed out that a queue can be &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -145,7 +145,9 @@
 
 <span class="byline author vcard">Posted by <span class="fn"><a href="/about" rel="author">Leonardo Giordani</a></span></span>
 
-  <p>Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.</p>
+  <p><em>EDIT: thanks to Alvaro Videla that pointed out that a queue can be connected to more than one exchange; sorry for the wrong information.</em></p>
+
+<p>Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.</p>
 
 <p>Now some time has passed since I started, and reading the <a href="http://www.rabbitmq.com/getstarted.html">RabbitMQ tutorials</a> again I can see that these properties are no mystery. However, in this short post I want to clearly point out three different uses of direct exchanges, in the hope that other novices will be helped to better understand those powerful components of an AMQP system.</p>
 

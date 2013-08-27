@@ -4,7 +4,7 @@
   <title><![CDATA[Category: amqp | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/amqp/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-08-23T17:09:57+02:00</updated>
+  <updated>2013-08-27T08:14:23+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -18,7 +18,9 @@
     <link href="http://lgiordani.github.io/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/"/>
     <updated>2013-08-21T18:10:00+02:00</updated>
     <id>http://lgiordani.github.io/blog/2013/08/21/some-tips-about-amqp-direct-exchanges</id>
-    <content type="html"><![CDATA[<p>Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.</p>
+    <content type="html"><![CDATA[<p><em>EDIT: thanks to Alvaro Videla that pointed out that a queue can be connected to more than one exchange; sorry for the wrong information.</em></p>
+
+<p>Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.</p>
 
 <p>Now some time has passed since I started, and reading the <a href="http://www.rabbitmq.com/getstarted.html">RabbitMQ tutorials</a> again I can see that these properties are no mystery. However, in this short post I want to clearly point out three different uses of direct exchanges, in the hope that other novices will be helped to better understand those powerful components of an AMQP system.</p>
 
@@ -35,7 +37,7 @@
 
 <p>The queues are the real core of the system. They actually extract messages from the exchange according to their configuration, and you are not wrong if you think that they are the real routing component of AMQP; indeed exchanges do not exist as separate components, so the routing game is played by the channel and the queues.</p>
 
-<p>Let us consider queues at a deeper level. They are two sided components, messages enter from one side and exit from the other one. Thus each queue can establish connections on both sides: on the input side a queue fetches messages from <strong>just one exchange</strong> (but nothing forbids more than a queue to connect to the same exchange) while on the output side the queue can be connected to <strong>one or more consumers</strong>.</p>
+<p>Let us consider queues at a deeper level. They are two sided components, messages enter from one side and exit from the other one. Thus each queue can establish connections on both sides: on the input side a queue fetches messages from <strong>one or more exchanges</strong> while on the output side the queue can be connected to <strong>one or more consumers</strong>. From the single queue point of view being connected to more than one exchange with the same routing key is transparent, since the only thing that concerns the queue itself are the incoming messages; being connected to more than one exchange with different routing keys leads to complex scenarios, so in this article I will consider a single direct exchange delivering messages to queues.</p>
 
 <h2>Three configurations</h2>
 
