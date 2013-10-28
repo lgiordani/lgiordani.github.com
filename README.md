@@ -1,4 +1,4 @@
-lgiordani.github.com
-====================
+blog_source
+===========
 
-My blog
+Sources of my GitHub blog

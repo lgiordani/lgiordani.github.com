@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: django | The digital cat]]></title>
+  <link href="http://lgiordani.github.io/blog/categories/django/atom.xml" rel="self"/>
+  <link href="http://lgiordani.github.io/"/>
+  <updated>2013-10-28T08:49:53+01:00</updated>
+  <id>http://lgiordani.github.io/</id>
+  <author>
+    <name><![CDATA[Leonardo Giordani]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Digging up Django class-based views - 1]]></title>
+    <link href="http://lgiordani.github.io/blog/2013/10/28/digging-up-django-class-based-views-1/"/>
+    <updated>2013-10-28T08:43:00+01:00</updated>
+    <id>http://lgiordani.github.io/blog/2013/10/28/digging-up-django-class-based-views-1</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
+
+<p>Django programmers that started with versions prior to 1.3 are used to deal with views as functions, and they learned how to process even complex forms in a procedural way. From the release 1.3, Django introduced class-based views (CBVs) and ported its powerful generic views to this new paradigm (class-based generic views, or CBGVs).</p>
+
+<p>This change, however, has not been harmless for Django novices: the django-users mailing list and StackOverflow are full of questions about views and classes, and the official documentation on this topic is still a little unorganized. Well, open source things are always ready to be improved, aren't they? This post aims to share some thoughts and insights about CBVs, and hopefully it can also lead to an improvement of the official documentation.</p>
+
+<p>I want to thank all Django developers for their work. Despite the previous criticism on documentation, this post wants to be a thanksgiving for their efforts.</p>
+
+<!--more-->
+
+
+<p>Feel free to comment <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">here</a> or to submit issues <a href="https://github.com/lgiordani/lgiordani.github.com/issues">here</a>.</p>
+
+<h2>What are CBVs?</h2>
+
+<p>Class-based views are, indeed, (Django) views based on (Python) classes. Until here, it makes sense, hopefully. This means that, to master them, you need to understand both Django views and Python classes, so let's give a quick definition of them.</p>
+
+<p>A Django view is a piece of code that processes an HTTP request and returns an HTTP response. Oh yes, nothing more, nothing less.
+A Python class is the implementation of the Object-Oriented concept of class in the Python language.</p>
+
+<p>So a view just need to be a <a href="http://docs.python.org/2/library/functions.html#callable">callable</a>, and this includes functions and classes. Thus, to understand the advantages of class-based views over function-based views we shall discuss the merits of classes over functions. This latter sentence could be the title of a 10 volumes book on programming (followed by another 10 volumes book titled "Merits of functions over classes"), so I am just going to scratch the surface of the matter.</p>
+
+<h2>Starting off with Python classes</h2>
+
+<p>The main point of a class is implementing encapsulation: they represent a way of coupling data and functions. Doing this, a class loses the dynamic essence of a procedure, which exists only while it is running, and becomes a living entity, something that sits there, caring for its data, and reacts when we call its functions (methods).</p>
+
+<p>A good analogy for a class is a finite-state machine: once the class has been initialized, methods are what we use to make it move between states. If we do not call methods, the class simply waits there without complaining.</p>
+
+<p>As an example, let's look at a very simple procedure that takes a list and extracts the even numbers from it.</p>
+
+<p>``` python
+def extract_even_numbers(alist):</p>
+
+<pre><code>return [i for i in alist if i%2 == 0]
+</code></pre>
+
+<p>```</p>
+
+<p>The example is very trivial, but I think there is always time to tangle up the code, so let us start with simple things. A class version of this function could be written as</p>
+
+<p>```python
+class EvenExtractor(object):</p>
+
+<pre><code>def __init__(alist):
+    self.l = alist
+
+def extract(self):
+    return [i for i in self.l if i%2 == 0]
+</code></pre>
+
+<p>```</p>
+
+<p>Seems to be the same thing, doesn't it? Indeed the difference is subtle but remarkable. Now the extractor has two parts, the first being the initialization and the second being the actual extraction, and we can have the class in one of three states: before initialization (<code>e = EvenExtractor</code>), after initialization (<code>e = EvenExtractor(range(120))</code>), and after extraction (<code>l = e.extract()</code>. Being a finite-state machine we can interact with it before moving from a state to another. For example</p>
+
+<p><code>python
+e = EvenExtractor(range(120)) # State B
+e.l = range(60)
+e.extract() # State C
+</code></p>
+
+<p>Well, despite the very simple example the point is: by converting the procedure to a class we obtained a rich tool that can execute its job step by step and, in general, can work in a non linear way.</p>
+
+<h2>Playing with genetics</h2>
+
+<p>The real power of classes used as finite-state machines lies in the concept of <a href="http://en.wikipedia.org/wiki/Inheritance_%28object-oriented_programming%29">inheritance</a>. Inheritance is a mechanism through which a class can copy another class and then change only the parts that have to behave differently. Please note that here we talk about classes and not instances, so the copy action here refers to the structure of the class, not the actual data contained in it. Inheritance is a mean to mimic the behaviour of a class.</p>
+
+<p>(Sidenote: <em>I am a strong supporter of an OO design principle that states "Favour composition over inheritance" (and favor "favor" over "favour" for US audience). I read too many OOP introductions that stress too much the inheritance mechanism and leave composition aside, raising a generation of OOP programmers that, instead of building systems populated by many small collaborating objects create nightmares infested by giant all-purpose things that sometimes resemble an operating system more than a system component. Given that, inheritance plays an important role in OOP, and here we find a very good example of its real benefit.</em>)</p>
+
+<p>Let's continue the above example, first by enriching the EvenExtractor class:</p>
+
+<p>``` python
+class EvenExtractor(object):</p>
+
+<pre><code>def __init__(alist):
+    self.l = [int(elem) for elem in alist]
+
+def extract(self):
+    return [i for i in self.l if i%2 == 0]
+</code></pre>
+
+<p>```</p>
+
+<p>Now the class performs an important action in its initialization phase, converting all elements of the input list to integers, and we can happily use it in our Next Big Project™. Some days after this change we realize that we could also profitably use a class that extracts odd elements form a list. Being good object oriented programmers we write</p>
+
+<p>```  python
+class OddExtractor(EvenExtractor):</p>
+
+<pre><code>def extract(self):
+    return [i for i in self.l if i%2 != 0]
+</code></pre>
+
+<p>```</p>
+
+<p>and call it a day. Indeed, through the inheritance mechanism expressed by that <code>(EvenExtractor)</code> signature of the new class, we defined something that is exactly the same thing as <code>EvenExtractor</code>, with the same methods and attributes, but with a different name. Then we changed the behaviour of the new class but only for the extraction part by <a href="http://en.wikipedia.org/wiki/Method_overriding">overriding the method</a>.</p>
+
+<p>To summarize the lesson: using classes and inheritance you can build finite-state machines that are easily customizable to suit your exact needs. This obviously is just one of the many points of view under which you can consider classes, but it is the one we need to understand Django CBVs.</p>
+
+<h2>Back to Django</h2>
+
+<p>Finally! You couldn't take Python classes anymore, could you? Sorry, we are dealing with them further, but for the moment let us move to Django to look at a practical use of what we learned in the previous sections.</p>
+
+<p>A Django view is a perfect example of a finite-state machine. It takes an incoming request and makes it flow through different processing steps until a final response is produced, which is then sent back to the user. So, for the love of definitions, say that CBVs are the Django mechanism to allow the programmer to write their views leveraging the tools made available by the object-oriented paradigm. In this context (pun intended) CBGVs are the "batteries included" of Django views: (class-based) generic views are powerful tools that the framework gives you to accomplish the most usual tasks, and sometimes even the unusual ones.</p>
+
+<p>Let's dig into one of the examples of the official Django docs; <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-display/#listview">here</a> you find the API of the beloved <code>ListView</code>, a generic view to deal with a list of things (extracted from the database).</p>
+
+<p>``` python
+from django.views.generic.list import ListView
+from articles.models import Article</p>
+
+<p>class ArticleListView(ListView):</p>
+
+<pre><code>model = Article
+</code></pre>
+
+<p>```</p>
+
+<p>This example assumes that <code>articles</code> is your application and <code>Article</code> is one of its models.</p>
+
+<p>This short piece of code leverages the full power of inheritance. Indeed we just derived <code>ArticleListView</code> from <code>ListView</code> and changed the class attribute <code>model</code>: how can this work? How can this class process incoming requests and what are the outputs? The official documentation states "While this view is executing, self.object_list will contain the list of objects (usually, but not necessarily a queryset) that the view is operating upon."; this leaves many dark corners, however, and if you are a novice, chances are that you are already lost.</p>
+
+<p>Since <code>ArticleListView</code> derives from <code>ListView</code>, the latter is the class we have to analyze to understand how data are processed. To do this you need to look at the <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-display/#django.views.generic.list.ListView">documentation</a>, and if something is still unclear you can freely look at the <a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py">source code</a>. As already said I find a little difficult to find a clear way through the docs, so I'll try to summarize here what I learned. In the following paragraphs you will find links like (<a href="">SC</a>) which point to the source code, if you want to read it by yourself.</p>
+
+<h4>URL dispatchers and views</h4>
+
+<p>A CBV cannot directly be used in your URL dispatcher; instead you have to give the result of the <code>as_view()</code> method (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L31">SC</a>), which basically defines a function that instances the class (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L46">SC</a>) and calls the <code>dispatch()</code> method (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L47">SC</a>); then the function is returned to be used in the URL dispatcher (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L55">SC</a>). As a user, we are interested only in the fact that the <em>entry point</em> of the class, i.e. the method called when a request hits the URL linked with it, is <code>dispatch()</code>.</p>
+
+<p>Let's use this knowledge to print out a string on the console each time a request is served by our CBV. I'm running through this (indeed simple) task step by step since it shows exactly how you have to deal with CBVs when solving real problems.</p>
+
+<p>If we define the <code>ArticleListView</code> class this way</p>
+
+<p>``` python
+from django.views.generic.list import ListView
+from articles.models import Article</p>
+
+<p>class ArticleListView(ListView):</p>
+
+<pre><code>model = Article
+
+def dispatch(self, request, *args, **kwargs):
+    super(ArticleListView, self).dispatch(request, *args, **kwds)
+</code></pre>
+
+<p>```</p>
+
+<p>the class does not change its behaviour. What we did was to override the <code>dispatch()</code> method with a call to the parent's method, i.e. we explicitly wrote what Python does by default. You can find detailed information about <code>super()</code> <a href="http://docs.python.org/2/library/functions.html#super">here</a>. Please be also sure to understand the star and double star notation to define variable number of arguments; the official documentation is <a href="http://docs.python.org/2.7/tutorial/controlflow.html#more-on-defining-functions">here</a>.</p>
+
+<p>Since views are automatically called by the framework, this latter expects them to comply with a very specific API, so when overriding a method you have to obey its signature. The signature of <code>dispatch()</code> can be found <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/base/#django.views.generic.base.View.dispatch">here</a>; by the way, this documentation of <code>dispatch()</code> gives you good hints about the internal working mechanism of CBVs.</p>
+
+<p>The <code>dispatch()</code> method receives a <code>request</code> argument, which type is <code>HttpRequest</code> (<a href="https://docs.djangoproject.com/en/1.5/ref/request-response/#httprequest-objects">documentation</a>), and we can print it on the console with the standard <code>print()</code> function</p>
+
+<p>``` python
+from django.views.generic.list import ListView
+from articles.models import Article</p>
+
+<p>class ArticleListView(ListView):</p>
+
+<pre><code>model = Article
+
+def dispatch(self, request, *args, **kwargs):
+    print(request)
+    super(ArticleListView, self).dispatch(request, *args, **kwds)
+</code></pre>
+
+<p>```</p>
+
+<p>This prints the content of the <code>request</code> object on the standard output of the Python code, that is on the standard output of the server that is running the Django project. If you are running the Django development server, you will find the output on the text console where you issued the <code>django-admin.py runserver</code> command (or <code>manage.py runserver</code>).</p>
+
+<p>This, in a nutshell, is the standard way of dealing with framework classes, and thus with Django's CBGVs: inherit from a predefined class, identify which methods you need to change, override them complying with their signature and calling the parent's code somewhere in the new code.</p>
+
+<p>The full list of methods <code>ListView</code> uses when processing incoming requests is listed on its <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-display/#listview">official documentation page</a> in the "Method Flowchart" section; in the "Ancestors (MRO)" section you can see that <code>ListView</code> itself inherits from a good number of other classes. MRO stands for Method Resolution Order and has to deal with multiple inheritance: if you are eager to deal with one of the most intricate Python topics feel free to read <a href="http://docs.python.org/2/tutorial/classes.html#multiple-inheritance">here</a>.</p>
+
+<h4>Incoming GET requests</h4>
+
+<p>Back to our <code>ArticleListView</code>. The <code>dispatch()</code> method of the parent reads the <code>method</code> attribute of the <code>request</code> object and selects a handler to process the request itself (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L57">SC</a>): this means that if <code>request.method</code> is <code>'GET'</code>, which is the HTTP way to say that we are <em>reading</em> a resource, <code>dispatch()</code> will call the <code>get()</code> method of the class.</p>
+
+<p>The <code>get()</code> method of <code>ListView</code> comes from its <code>BaseListView</code> ancestor (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-display/#django.views.generic.list.BaseListView">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L114">source code</a>). This function is the one that contains the functional view code, so if you are accustomed to function-based views you'll find yourself at home here. As you can see, the function basically fills the attribute <code>self.object_list</code> with the result of the method <code>self.get_queryset()</code>, creates a context calling the method <code>self.get_context_data()</code> and calls the class version of <code>render_to_response()</code>, namely <code>self.render_to_response()</code>.</p>
+
+<p>Are you still with me? Don't give up, we are nearly at the end (with ListView). The method <code>self.get_queryset()</code> comes from the <code>MultipleObjectMixin</code> ancestor of <code>ListView</code> (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/mixins-multiple-object/#multipleobjectmixin">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L11">source code</a>) and simply gets all objects of a given model (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L29">SC</a>) issuing <code>queryset = self.model._default_manager.all()</code>. The value of <code>self.model</code> is what we configured in our class when we wrote <code>model = Article</code>.</p>
+
+<p>That's all. Our <code>ArticleListView</code> class extracts all <code>Article</code> objects from the database, and calls a template passing a context that contains a single variable, <code>object_list</code>, instanced with the list of extracted objects.</p>
+
+<h4>Templates and contexts</h4>
+
+<p>Are you satisfied? I'm actually still curious about the template and the context. Let's see what we can find about these topics. First of all, when the class calls <code>self.render_to_response()</code> it uses the code that comes from its <code>TemplateResponseMixin</code> ancestor (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/mixins-simple/#templateresponsemixin">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L81">source code</a>); the method calls some other functions but its basic behaviour is to create a response using a template and a context. The template, again through a series of calls which you can follow by yourself, comes from <code>self.template_name</code> (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L109">SC</a>); while <code>TemplateResponseMixin</code> defines it <code>None</code> (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L85">SC</a>), <code>ListView</code> does some magic through ancestors (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L128">SC</a>) to return a template which name derives from the given model. So, in short, our <code>ArticleListView</code>, defining an <code>Article</code> model, automatically uses a template that is called <code>article_list.html</code>.</p>
+
+<p>May we change this behaviour? Of course! This is, after all, the point of using classes instead of functions: easily customize the behaviour. We can change the definition of out class like:</p>
+
+<p>``` python
+from django.views.generic.list import ListView
+from articles.models import Article</p>
+
+<p>class ArticleListView(ListView):</p>
+
+<pre><code>model = Article
+template_name = 'sometemplate.html'
+</code></pre>
+
+<p>```</p>
+
+<p>What does this exactly do? When the <code>self.render_to_response()</code> method looks for <code>self.template_name</code> this attribute has a value, so there is no need to call the predefined methods and <code>sometemplate.html</code> becomes the name of the template used to render the response. This follows a very useful pattern of object-oriented programming; if you are interested I can write something about this topic.</p>
+
+<p>As regards the context, remember that it is only a dictionary of values you want to access when compiling the template. Variable names inside the context (as thus inside the template), data format and data content are completely up to you. When using CBGVs, however, you will find in your context some variables that have been created by the ancestors of your view, as happens for <code>object_list</code>. What if you want to show a page with the list of all Articles, but you want to add a value to the context?</p>
+
+<p>Nothing is easier: you just need to override the function that produces the context and change its behaviour. Say, for example, that we want to show the number of total readers of our site, along with the list of articles. Assuming that a <code>Reader</code> model is available we can write</p>
+
+<p>``` python
+from django.views.generic.list import ListView
+from articles.models import Article, Reader</p>
+
+<p>class ArticleListView(ListView):</p>
+
+<pre><code>model = Article
+
+def get_context_data(self, **kwargs):
+    context = super(ArticleListView, self).get_context_data(**kwargs)
+    context['readers'] = Readers.objects.count()
+    return context
+</code></pre>
+
+<p>```</p>
+
+<p>As always, when overriding a method we first call the ancestor's one, so that we get the result expected from a normal behaviour of the method, then we add out customizations.</p>
+
+<h2>Conclusion</h2>
+
+<p>In this first post I tried to uncover some of the mysteries behind CBVs and CBGVs in Django, by showing step by step what happens to a GET request that hits a class-based view. Hopefully the matter has now been demystified a little!</p>
+
+<p>In the next posts I will discuss DetailView, the generic view to show detail about an object, how to create custom CBVs and hot to use CBVs to process forms, i.e. POST requests.</p>
+
+<p>Let me know if this post helped you in understanding the matter and feel free to point out any error or to ask questions.</p>
+]]></content>
+  </entry>
+  
+</feed>
