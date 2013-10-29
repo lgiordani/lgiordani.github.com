@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-10-28T08:49:53+01:00</updated>
+  <updated>2013-10-29T08:38:11+01:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -235,7 +235,7 @@ from articles.models import Article, Reader</p>
 
 def get_context_data(self, **kwargs):
     context = super(ArticleListView, self).get_context_data(**kwargs)
-    context['readers'] = Readers.objects.count()
+    context['readers'] = Reader.objects.count()
     return context
 </code></pre>
 
@@ -250,6 +250,10 @@ def get_context_data(self, **kwargs):
 <p>In the next posts I will discuss DetailView, the generic view to show detail about an object, how to create custom CBVs and hot to use CBVs to process forms, i.e. POST requests.</p>
 
 <p>Let me know if this post helped you in understanding the matter and feel free to point out any error or to ask questions.</p>
+
+<h2>Updates</h2>
+
+<p>As pointed out by <a href="http://www.reddit.com/user/mbrochh">mbrochh</a> on Reddit, there is a very useful resource for Django programmers: <a href="http://ccbv.co.uk/">Classy Class-Based Views</a>. It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!</p>
 ]]></content>
   </entry>
   

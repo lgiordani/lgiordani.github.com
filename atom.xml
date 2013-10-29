@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.io/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-10-28T08:49:53+01:00</updated>
+  <updated>2013-10-29T08:38:11+01:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -267,7 +267,7 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 </span><span class='line'>  
 </span><span class='line'>  <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span class='line'>      <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ArticleListView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">context</span><span class="p">[</span><span class="s">&#39;readers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Readers</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+</span><span class='line'>      <span class="n">context</span><span class="p">[</span><span class="s">&#39;readers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Reader</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
 </span><span class='line'>      <span class="k">return</span> <span class="n">context</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -281,6 +281,10 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 <p>In the next posts I will discuss DetailView, the generic view to show detail about an object, how to create custom CBVs and hot to use CBVs to process forms, i.e. POST requests.</p>
 
 <p>Let me know if this post helped you in understanding the matter and feel free to point out any error or to ask questions.</p>
+
+<h2>Updates</h2>
+
+<p>As pointed out by <a href="http://www.reddit.com/user/mbrochh">mbrochh</a> on Reddit, there is a very useful resource for Django programmers: <a href="http://ccbv.co.uk/">Classy Class-Based Views</a>. It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!</p>
 ]]></content>
   </entry>
   
