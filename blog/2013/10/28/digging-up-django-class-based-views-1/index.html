@@ -293,7 +293,7 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 </span><span class='line'>    <span class="n">model</span> <span class="o">=</span> <span class="n">Article</span>
 </span><span class='line'>  
 </span><span class='line'>  <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span class='line'>      <span class="nb">super</span><span class="p">(</span><span class="n">ArticleListView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+</span><span class='line'>      <span class="nb">super</span><span class="p">(</span><span class="n">ArticleListView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -320,7 +320,7 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 </span><span class='line'>  
 </span><span class='line'>  <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 </span><span class='line'>      <span class="k">print</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-</span><span class='line'>      <span class="nb">super</span><span class="p">(</span><span class="n">ArticleListView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+</span><span class='line'>      <span class="nb">super</span><span class="p">(</span><span class="n">ArticleListView</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -403,6 +403,8 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 <h2>Updates</h2>
 
 <p>As pointed out by <a href="http://www.reddit.com/user/mbrochh">mbrochh</a> on Reddit, there is a very useful resource for Django programmers: <a href="http://ccbv.co.uk/">Classy Class-Based Views</a>. It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!</p>
+
+<p>2013-10-29: I fixed a couple of typos when overriding <code>dispatch()</code>. Thanks to Tom Evans for spotting them.</p>
 </div>
 
 <div class="meta">
