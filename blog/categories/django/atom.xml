@@ -4,7 +4,7 @@
   <title><![CDATA[Category: django | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/django/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-10-29T18:46:06+01:00</updated>
+  <updated>2013-10-30T08:41:41+01:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -63,7 +63,7 @@ def extract_even_numbers(alist):</p>
 <p>```python
 class EvenExtractor(object):</p>
 
-<pre><code>def __init__(alist):
+<pre><code>def __init__(self, alist):
     self.l = alist
 
 def extract(self):
@@ -93,7 +93,7 @@ e.extract() # State C
 <p>``` python
 class EvenExtractor(object):</p>
 
-<pre><code>def __init__(alist):
+<pre><code>def __init__(self, alist):
     self.l = [int(elem) for elem in alist]
 
 def extract(self):
@@ -253,9 +253,11 @@ def get_context_data(self, **kwargs):
 
 <h2>Updates</h2>
 
-<p>As pointed out by <a href="http://www.reddit.com/user/mbrochh">mbrochh</a> on Reddit, there is a very useful resource for Django programmers: <a href="http://ccbv.co.uk/">Classy Class-Based Views</a>. It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!</p>
+<p>2013-10-29: As pointed out by <a href="http://www.reddit.com/user/mbrochh">mbrochh</a> on Reddit, there is a very useful resource for Django programmers: <a href="http://ccbv.co.uk/">Classy Class-Based Views</a>. It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!</p>
 
 <p>2013-10-29: I fixed a couple of typos when overriding <code>dispatch()</code>. Thanks to Tom Evans for spotting them.</p>
+
+<p>2013-10-30: Fixed the <code>__init__()</code> method of <code>EvenExtractor</code>, that was missing the <code>self</code> parameter. Thanks <a href="http://www.reddit.com/user/meatypocket">meatypocket</a>.</p>
 ]]></content>
   </entry>
   

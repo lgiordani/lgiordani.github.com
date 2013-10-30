@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.io/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-10-29T18:46:06+01:00</updated>
+  <updated>2013-10-30T08:41:41+01:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -66,7 +66,7 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">EvenExtractor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">alist</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alist</span><span class="p">):</span>
 </span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="n">alist</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -102,7 +102,7 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 <span class='line-number'>5</span>
 <span class='line-number'>6</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">EvenExtractor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">alist</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alist</span><span class="p">):</span>
 </span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">elem</span><span class="p">)</span> <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">alist</span><span class="p">]</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -284,9 +284,11 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 
 <h2>Updates</h2>
 
-<p>As pointed out by <a href="http://www.reddit.com/user/mbrochh">mbrochh</a> on Reddit, there is a very useful resource for Django programmers: <a href="http://ccbv.co.uk/">Classy Class-Based Views</a>. It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!</p>
+<p>2013-10-29: As pointed out by <a href="http://www.reddit.com/user/mbrochh">mbrochh</a> on Reddit, there is a very useful resource for Django programmers: <a href="http://ccbv.co.uk/">Classy Class-Based Views</a>. It is a comprensive index of all CBGVs with ancestors and method signatures. Make sure to have it in you Django bookmarks!</p>
 
 <p>2013-10-29: I fixed a couple of typos when overriding <code>dispatch()</code>. Thanks to Tom Evans for spotting them.</p>
+
+<p>2013-10-30: Fixed the <code>__init__()</code> method of <code>EvenExtractor</code>, that was missing the <code>self</code> parameter. Thanks <a href="http://www.reddit.com/user/meatypocket">meatypocket</a>.</p>
 ]]></content>
   </entry>
   
