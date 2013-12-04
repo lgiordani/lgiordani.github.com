@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.io/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-10-30T08:41:41+01:00</updated>
+  <updated>2013-12-04T17:00:52+01:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -901,7 +901,7 @@ Last, you need to add the actual call that sends the message to <code>send_ping.
 <p>This is the full code of the discussed examples.</p>
 
 <figure class='code'><figcaption><span> (facilities.py)</span> <a href='http://lgiordani.github.io/downloads/code/postage/facilities.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -973,7 +973,7 @@ Last, you need to add the actual call that sends the message to <code>send_ping.
 
 
 <figure class='code'><figcaption><span> (send_ping.py)</span> <a href='http://lgiordani.github.io/downloads/code/postage/send_ping.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1025,7 +1025,7 @@ Last, you need to add the actual call that sends the message to <code>send_ping.
 
 
 <figure class='code'><figcaption><span> (receive_ping.py)</span> <a href='http://lgiordani.github.io/downloads/code/postage/receive_ping.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1243,7 +1243,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <h4>Building the ring</h4>
 
 <figure class='code'><figcaption><span> (ring_master_no_messages.erl)</span> <a href='http://lgiordani.github.io/downloads/code/erlang-rings/ring_master_no_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1362,7 +1362,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 
 
 <figure class='code'><figcaption><span> (ring_master_single_message.erl)</span> <a href='http://lgiordani.github.io/downloads/code/erlang-rings/ring_master_single_message.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1486,7 +1486,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 
 
 <figure class='code'><figcaption><span> (ring_master_multiple_messages.erl)</span> <a href='http://lgiordani.github.io/downloads/code/erlang-rings/ring_master_multiple_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1639,7 +1639,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>This is not enough. We have to be sure that the whole ring is ready before giving control back to the user issuing <code>start()</code>. Until now the message was sent by the master process just after the creation of the last ring process, so there was no need to synchronize the return of the start function with the spawned processes. Now we need it, so just after registering the master process we wait for a ready message coming from the ring. To allow the ring to send the message to the initial caller we have to pass <code>self()</code> to <code>create()</code>. Pay attention that <code>self()</code> passed to the spawned process is the pid of the external process (e.g. the Erlang shell) while <code>self()</code> passed to <code>create()</code> is the pid of the master ring process.</p>
 
 <figure class='code'><figcaption><span> (ring_master_functional.erl)</span> <a href='http://lgiordani.github.io/downloads/code/erlang-rings/ring_master_functional.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1867,7 +1867,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>The recursive ring construction.</p>
 
 <figure class='code'><figcaption><span> (ring_recursion_no_messages.erl)</span> <a href='http://lgiordani.github.io/downloads/code/erlang-rings/ring_recursion_no_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1991,7 +1991,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>The recursive ring with a single message travelling.</p>
 
 <figure class='code'><figcaption><span> (ring_recursion_single_message.erl)</span> <a href='http://lgiordani.github.io/downloads/code/erlang-rings/ring_recursion_single_message.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -2093,7 +2093,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>The recursive ring with support for multiple message travels.</p>
 
 <figure class='code'><figcaption><span> (ring_recursion_multiple_messages.erl)</span> <a href='http://lgiordani.github.io/downloads/code/erlang-rings/ring_recursion_multiple_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -2229,7 +2229,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>The recursive ring exposing the functional API.</p>
 
 <figure class='code'><figcaption><span> (ring_recursion_functional.erl)</span> <a href='http://lgiordani.github.io/downloads/code/erlang-rings/ring_recursion_functional.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -3676,7 +3676,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>To make the object more easily inheritable and extendable we can refactor it a little</p>
 
 <figure class='code'><figcaption><span> (mthread.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/mthread.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -3764,7 +3764,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>So the first implementation of the scheduler is the following:</p>
 
 <figure class='code'><figcaption><span> (scheduler.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/scheduler.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -3816,7 +3816,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>We can test the microthreads and the scheduler with this simple code</p>
 
 <figure class='code'><figcaption><span> (test_scheduler.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/test_scheduler.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -3893,7 +3893,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>The scheduler could however be more flexible, specifically it could be converted to a microthread itself. The scheduler, when executed, will return a generator, and each call of its <code>next()</code> method will run one of its microthreads. After this the scheduler will freeze and give control back.</p>
 
 <figure class='code'><figcaption><span> (mscheduler.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/mscheduler.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -3951,7 +3951,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>These little changes allow the scheduler to be run into another scheduler, thus enabling us to create a hierarchy to easily build complex systems. At the same time the scheduler can be used as usual simply calling its <code>next()</code> method in a for loop.</p>
 
 <figure class='code'><figcaption><span> (test_mscheduler.py)</span> <a href='http://lgiordani.github.io/downloads/code/python-generators/test_mscheduler.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -4895,7 +4895,7 @@ and grant access to the owner and group users). The returned integer is called q
 <p>Let&#8217;s test all these concepts with a simple program which creates a message queue, sends a message to it, reads the message and cancels the queue. After the message has been read, a comparison between the original values and the ones in the message is performed to check that the system is working.</p>
 
 <figure class='code'><figcaption><span>queues1  (queues1.c)</span> <a href='http://lgiordani.github.io/downloads/code/queues1.c'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -5061,7 +5061,7 @@ and grant access to the owner and group users). The returned integer is called q
 <p>The following code creates a queue, then forks the execution. The child generates a random number, prints it on the standard output and sends them to the parent, which in turn prints it on the screen.</p>
 
 <figure class='code'><figcaption><span>queues2  (queues2.c)</span> <a href='http://lgiordani.github.io/downloads/code/queues2.c'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>

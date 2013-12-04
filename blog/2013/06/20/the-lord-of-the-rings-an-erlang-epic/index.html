@@ -134,7 +134,8 @@
 
   
 
-<span class="byline author vcard">Posted by <span class="fn"><a href="/about" rel="author">Leonardo Giordani</a></span></span>
+<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
+
 
 <div class="entry-content"><h2>Abstract</h2>
 
@@ -201,7 +202,7 @@
 <h4>Building the ring</h4>
 
 <figure class='code'><figcaption><span> (ring_master_no_messages.erl)</span> <a href='/downloads/code/erlang-rings/ring_master_no_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -320,7 +321,7 @@
 
 
 <figure class='code'><figcaption><span> (ring_master_single_message.erl)</span> <a href='/downloads/code/erlang-rings/ring_master_single_message.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -444,7 +445,7 @@
 
 
 <figure class='code'><figcaption><span> (ring_master_multiple_messages.erl)</span> <a href='/downloads/code/erlang-rings/ring_master_multiple_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -597,7 +598,7 @@
 <p>This is not enough. We have to be sure that the whole ring is ready before giving control back to the user issuing <code>start()</code>. Until now the message was sent by the master process just after the creation of the last ring process, so there was no need to synchronize the return of the start function with the spawned processes. Now we need it, so just after registering the master process we wait for a ready message coming from the ring. To allow the ring to send the message to the initial caller we have to pass <code>self()</code> to <code>create()</code>. Pay attention that <code>self()</code> passed to the spawned process is the pid of the external process (e.g. the Erlang shell) while <code>self()</code> passed to <code>create()</code> is the pid of the master ring process.</p>
 
 <figure class='code'><figcaption><span> (ring_master_functional.erl)</span> <a href='/downloads/code/erlang-rings/ring_master_functional.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -825,7 +826,7 @@
 <p>The recursive ring construction.</p>
 
 <figure class='code'><figcaption><span> (ring_recursion_no_messages.erl)</span> <a href='/downloads/code/erlang-rings/ring_recursion_no_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -949,7 +950,7 @@
 <p>The recursive ring with a single message travelling.</p>
 
 <figure class='code'><figcaption><span> (ring_recursion_single_message.erl)</span> <a href='/downloads/code/erlang-rings/ring_recursion_single_message.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1051,7 +1052,7 @@
 <p>The recursive ring with support for multiple message travels.</p>
 
 <figure class='code'><figcaption><span> (ring_recursion_multiple_messages.erl)</span> <a href='/downloads/code/erlang-rings/ring_recursion_multiple_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1187,7 +1188,7 @@
 <p>The recursive ring exposing the functional API.</p>
 
 <figure class='code'><figcaption><span> (ring_recursion_functional.erl)</span> <a href='/downloads/code/erlang-rings/ring_recursion_functional.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: generators | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/generators/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-10-30T08:41:41+01:00</updated>
+  <updated>2013-12-04T17:00:52+01:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -76,7 +76,7 @@ g.next()
 <p>To make the object more easily inheritable and extendable we can refactor it a little</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (mthread.py)</span> <a href='/downloads/code/python-generators/mthread.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -150,7 +150,7 @@ scheduled_microthreads = []
 <p>So the first implementation of the scheduler is the following:</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (scheduler.py)</span> <a href='/downloads/code/python-generators/scheduler.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -201,7 +201,7 @@ scheduled_microthreads = []
 <p>We can test the microthreads and the scheduler with this simple code</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (test_scheduler.py)</span> <a href='/downloads/code/python-generators/test_scheduler.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -269,7 +269,7 @@ Number: 3
 <p>The scheduler could however be more flexible, specifically it could be converted to a microthread itself. The scheduler, when executed, will return a generator, and each call of its <code>next()</code> method will run one of its microthreads. After this the scheduler will freeze and give control back.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (mscheduler.py)</span> <a href='/downloads/code/python-generators/mscheduler.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -326,7 +326,7 @@ Number: 3
 <p>These little changes allow the scheduler to be run into another scheduler, thus enabling us to create a hierarchy to easily build complex systems. At the same time the scheduler can be used as usual simply calling its <code>next()</code> method in a for loop.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (test_mscheduler.py)</span> <a href='/downloads/code/python-generators/test_mscheduler.py'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>

@@ -4,7 +4,7 @@
   <title><![CDATA[Category: concurrent programming | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/concurrent-programming/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-10-30T08:41:41+01:00</updated>
+  <updated>2013-12-04T17:00:52+01:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -78,7 +78,7 @@
 <h4>Building the ring</h4>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ring_master_no_messages.erl)</span> <a href='/downloads/code/erlang-rings/ring_master_no_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -193,7 +193,7 @@
 
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ring_master_single_message.erl)</span> <a href='/downloads/code/erlang-rings/ring_master_single_message.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -316,7 +316,7 @@
 
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ring_master_multiple_messages.erl)</span> <a href='/downloads/code/erlang-rings/ring_master_multiple_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -467,7 +467,7 @@ register(ring_master_functional, spawn(?MODULE, create, [NumberProcesses])),
 <p>This is not enough. We have to be sure that the whole ring is ready before giving control back to the user issuing <code>start()</code>. Until now the message was sent by the master process just after the creation of the last ring process, so there was no need to synchronize the return of the start function with the spawned processes. Now we need it, so just after registering the master process we wait for a ready message coming from the ring. To allow the ring to send the message to the initial caller we have to pass <code>self()</code> to <code>create()</code>. Pay attention that <code>self()</code> passed to the spawned process is the pid of the external process (e.g. the Erlang shell) while <code>self()</code> passed to <code>create()</code> is the pid of the master ring process.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ring_master_functional.erl)</span> <a href='/downloads/code/erlang-rings/ring_master_functional.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -694,7 +694,7 @@ register(ring_master_functional, spawn(?MODULE, create, [NumberProcesses])),
 <p>The recursive ring construction.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ring_recursion_no_messages.erl)</span> <a href='/downloads/code/erlang-rings/ring_recursion_no_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -817,7 +817,7 @@ register(ring_master_functional, spawn(?MODULE, create, [NumberProcesses])),
 <p>The recursive ring with a single message travelling.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ring_recursion_single_message.erl)</span> <a href='/downloads/code/erlang-rings/ring_recursion_single_message.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -918,7 +918,7 @@ register(ring_master_functional, spawn(?MODULE, create, [NumberProcesses])),
 <p>The recursive ring with support for multiple message travels.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ring_recursion_multiple_messages.erl)</span> <a href='/downloads/code/erlang-rings/ring_recursion_multiple_messages.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -1053,7 +1053,7 @@ register(ring_master_functional, spawn(?MODULE, create, [NumberProcesses])),
 <p>The recursive ring exposing the functional API.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (ring_recursion_functional.erl)</span> <a href='/downloads/code/erlang-rings/ring_recursion_functional.erl'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -2255,7 +2255,7 @@ int msgctl(int msqid, int cmd, struct msqid_ds *buf);
 <p>Let's test all these concepts with a simple program which creates a message queue, sends a message to it, reads the message and cancels the queue. After the message has been read, a comparison between the original values and the ones in the message is performed to check that the system is working.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>queues1  (queues1.c)</span> <a href='/downloads/code/queues1.c'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -2420,7 +2420,7 @@ int msgctl(int msqid, int cmd, struct msqid_ds *buf);
 <p>The following code creates a queue, then forks the execution. The child generates a random number, prints it on the standard output and sends them to the parent, which in turn prints it on the screen.</p>
 
 <p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>queues2  (queues2.c)</span> <a href='/downloads/code/queues2.c'>download</a></figcaption>
- <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
