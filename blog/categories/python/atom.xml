@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2013-12-04T17:00:52+01:00</updated>
+  <updated>2013-12-11T08:53:52+01:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,246 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Digging up Django class-based views - 2]]></title>
+    <link href="http://lgiordani.github.io/blog/2013/12/11/digging-up-django-class-based-views-2/"/>
+    <updated>2013-12-11T09:00:00+01:00</updated>
+    <id>http://lgiordani.github.io/blog/2013/12/11/digging-up-django-class-based-views-2</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
+
+<p>In the first installment of this short series, I introduced the theory behind Django class-based views and the reason why in this context classes are more powerful than pure functions. I also introduced one of the generic views Django provides out-of-the-box, which is <code>ListView</code>.</p>
+
+<p>In this second post I want to talk about the second most used generic view, <code>DetailView</code>, and about custom querysets and arguments. Last, I'm going to introduce unspecialized class-based views that allow you to build more complex Web pages. To fully understand <code>DetailView</code>, however, you need to grasp two essential concepts, namely <strong>querysets</strong> and <strong>view parameters</strong>. So I'm sorry for the learn-by-doing readers, but this time too I'm going to start with some pure programming topics.</p>
+
+<!--more-->
+
+
+<h2>QuerySets or the art of extracting information</h2>
+
+<p>One of the most important parts of Django is the ORM (Object Relational Mapper), which allows you to access the underlying database just like a collection of Python objects. As you know, Django provides you tools to simplify the construction of DB queries; they are <strong>managers</strong> (the <code>.objects</code> attribute of any models, for example) and <strong>query methods</strong> (<code>get()</code>, <code>filter()</code>, and friends). Pay attention because things here are slightly more magical than you can think at a first glance.</p>
+
+<p>When you use one of the methods of a manager you get as a result a <code>QuerySet</code>, which most of the time is used as a list, but is more than this. You can find <a href="https://docs.djangoproject.com/en/1.5/topics/db/queries/">here</a> and <a href="https://docs.djangoproject.com/en/1.5/ref/models/querysets/">here</a> the official documentation about queries and QuerySets, a very recommended reading.</p>
+
+<p>What I want to stress here is that QuesySets are not evaluated until you perform an action that access the content like slicing or iterating on it. This means that we can build QuerySets, pass them to functions, store them, and even build them programmatically or metaprogramming them without the DB being hit. If you think at QuerySets as recipes you are not far from the truth: they are objects that store how you want to retrieve the data of your interest. Actually retriving them is another part of the game. This separation between the definition of something and its execution is called <strong>lazy evaluation</strong>.</p>
+
+<p>Let me give you a very trivial example to show why the lazy evaluation of QuerySets is important.</p>
+
+<p>``` python
+[...]</p>
+
+<p>def get_oldest_three(queryset):</p>
+
+<pre><code>return queryset.order_by['id'][0:2]
+</code></pre>
+
+<p>old_books = get_oldest_three(Book.objects.all())
+old_hardcover_books = \</p>
+
+<pre><code>get_oldest_three(Book.objects.filter('type=Book.HARDCOVER'))
+</code></pre>
+
+<p>```</p>
+
+<p>As you can see the <code>get_oldest_three()</code> method is just filtering an incoming QuerySet (which can be of any type); it simply orders the objects and gets the first three inserted in the DB. The important thing here is that we are using QuerySets like pure 'algorithms', or descriptions of a procedure. When creating the <code>old_books</code> variable we are just telling the <code>get_oldest_three()</code> method "Hey, this is the way I extract the data I'm interested in. May you please refine it and return the actual data?"</p>
+
+<p>Being such flexible objects, QuerySets are an important part of generic views, so keep them warm for the upcoming banquet.</p>
+
+<h2>Being flexible: parametric views</h2>
+
+<p>URLs are the API of our Web site or service. This can be more or less evident for the user that browses through the pages, but from the programmer's point of view URLs are the entry points of a computer system. As such, they are not very different from the API of a library: here, static pages are just like constants, or functions that always return that same value (such as a configuration parameter), while dynamic pages are like functions that process incoming data (parameters) and return a result.</p>
+
+<p>So Web URLs can accept parameters, and our underlying view shall do the same. You basically have three methods to convey parameters from the user's browser to your server using HTTP. The first method is named <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> and lists parameters directly in the URL through a universal syntax. The second method is storing parameters in the HTTP request body, which is what POST requests do. We will discuss this method in a later post about forms.</p>
+
+<p>The first method has one big drawback: most of the time URLs are long (and sometimes <em>too</em> long), and difficult to use as a real API. To soften this effect the concept of <a href="http://en.wikipedia.org/wiki/Clean_URL">clean URL</a> arose, and this is the way Django follows natively (though, if you want, you can also stick to the query string method).</p>
+
+<p>Now, <a href="https://docs.djangoproject.com/en/1.5/topics/http/urls/">you know</a> that you can collect parameters contained in the URL parsing it with a regular expression; what we need to discover is how class-based views receive and process them.</p>
+
+<p>In the previous post we already discussed the <code>as_view()</code> method that shall instance the class and return the result of <code>dispatch()</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L46">views/generic/base.py#L46</a>).</p>
+
+<p>``` python</p>
+
+<pre><code>@classonlymethod
+def as_view(cls, **initkwargs):
+    """
+    Main entry point for a request-response process.
+    """
+    # sanitize keyword arguments
+    for key in initkwargs:
+        if key in cls.http_method_names:
+            raise TypeError("You tried to pass in the %s method name as a "
+                            "keyword argument to %s(). Don't do that."
+                            % (key, cls.__name__))
+        if not hasattr(cls, key):
+            raise TypeError("%s() received an invalid keyword %r. as_view "
+                            "only accepts arguments that are already "
+                            "attributes of the class." % (cls.__name__, key))
+
+    def view(request, *args, **kwargs):
+        self = cls(**initkwargs)
+        if hasattr(self, 'get') and not hasattr(self, 'head'):
+            self.head = self.get
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        return self.dispatch(request, *args, **kwargs)
+
+    # take name and docstring from class
+    update_wrapper(view, cls, updated=())
+
+    # and possible attributes set by decorators
+    # like csrf_exempt from dispatch
+    update_wrapper(view, cls.dispatch, assigned=())
+    return view
+</code></pre>
+
+<p>```</p>
+
+<p>Now look at what the <code>view()</code> wrapper function actually does with the instanced class (here line 21, <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L65">views/generic/base.py#L65</a>); not surprisingly it takes the <code>request</code>, <code>args</code> and <code>kwargs</code> passed by the URLconf passes and converts them into as many class attributes with the same names.</p>
+
+<p>This means that <em>everywhere in our CBVs</em> we can access the original call parameters simply reading <code>self.request</code>, <code>self.args</code> and <code>self.kwargs</code>, where <code>*args</code> and <code>**kwargs</code> are the unnamed and named values extracted by the URLconf regular expression.</p>
+
+<h2>Details</h2>
+
+<p>Just after listing things, one of the most useful things a Web site does is giving details about objects. Obviously any e-commerce site is made for the most part by pages that list products and show product details, but also a blog is made of one or more pages with a list of posts and a page for each of them. So building a detailed view of the content of our database is worth learning.</p>
+
+<p>To help us in this task Django provides <code>DetailView</code>, which indeed deals, as the name suggests, with the details of what we get from the DB. While <code>ListView</code>'s basic behaviour is to extract the list of all objects with a given model, <code>DetailView</code> extracts a single object. How does it know what object shall be extracted?</p>
+
+<p>When <code>dispatch()</code> is called on an incoming HTTP request the only thing it does is to look at the <code>method</code> attribute, which for <code>HttpRequest</code> objects contains the name of the HTTP verb used (e.g. <code>'GET'</code>); then <code>dispatch()</code> looks for a method of the class with the lowercase name of the verb (e.g. <code>'GET'</code> --> <code>get()</code>) (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L78">views/generic/base.py#L78</a>). This handler is then called with the same parameters of <code>dispatch()</code>, namely the <code>request</code> itself, <code>*args</code> and <code>**kwargs</code>.</p>
+
+<p><code>DetailView</code> has no body and inherits everything from two classes; the second one, <code>BaseDetailView</code>, implements the <code>get()</code> method (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L107">views/generic/detail.py#L107</a>).</p>
+
+<p>``` python
+def get(self, request, *args, **kwargs):</p>
+
+<pre><code>self.object = self.get_object()
+context = self.get_context_data(object=self.object)
+return self.render_to_response(context)
+</code></pre>
+
+<p>```</p>
+
+<p>As you can see this method extracts the single object it shall represent calling <code>self.get_object()</code>, then calls <code>self.get_context_data()</code> (that we met in the previous post) and last the familiar <code>self.render_to_response()</code> that is the class equivalent of the well know Django function. The method <code>self.get_object()</code> is provided by <code>BaseDetailView</code>'s ancestor <code>SingleObjectMixin</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L10">generic/detail.py#L10</a>): the most important parts of its code, for the sake of our present topic are</p>
+
+<p>``` python
+def get_object(self, queryset=None):</p>
+
+<pre><code>if queryset is None:
+    queryset = self.get_queryset()
+
+pk = self.kwargs.get(self.pk_url_kwarg, None)
+if pk is not None:
+    queryset = queryset.filter(pk=pk)
+
+obj = queryset.get()
+
+return obj
+</code></pre>
+
+<p>```</p>
+
+<p><strong>Warning</strong>: I removed many lines from the previous function to improve readability; please check the original source code for the complete implementation.</p>
+
+<p>The code shows where <code>DetailView</code> gets the queryset from; the <code>get_queryset()</code> method is provided by <code>SingleObjectMixin</code> itself and basically returns <code>self.queryset</code> if present, otherwise returns all objects of the given model (acting just like <code>ListView</code> does). This <code>queryset</code> is then refined by a <code>filter()</code> and last by a <code>get()</code>. Here <code>get()</code> is not used directly (I think) to manage the different error cases and raise the correct exceptions.</p>
+
+<p>The parameter <code>pk</code> used in <code>filter()</code> comes directly from <code>self.kwargs</code>, so it is taken directly from the URL. Since this is a core concept of views in general I want to look at this part carefully.</p>
+
+<p>Our <code>DetailView</code> is called by an URLconf that provides a regular expression to parse the URL, for example <code>url(r'^(?P&lt;pk&gt;\d+)/$',</code>. This regex extracts a parameter and gives it the name <code>pk</code>, so <code>kwargs</code> of the view will contain <code>pk</code> as key and the actual number in the URL as value. For example the URL <code>123/</code> will result in <code>{'pk': 123}</code>. The default behaviour of <code>DetailView</code> is to look for a <code>pk</code> key and use it to perform the filtering of the queryset, since <code>self.pk_url_kwarg</code> is <code>'pk'</code>.</p>
+
+<p>So if we want to change the name of the parameter we can simply define the <code>pk_url_kwarg</code> of our class and provide a regex that extract the primary key with the new name. For example <code>url(r'^(?P&lt;key&gt;\d+)/$',</code> extracts it with the name <code>key</code>, so we will define <code>pk_url_kwarg = 'key'</code> in our class.</p>
+
+<p>From this quick exploration we learned that a class inheriting from <code>DetailView</code>:</p>
+
+<ul>
+<li>provides a context with the <code>object</code> key initialized to a single object</li>
+<li><strong>must</strong> be configured with a <code>model</code> class attribute, to know what objects to extract</li>
+<li><strong>can</strong> be configured with a <code>queryset</code> class attribute, to refine the set of objects where the single object is extracted from</li>
+<li><strong>must</strong> be called from a URL that includes a regexp that extracts the primary key of the searched object as <code>pk</code></li>
+<li><strong>can</strong> be configured to use a different name for the primary key through the <code>pk_url_kwarg</code> class attribute</li>
+</ul>
+
+
+<p>The basic use of <code>DetailView</code> is thus exemplified by the following code.</p>
+
+<p>``` python
+class BookDetail(DetailView):</p>
+
+<pre><code>model = Book
+</code></pre>
+
+<p>urlpatterns = patterns('',</p>
+
+<pre><code>url(r'^(?P&lt;pk&gt;\d+)/$',
+    BookDetail.as_view(),
+    name='detail'),
+)
+</code></pre>
+
+<p>```</p>
+
+<p>The view extracts a single object with the <code>Book</code> model; the regex is configured with the standard <code>pk</code> name.</p>
+
+<p>As shown for <code>ListView</code> in the previous post, any CBV uses <code>get_context_data()</code> to return the context dictionary to the rendering engine. So views that inherit from <code>DetailView</code> can add data to the context following the same pattern</p>
+
+<p>``` python
+class BookDetail(DetailView):</p>
+
+<pre><code>model = Book
+
+def get_context_data(self, **kwargs):
+    context = super(BookDetail, self).get_context_data(**kwargs)
+    context['similar'] = get_similar_books(self.object)
+    return context
+</code></pre>
+
+<p>urlpatterns = patterns('',</p>
+
+<pre><code>url(r'^(?P&lt;pk&gt;\d+)/$',
+    BookDetail.as_view(),
+    name='detail'),
+)
+</code></pre>
+
+<p>```</p>
+
+<p>As explained before, you can access the object being shown through <code>self.object</code>, which in the above example is passed to a service function we implemented somewhere in our code.</p>
+
+<h2>Using the base views</h2>
+
+<p>Sometimes, when dealing with complex pages, the generic display CBVs that Django provides are not the right choice. This usually becomes evident when you start overriding method to prevent the view to perform its standard behaviour. As an instance say that you want to show detailed information of more than one object: probably DetailView will soon show its limits, being built to show only one object.</p>
+
+<p>In all those cases that cannot be easily solved by one of the generic display CBVs, your way goes through other classes: <code>RedirectView</code>, <code>TemplateView</code>, and <code>View</code>. The documentation for these base views is <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/base/">here</a>, while the source code is in <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py">views/generic/base.py</a>.</p>
+
+<p>I'm not going to fully describe those views; I want however to briefly point out some peculiarities.</p>
+
+<p><code>View</code> is by now an old friend of us; we met it when we discussed the <code>as_view()</code> and <code>dispatch()</code> method. It is the most generic view class and can be leveraged to perform very specialized tasks such as rendering pages without templates (for example when returning JSON data in AJAX techniques).</p>
+
+<p><code>TemplateView</code> is the best choice to render pages from a template keeping in the meanwhile freedom as regards the context content. Chances are that this is going to be the view you will use the most after <code>ListView</code> and <code>DetailView</code>. Basically you just need to inherit from it and define the <code>get_context_data()</code> method. As you can see from the <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L147">source code</a> <code>TemplateView</code> answers to GET requests only.</p>
+
+<p><code>RedirectView</code>, as the name implies, is used to redirect a request. The redirection mechanism is very simple: its <code>get()</code> method returns a <code>HttpResponseRedirect</code> to the URL defined by the <code>url</code> class attribute. The class exhibits a very interesting behaviour (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L195">views/generic/base.py#L195</a>) when called through HTTP methods other than GET (namely HEAD, POST, OPTIONS, DELETE, and PUT): it "converts" the method to GET simply calling <code>get()</code> from the respective method (<code>head()</code>, <code>post()</code>, and so on). In the next post I'll show how to leverage this simple technique to show the user a prefilled form.</p>
+
+<h2>Date-based views</h2>
+
+<p>Django provides other class-based views that simplify dealing with objects extracted or ordered by date. As a programmer, you know that dealing with dates is sometimes at least awkward; the views in <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/dates.py">views/generic/dates.py</a> aims to help you to tame your date-based objects; any object that contains a date (e.g. post date for articles, birth date for people, log date for messages, etc) can be processed by these views. You can find the official documentation <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-date-based/">here</a>.</p>
+
+<p>Remember that date-based views are CBVs, so they are based on <code>View</code>, just like <code>ListView</code> or <code>TemplateView</code>. So, apart from their specialization on date processing, they behave the same (<code>get_context_data()</code>, <code>get()</code>, <code>dispatch()</code>, and so on).</p>
+
+<h2>Conclusion</h2>
+
+<p>In this post we covered <code>DetailView</code> in deep and, more quickly, all the remaining base and data-based views. In the next post we will step into the rich (and strange) world of forms.</p>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post or to ask for an in-depth analysis of some topic. <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> is the best place to submit corrections.</p>
+
+<h2>Previous articles</h2>
+
+<ul>
+<li><a href="/blog/2013/10/28/digging-up-django-class-based-views-1">Digging Up Django Class-based Views - 1</a></li>
+</ul>
+
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Digging up Django class-based views - 1]]></title>
@@ -140,11 +380,11 @@ from articles.models import Article</p>
 
 <p>This short piece of code leverages the full power of inheritance. Indeed we just derived <code>ArticleListView</code> from <code>ListView</code> and changed the class attribute <code>model</code>: how can this work? How can this class process incoming requests and what are the outputs? The official documentation states "While this view is executing, self.object_list will contain the list of objects (usually, but not necessarily a queryset) that the view is operating upon."; this leaves many dark corners, however, and if you are a novice, chances are that you are already lost.</p>
 
-<p>Since <code>ArticleListView</code> derives from <code>ListView</code>, the latter is the class we have to analyze to understand how data are processed. To do this you need to look at the <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-display/#django.views.generic.list.ListView">documentation</a>, and if something is still unclear you can freely look at the <a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py">source code</a>. As already said I find a little difficult to find a clear way through the docs, so I'll try to summarize here what I learned. In the following paragraphs you will find links like (<a href="">SC</a>) which point to the source code, if you want to read it by yourself.</p>
+<p>Since <code>ArticleListView</code> derives from <code>ListView</code>, the latter is the class we have to analyze to understand how data are processed. To do this you need to look at the <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-display/#django.views.generic.list.ListView">documentation</a>, and if something is still unclear you can freely look at the <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/list.py">source code</a>. As already said I find a little difficult to find a clear way through the docs, so I'll try to summarize here what I learned. In the following paragraphs you will find links like (<a href="">SC</a>) which point to the source code, if you want to read it by yourself.</p>
 
 <h4>URL dispatchers and views</h4>
 
-<p>A CBV cannot directly be used in your URL dispatcher; instead you have to give the result of the <code>as_view()</code> method (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L31">SC</a>), which basically defines a function that instances the class (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L46">SC</a>) and calls the <code>dispatch()</code> method (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L47">SC</a>); then the function is returned to be used in the URL dispatcher (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L55">SC</a>). As a user, we are interested only in the fact that the <em>entry point</em> of the class, i.e. the method called when a request hits the URL linked with it, is <code>dispatch()</code>.</p>
+<p>A CBV cannot directly be used in your URL dispatcher; instead you have to give the result of the <code>as_view()</code> method (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L31">SC</a>), which basically defines a function that instances the class (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L46">SC</a>) and calls the <code>dispatch()</code> method (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L47">SC</a>); then the function is returned to be used in the URL dispatcher (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L55">SC</a>). As a user, we are interested only in the fact that the <em>entry point</em> of the class, i.e. the method called when a request hits the URL linked with it, is <code>dispatch()</code>.</p>
 
 <p>Let's use this knowledge to print out a string on the console each time a request is served by our CBV. I'm running through this (indeed simple) task step by step since it shows exactly how you have to deal with CBVs when solving real problems.</p>
 
@@ -193,19 +433,19 @@ def dispatch(self, request, *args, **kwargs):
 
 <h4>Incoming GET requests</h4>
 
-<p>Back to our <code>ArticleListView</code>. The <code>dispatch()</code> method of the parent reads the <code>method</code> attribute of the <code>request</code> object and selects a handler to process the request itself (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L57">SC</a>): this means that if <code>request.method</code> is <code>'GET'</code>, which is the HTTP way to say that we are <em>reading</em> a resource, <code>dispatch()</code> will call the <code>get()</code> method of the class.</p>
+<p>Back to our <code>ArticleListView</code>. The <code>dispatch()</code> method of the parent reads the <code>method</code> attribute of the <code>request</code> object and selects a handler to process the request itself (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L57">SC</a>): this means that if <code>request.method</code> is <code>'GET'</code>, which is the HTTP way to say that we are <em>reading</em> a resource, <code>dispatch()</code> will call the <code>get()</code> method of the class.</p>
 
-<p>The <code>get()</code> method of <code>ListView</code> comes from its <code>BaseListView</code> ancestor (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-display/#django.views.generic.list.BaseListView">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L114">source code</a>). This function is the one that contains the functional view code, so if you are accustomed to function-based views you'll find yourself at home here. As you can see, the function basically fills the attribute <code>self.object_list</code> with the result of the method <code>self.get_queryset()</code>, creates a context calling the method <code>self.get_context_data()</code> and calls the class version of <code>render_to_response()</code>, namely <code>self.render_to_response()</code>.</p>
+<p>The <code>get()</code> method of <code>ListView</code> comes from its <code>BaseListView</code> ancestor (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-display/#django.views.generic.list.BaseListView">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/list.py#L114">source code</a>). This function is the one that contains the functional view code, so if you are accustomed to function-based views you'll find yourself at home here. As you can see, the function basically fills the attribute <code>self.object_list</code> with the result of the method <code>self.get_queryset()</code>, creates a context calling the method <code>self.get_context_data()</code> and calls the class version of <code>render_to_response()</code>, namely <code>self.render_to_response()</code>.</p>
 
-<p>Are you still with me? Don't give up, we are nearly at the end (with ListView). The method <code>self.get_queryset()</code> comes from the <code>MultipleObjectMixin</code> ancestor of <code>ListView</code> (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/mixins-multiple-object/#multipleobjectmixin">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L11">source code</a>) and simply gets all objects of a given model (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L29">SC</a>) issuing <code>queryset = self.model._default_manager.all()</code>. The value of <code>self.model</code> is what we configured in our class when we wrote <code>model = Article</code>.</p>
+<p>Are you still with me? Don't give up, we are nearly at the end (with ListView). The method <code>self.get_queryset()</code> comes from the <code>MultipleObjectMixin</code> ancestor of <code>ListView</code> (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/mixins-multiple-object/#multipleobjectmixin">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/list.py#L11">source code</a>) and simply gets all objects of a given model (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/list.py#L29">SC</a>) issuing <code>queryset = self.model._default_manager.all()</code>. The value of <code>self.model</code> is what we configured in our class when we wrote <code>model = Article</code>.</p>
 
 <p>That's all. Our <code>ArticleListView</code> class extracts all <code>Article</code> objects from the database, and calls a template passing a context that contains a single variable, <code>object_list</code>, instanced with the list of extracted objects.</p>
 
 <h4>Templates and contexts</h4>
 
-<p>Are you satisfied? I'm actually still curious about the template and the context. Let's see what we can find about these topics. First of all, when the class calls <code>self.render_to_response()</code> it uses the code that comes from its <code>TemplateResponseMixin</code> ancestor (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/mixins-simple/#templateresponsemixin">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L81">source code</a>); the method calls some other functions but its basic behaviour is to create a response using a template and a context. The template, again through a series of calls which you can follow by yourself, comes from <code>self.template_name</code> (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L109">SC</a>); while <code>TemplateResponseMixin</code> defines it <code>None</code> (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/base.py#L85">SC</a>), <code>ListView</code> does some magic through ancestors (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L128">SC</a>) to return a template which name derives from the given model. So, in short, our <code>ArticleListView</code>, defining an <code>Article</code> model, automatically uses a template that is called <code>article_list.html</code>.</p>
+<p>Are you satisfied? I'm actually still curious about the template and the context. Let's see what we can find about these topics. First of all, when the class calls <code>self.render_to_response()</code> it uses the code that comes from its <code>TemplateResponseMixin</code> ancestor (<a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/mixins-simple/#templateresponsemixin">documentation</a>, <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L81">source code</a>); the method calls some other functions but its basic behaviour is to create a response using a template and a context. The template, again through a series of calls which you can follow by yourself, comes from <code>self.template_name</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L109">SC</a>); while <code>TemplateResponseMixin</code> defines it <code>None</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L85">SC</a>), <code>ListView</code> does some magic through ancestors (<a href="https://github.com/django/django/blob/stable/1.3.x/django/views/generic/list.py#L128">SC</a>) to return a template which name derives from the given model. So, in short, our <code>ArticleListView</code>, defining an <code>Article</code> model, automatically uses a template that is called <code>article_list.html</code>.</p>
 
-<p>May we change this behaviour? Of course! This is, after all, the point of using classes instead of functions: easily customize the behaviour. We can change the definition of out class like:</p>
+<p>May we change this behaviour? Of course! This is, after all, the point of using classes instead of functions: easily customize the behaviour. We can change the definition of our class like:</p>
 
 <p>``` python
 from django.views.generic.list import ListView
@@ -247,7 +487,7 @@ def get_context_data(self, **kwargs):
 
 <p>In this first post I tried to uncover some of the mysteries behind CBVs and CBGVs in Django, by showing step by step what happens to a GET request that hits a class-based view. Hopefully the matter has now been demystified a little!</p>
 
-<p>In the next posts I will discuss DetailView, the generic view to show detail about an object, how to create custom CBVs and hot to use CBVs to process forms, i.e. POST requests.</p>
+<p>In the next posts I will discuss DetailView, the generic view to show detail about an object, how to create custom CBVs and how to use CBVs to process forms, i.e. POST requests.</p>
 
 <p>Let me know if this post helped you in understanding the matter and feel free to point out any error or to ask questions.</p>
 
@@ -258,6 +498,13 @@ def get_context_data(self, **kwargs):
 <p>2013-10-29: I fixed a couple of typos when overriding <code>dispatch()</code>. Thanks to Tom Evans for spotting them.</p>
 
 <p>2013-10-30: Fixed the <code>__init__()</code> method of <code>EvenExtractor</code>, that was missing the <code>self</code> parameter. Thanks <a href="http://www.reddit.com/user/meatypocket">meatypocket</a>.</p>
+
+<h2>Next articles</h2>
+
+<ul>
+<li><a href="/blog/2013/12/11/digging-up-django-class-based-views-2">Digging Up Django Class-based Views - 2</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -1529,167 +1776,6 @@ d = dict(z for z in zip(keys, values))
 <h2>Next articles</h2>
 
 <ul>
-<li><a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Python generators - from iterators to cooperative multitasking]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/"/>
-    <updated>2013-03-25T10:41:00+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking</id>
-    <content type="html"><![CDATA[<h2>Introduction</h2>
-
-<p>Python is a language that in 11 years of life has been through a very remarkable development and the introduction of several new features, sometimes borrowed from other languages, sometimes arisen from the needs of developers and heavily discussed before being officially implemented. One of these improvements concerns generators, a concept which can be found in the computer science environment since the 70s; it has been implemented in Python from version 2.2 (2001) and became popular from version 2.3 (2003).</p>
-
-<!--more-->
-
-
-<p>Generators are a generalization of functions that allow to deal in a more complete and rich way with iterations, repeated executions and in general with everything concerns the program flow. In the last years a concept which was considered obsolete started to spread again, namely that of cooperative multitasking. This concept has been shadowed for some years by the advent of multiprocessing and multithreading but, as happened to interpreted languages and virtual machines, as time passes and contexts change good ideas rise again and prove to be anything but dead.</p>
-
-<p>In the Python world, in particular, numerous solutions have appeared which endorse the use of microthreads: these are parallel execution flows without implicit scheduling as opposed to what happens with traditional processes and threads. The big advantage of such objects is the ease of implementation and management of the multiprogramming code, since all synchronization and data protection problems simply do not exist. On the other hand, their use requires a voluntary scheduling, in other words a system that explicitly acquires and releases system resources.</p>
-
-<p>To start talking about cooperative multitasking in Python, thus, it is imperative to understand generators. This first post reviews the concept of iteration and its implementation.</p>
-
-<h2>Iterations</h2>
-
-<p><strong>Iteration</strong> in Python, like in other languages, is a process ruled by the <strong>for</strong> statement and allows to repeatedly execute a block of code, assigning to a variable a value extracted at each execution from a given ordered set. The simplest case of iteration is the processing of a list of values</p>
-
-<p>``` python
-for i in [0,1,2,3]:</p>
-
-<pre><code>print i
-</code></pre>
-
-<p>```</p>
-
-<p>In Python, however, iteration is more than simple loop over the elements of an array. The for statement implements a well-defined and nontrivial protocol, which allows to build very complex objects.</p>
-
-<p>To understand the structure of iteration in Python we have to clarify what is the difference between iterable and iterator objects.</p>
-
-<h4>Iterators</h4>
-
-<p>In Python jargon an iterator is an object with the following properties:</p>
-
-<ul>
-<li>it contains a <strong>set of data</strong></li>
-<li>it exposes the <code>next()</code> method, which returns one of the contained elements at each call. Each element is returned only one time. This method goes through the whole set of data the iterator incorporates. In Python 3 this method has been renamed <code>__next__()</code>.</li>
-<li>after the <code>next()</code> method returns the last element any successive call of this method raises the <code>StopIteration</code> exception. This signals that the iterator is exhausted.</li>
-<li>it exposes the <code>__iter__()</code> method that returns the iterator itself.</li>
-</ul>
-
-
-<h4>Iterables</h4>
-
-<p>The definition of iterable, on the other hand, is more generic: an iterable is a container of data that exposes either the <code>__getitem__()</code> or the <code>__iter__()</code> methods (or both):</p>
-
-<ul>
-<li><code>__getitem__(i)</code> shall return the value at the given position <code>i</code> or raise the <code>IndexError</code> exception if there is no data at that position.</li>
-<li><code>__iter__()</code> shall return an iterator on the data contained in the iterable</li>
-</ul>
-
-
-<p>As you can see the <code>__getitem__()</code> method considers the data as an ordered set, which is not always the case; for this reason an iterable may define the two different methods, or both.</p>
-
-<p>From the previous definitions you see that an iterator is also automatically an iterable, since it exposes the <code>__iter__()</code> method that returns an iterator (itself).</p>
-
-<h4>Loop protocol</h4>
-
-<p>Back to the loop syntax from above we can clarify the matter saying that in Python <strong>the for statement expects an iterable as argument</strong>. This means that we can give any object the capability of being used in a for loop, simply exposing one of the two previously mentioned methods, <code>__getitem__()</code> or <code>__iter__()</code>.</p>
-
-<p>Let’s look at an example:</p>
-
-<p>```python
-class AnIterator(object):</p>
-
-<pre><code>def __init__(self, value):
-    self.value = value
-
-def next(self):
-    if self.value &lt;= 0:
-        raise StopIteration
-    tmp = self.value
-    self.value = self.value - 1
-    return tmp
-
-def __iter__():
-    return self
-</code></pre>
-
-<p>```</p>
-
-<p>This object is an iterator since it exposes <code>__iter__()</code>. Its <code>next()</code> method returns the decreasing sequence of integer numbers starting from a given number. Testing it we obtain</p>
-
-<p>```sh</p>
-
-<blockquote><blockquote><blockquote><p>iterator = AnIterator(3)
-print iterator.next()
-3
-print iterator.next()
-2
-print iterator.next()
-1
-print iterator.next()
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-  File "<stdin>", line 7, in next
-StopIteration</p>
-
-<p>iterator = AnIterator(3)
-for i in iterator:
-...     print i
-...
-3
-2
-1
-```</p></blockquote></blockquote></blockquote>
-
-<p>This execution shows that the iterator can be used in a for loop. Pay attention to the fact that I had to instance twice the class, since the first three calls of next() exhausted the first instance.</p>
-
-<p>Let’s dive a little more inside what happens when the for loop runs. The Python code</p>
-
-<p>```python
-for i in iterable:</p>
-
-<pre><code>some_code
-</code></pre>
-
-<p>```</p>
-
-<p>is equivalent to</p>
-
-<p>```python
-_iter = iterable.<strong>iter</strong>()
-while 1:</p>
-
-<pre><code>try:
-    i = _iter.next()
-except StopIteration:
-    break
-some_code
-</code></pre>
-
-<p>```</p>
-
-<p>The for construct receives here an <strong>iterable</strong> object and calls its <code>__iter__()</code> method, obtaining an <strong>iterator</strong> object; then it calls the <code>next()</code> method of this latter until the <code>StopIteration</code> exception is raised. The actual code is a little different, here simplified for clarity’s sake; if you want to learn more about it check the following addresses</p>
-
-<ul>
-<li><a href="http://docs.python.org/2/glossary.html">Python Glossary</a></li>
-<li><a href="http://docs.python.org/2/library/functions.html#iter">Built-in iter()</a></li>
-<li><a href="http://docs.python.org/2/library/stdtypes.html#typeiter">Iterators and sequences</a></li>
-</ul>
-
-
-<h2>Conclusion</h2>
-
-<p>This first post tried to summarize the loop protocol implemented by the for statement, which is in Python very different from many classic languages. Next post will explore the concept of generator and its Python implementation.</p>
-
-<h2>Next articles</h2>
-
-<ul>
-<li><a href="/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
 <li><a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
 </ul>
 

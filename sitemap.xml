@@ -76,7 +76,13 @@
         <loc>
             http://lgiordani.github.io/blog/2013/10/28/digging-up-django-class-based-views-1/
         </loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2013-12-11T08:53:13+01:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://lgiordani.github.io/blog/2013/12/11/digging-up-django-class-based-views-2/
+        </loc>
+        <lastmod>2013-12-11T08:53:13+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/about/</loc>
@@ -84,11 +90,11 @@
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/archives/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2013-12-11T08:53:13+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2013-12-11T08:53:13+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/search.html</loc>
