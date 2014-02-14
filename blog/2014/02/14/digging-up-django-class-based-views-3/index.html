@@ -1,0 +1,478 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Digging up Django class-based views - 3 - The digital cat</title>
+    <meta name="author" content="Leonardo Giordani">
+    
+	<meta name="description" content="Published on: Feb 14th, 2014 Tags: django, python Posted by Leonardo Giordani This post refers to Django 1.5. Please be warned that some of the &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+
+    <!-- remove or comment it to disable ajaxification -->   
+    <script src="/javascripts/ajaxify.js"></script>
+   
+    
+    
+	<script type="text/javascript">
+		var _gaq = _gaq || [];
+		_gaq.push(['_setAccount', 'UA-38715090-1']);
+		_gaq.push(['_trackPageview']);
+
+		(function() {
+			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		})();
+	</script>
+
+
+</head>
+
+
+<body>
+    <div id="wrapper">
+    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
+<h1 class="animated pulse">
+    <div id="headerbg">
+        The digital cat
+    </div>
+</h1>
+<br>
+
+<ul id="social-links" style="text-align:center">
+  
+  <!-- GitHub -->
+  <li>
+  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
+  </li>
+  
+  
+  <!-- Google Plus -->
+  <li>
+  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li>
+  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
+  </li>
+  
+  
+  
+  
+  
+</ul>
+
+
+<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
+<ul id="nav">
+	<li id="ajax"><a href="/index.html">Home</a></li>
+	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
+    <li><a href="/atom.xml">RSS</a></li>
+    
+    <li>
+    <div id="dark">
+        <form method="get" action="/search.html" id="search">
+            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
+        </form>
+    </div>
+    </li>
+        
+</ul>
+
+
+
+
+</header>
+
+<div id="toload">
+<!-- begin toload --> 
+    <div id="content" class="inner">
+        <article class="post">
+	<h2 class="title">Digging Up Django Class-based Views - 3</h2>
+	<div class="entry-content">
+          <div class="meta">
+            <div class="date">Published on: 
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-02-14T16:13:41+01:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+            <div class="tags">Tags: 
+
+
+	<a class='category' href='/blog/categories/django/'>django</a>, <a class='category' href='/blog/categories/python/'>python</a>
+
+
+</div>
+          </div>
+          
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
+
+          <p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
+
+<p>In the first two issues of this short series we wandered around the basic concepts of class-based views in Django, and started understanding and using two of the basic generic views Django makes available to you: <code>ListView</code> and <code>DetailView</code>. Both are views that read some data from the database and show them on a rendered template.</p>
+
+<p>This third issue wants to introduce the reader to the class-based version of Django forms. This post is not meant to be a full introduction to the Django form library; rather, I want to show how class-based generic views implement the CUD part of the CRUD operations (Create, Read, Update, Delete), the Read one being implemented by &#8220;standard&#8221; generic views.</p>
+
+<!--more-->
+
+
+<h2>A very basic example</h2>
+
+<p>To start working with CBFs (class-based forms) let&#8217;s say we are working with a <code>StickyNote</code> class which represents a simple text note with a date:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">StickyNote</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">text</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">blank</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">null</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>One of the first things we usually want to do is to build a form that allows the user to create a new entry in the database, in this case a new sticky note. The functional version of such a form would be the following:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">note_add</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">form</span> <span class="o">=</span> <span class="n">StickyNoteForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">)</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+</span><span class='line'>        <span class="n">new_note</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">new_note</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">render_to_response</span><span class="p">(</span><span class="s">&#39;note_add.html&#39;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^note_add/$&#39;</span><span class="p">,</span> <span class="s">&#39;note_add&#39;</span><span class="p">),</span>
+</span><span class='line'><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>which is not too complex to grasp. Note that I left aside some imports; the <code>StickNoteForm</code> class is built using a <a href="https://docs.djangoproject.com/en/1.5/topics/forms/modelforms/">model form</a>. Since you <a href="https://docs.djangoproject.com/en/1.5/topics/forms/">already know</a> how functional form views work, let&#8217;s compare it with the same view expressed with a class:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">NoteAdd</span><span class="p">(</span><span class="n">CreateView</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">model</span> <span class="o">=</span> <span class="n">StickyNote</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>It is no surprise that most of the code went away, thanks to inheritance. As happened in the first two posts with standard views, the class mechanism provides us with a bunch of code that lives somewhere in the class hierarchy and works behind the scenes. Our mission is now to uncover that code to figure out how exactly CBFs work and how we can change them to perform what we need.</p>
+
+<p>To make the post easier to follow, please always remember that &#8220;class-based form&#8221; is a short name for &#8220;class-based form view&#8221;. That is, CBFs are views, so their job is to process incoming HTTP requests and return a HTTP response. Form views do this in a slightly different way than the standard ones, mostly due to the different nature of POST requests compared with GET ones. Let us take a look at this concept before moving on.</p>
+
+<h2>HTTP requests: GET and POST</h2>
+
+<p><em>Please note that this is a broad subject and that the present section wants only to be a very quick review of the main concepts that are related to Django CBFs</em></p>
+
+<p>HTTP requests come in different forms, depending on the <strong>method</strong> they carry. Those methods are called <strong>HTTP verbs</strong> and the two most used ones are <strong>GET</strong> and <strong>POST</strong>. The GET method tells the server that the client wants to retrieve a resource (the one connected with the relative URL) and shall have no side effects (such as changing the resource). The POST method is used to send some data to the server, the given URL being the <em>resource</em> that shall handle the data.</p>
+
+<p>As you can see, the definition of POST is very broad: the server accepts the incoming data and is allowed to perform any type of action with it, such as creating a new entity, editing or deleting one or more of them, and so on.</p>
+
+<p>Keep in mind that forms are not the same thing as POST request. As a matter of fact, they are connected just incidentally: a form is a way to collect data from a user browsing a HTML page while POST is the way that data is transmitted to the server. You do not need to have a form to make a POST request, you just need some data to send. HTML forms are just a useful way to send POST requests, but not the only one.</p>
+
+<h2>Form views</h2>
+
+<p>Why are form views different from standard views? The answer can be found looking at the flow of a typical data submission on a Web site:</p>
+
+<ol>
+<li>The user browses a web page (GET)</li>
+<li>The server answers the GET request with a page containing a form</li>
+<li>The user fills the form and submits it (POST)</li>
+<li>The server receives and processes data</li>
+</ol>
+
+
+<p>As you can see the procedure involves a double interaction with the server: the first request GETs the page, the second POSTs the data. So you need to build a view that answers the GET request and a view that answers the POST one.</p>
+
+<p>Since most of the time the URL we use to POST data is the same URL we used to GET the page, we need to build a view that accepts both methods. This is the main reason of the pattern you are used to see in functional form views in Django. <a href="https://docs.djangoproject.com/en/1.5/topics/forms/">The official Django documentation</a> on the subject uses this snippet of code</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">contact</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&#39;POST&#39;</span><span class="p">:</span> <span class="c"># If the form has been submitted...</span>
+</span><span class='line'>        <span class="n">form</span> <span class="o">=</span> <span class="n">ContactForm</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span> <span class="c"># A form bound to the POST data</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span> <span class="c"># All validation rules pass</span>
+</span><span class='line'>            <span class="c"># Process the data in form.cleaned_data</span>
+</span><span class='line'>            <span class="c"># ...</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s">&#39;/thanks/&#39;</span><span class="p">)</span> <span class="c"># Redirect after POST</span>
+</span><span class='line'>    <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>        <span class="n">form</span> <span class="o">=</span> <span class="n">ContactForm</span><span class="p">()</span> <span class="c"># An unbound form</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s">&#39;contact.html&#39;</span><span class="p">,</span> <span class="p">{</span>
+</span><span class='line'>        <span class="s">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span>
+</span><span class='line'>    <span class="p">})</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see the first conditional path deals with the data submission (POST) while the else part deals with the usual case of a GET request.</p>
+
+<p>Now it is time to dig into the class-based forms that Django provides us to understand how they deal with this double interaction.</p>
+
+<p>Let us start with the <code>CreateView</code> class we used in our simple example, which is defined in <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L202">views/generic/edit.py#202</a>. It is an almost empty class that inherits from <code>SingleObjectTemplateResponseMixin</code> and from <code>BaseCreateView</code>. The first class deals with the template selected to render the response and we can leave it aside for the moment. The second class, on the other hand, can be found a couple of lines above, at <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L187">views/generic/edit.py#L187</a>, and implements two methods which names are self explaining, <code>get()</code> and <code>post()</code>.</p>
+
+<h4>Processing GET and POST requests</h4>
+
+<p>We already met the <code>get()</code> method in the <a href="/blog/2013/12/11/digging-up-django-class-based-views-2">past article</a> when we talked about the <code>dispatch()</code> method of the <code>View</code> class. A quick recap of its purpose: this method is called when the incoming HTTP request carries the GET verb and is used to process the request itself. Not surprisingly, the <code>post()</code> method is called when the incoming request is a POST one. The two methods are already defined by an ancestor of the <code>BaseCreateView</code> class, namely <code>ProcessFormView</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L145">views/generic/edit.py#L145</a>). It is useful to take a peek at the source code of this last class:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">ProcessFormView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+</span><span class='line'>    <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">    A mixin that renders a form on GET and processes it on POST.</span>
+</span><span class='line'><span class="sd">    &quot;&quot;&quot;</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        Handles GET requests and instantiates a blank version of the form.</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">form_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_form_class</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_form</span><span class="p">(</span><span class="n">form_class</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="n">form</span><span class="o">=</span><span class="n">form</span><span class="p">))</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+</span><span class='line'>        <span class="sd">&quot;&quot;&quot;</span>
+</span><span class='line'><span class="sd">        Handles POST requests, instantiating a form instance with the passed</span>
+</span><span class='line'><span class="sd">        POST variables and then checked for validity.</span>
+</span><span class='line'><span class="sd">        &quot;&quot;&quot;</span>
+</span><span class='line'>        <span class="n">form_class</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_form_class</span><span class="p">()</span>
+</span><span class='line'>        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_form</span><span class="p">(</span><span class="n">form_class</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+</span><span class='line'>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_valid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">else</span><span class="p">:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_invalid</span><span class="p">(</span><span class="n">form</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see the two methods are pretty straightforward. They both retrieve the class of the form with <code>get_form_class()</code> and instance it with <code>get_form()</code> (more on them later). The <code>get()</code> method then just calls the <code>render_to_response()</code> method to render a template, passing the context produced by the <code>get_context_data()</code> method. Note that the context receives the form as built by the <code>get_form()</code> method.</p>
+
+<p>The <code>post()</code> method does not directly render the template since it has to process incoming data before doing this last step. Instead the validation of the form is performed through its <code>is_valid()</code> method and the two methods <code>form_valid()</code> and <code>form_invalid()</code> are called depending on the result of the test. See the <a href="https://docs.djangoproject.com/en/1.5/ref/forms/validation/">official documentation</a> for more information about form validation.</p>
+
+<p>Please note that the behaviour of these classes follows the same pattern of that used in <code>ListView</code> and <code>DetailView</code> as described in the previous two posts.</p>
+
+<p>The <code>ProcessFormView</code> class inherits from <code>View</code>, which was already described in depth in the first two posts of this series; there you can find the <code>as_view()</code> and <code>dispatch()</code> method that are the foundation of the CBVs system.</p>
+
+<h2>The form workflow - part I</h2>
+
+<p>The inheritance path that starts with <code>ProcessFormView</code> spans all the classes that deal with the incoming request, telling GET and POST methods apart. The second inheritance path we can follow from <code>BaseCreateView</code> leads to <code>ModelFormMixin</code>, which is defined at <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L75">views/generic/edit.py#L75</a>. This path contains the classes that implement the form management methods. The first two methods that deal with the form are <code>get_form_class()</code> and <code>get_form()</code> that we encountered when discussing the <code>get()</code> and <code>post()</code> methods.</p>
+
+<p>The <code>get_form_class()</code> tries to get the form model from the <code>self.form_class</code> attribute, and if this is not defined tries to extract the model from the <code>self.model</code> or from the queryset. Then it returns a suitable modelform, using a factory defined in <a href="https://github.com/django/django/blob/stable/1.5.x/django/forms/models.py">forms/models.py</a>.</p>
+
+<p>The <code>get_form()</code> method is defined in <code>FormMixin</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L10">views/generic/edit.py#L10</a>) and instances the form class with the keywords returned by <code>get_form_kwargs()</code>, implemented in <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L100">views/generic/edit.py#L100</a>. This last method is quite important as we are going to discover in a short while, since it has a big role in the double interaction that happens with POST requests.</p>
+
+<p>The first implementation of the <code>get_form_kwargs()</code> method that we find in the ancestors tree is in <code>ModelFormMixin</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L100">views/generic/edit.py#L100</a>), but this immediately calls the same method defined in <code>FormMixin</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L10">views/generic/edit.py#L10</a>). The code is</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">get_form_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;initial&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial</span><span class="p">()}</span>
+</span><span class='line'>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;POST&#39;</span><span class="p">,</span> <span class="s">&#39;PUT&#39;</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+</span><span class='line'>            <span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span>
+</span><span class='line'>            <span class="s">&#39;files&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">,</span>
+</span><span class='line'>        <span class="p">})</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">kwargs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The first value of the form keywords dictionary is the copy of the <code>self.initial</code> dictionary, returned by <code>get_initial()</code> as stated by <a href="https://docs.djangoproject.com/en/1.5/ref/forms/api/#dynamic-initial-values">the official documentation</a>. Then, if the method of the request being processed is POST or PUT, the keywords are updated with the content of the request itself, i.e. posted data and uploaded files. This is used to initialize the form object itself as you can see at <a href="https://github.com/django/django/blob/stable/1.5.x/django/forms/forms.py#L77">forms/forms.py#L77</a>, and I am going to describe this mechanism later.</p>
+
+<p>After this method returns its dictionary, the execution continues in <code>ModelFormMixin</code>. The code of that method is</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">get_form_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ModelFormMixin</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_form_kwargs</span><span class="p">()</span>
+</span><span class='line'>    <span class="n">kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;instance&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">})</span>
+</span><span class='line'>    <span class="k">return</span> <span class="n">kwargs</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>that just adds <code>self.object</code> under the <code>instance</code> key of the keywords dictionary. We already met <code>self.object</code> when discussing <code>DetailView</code>, where it contained the result of the queryset, i.e. the object being shown by the view.</p>
+
+<p>What is <code>self.object</code> now? Among the ancestors of our <code>CreateView</code> class, <code>BaseCreateView</code> defines <code>self.object</code> as <code>None</code> so for the moment we can leave it aside. It will come to the rescue later, when we will discuss update and deletion forms, so do not forget it.</p>
+
+<p>The last things we find in the <code>get()</code> method, just after <code>get_form_class()</code> and <code>get_form()</code>, is <code>get_context_data()</code>. As happened in <code>ListView</code> and <code>DetailView</code>, this method builds a dictionary (the context) that is used to render a template. You can find the implementation of <code>get_context_data()</code> at <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L130">views/generic/edit.py#L130</a>. As you can see, since <code>self.object</code> has been set to <code>None</code>, the context contains only the instanced form under the <code>form</code> keyword (inserted at <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L155">views/generic/edit.py#L155</a>).</p>
+
+<p>Let&#8217;s recap the process until here.</p>
+
+<ol>
+<li>The URL dispatcher requests with GET a page containing a form.</li>
+<li>The <code>get()</code> method of <code>ProcessFormView</code> finds the form class of choice through <code>get_form_class()</code></li>
+<li>The form class is instanced by <code>get_form()</code> with the values contained in the <code>self.initial</code> dictionary</li>
+<li>At this point a template is rendered with a context returned by <code>get_context_data()</code> as usual. The context contains the form.</li>
+</ol>
+
+
+<h2>The form workflow - part II</h2>
+
+<p>Now the user obtained the requested page and is facing an empty form. Once the form has been filled, he or she clicks the submit button and a new HTTP request reaches the server, this time carrying the POST method and a set of data taken from the input fields of the form itself. Our view shall now handle the second interaction step, the one that in functional views is usually managed by the part starting with <code>if request.method == 'POST':</code>.</p>
+
+<p>As we already know, the incoming request is processed by the <code>post()</code> method of <code>ProcessFormView</code>, which works like the <code>get()</code> method in its first part, calling <code>get_form_class()</code> and <code>get_form()</code>. This latter method now deals with a POST request, so the code of <code>get_form_kwargs()</code> in <code>FormMixin</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L10">views/generic/edit.py#L10</a>) adds to the keywords dictionary the submitted data with the <code>data</code> key and the uploaded files under the <code>files</code> key. Why does Django do this? Well, as you can see at <a href="https://github.com/django/django/blob/stable/1.5.x/django/forms/forms.py#L77">forms/forms.py#L77</a> a Django form can be instanced with an optional <code>data</code> keyword, which is stored inside the form object for the subsequent validation phase.</p>
+
+<p>So now the form is bound (that is, it contains some data or files - see <a href="https://github.com/django/django/blob/stable/1.5.x/django/forms/forms.py#L80">forms/forms.py#L80</a>). The <code>post()</code> method now tests the result of <code>is_valid()</code> and acts accordingly calling either <code>form_valid()</code> or <code>form_invalid()</code>. Pay attention that, while <code>is_valid()</code> is a method of the form itself, the two latter methods belong to the <code>BaseCreateView</code>, defined by the same ancestor classes that implement <code>get_form_kwargs()</code>, <code>ModelFormMixin</code> and <code>FormMixin</code>.</p>
+
+<p>The former class implements it at <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L123">views/generic/edit.py#L123</a> and puts the result of <code>form.save()</code> into <code>self.object</code>. Remember that <code>self.object</code> is appended to the context under the <code>object</code> key by the <code>get_context_data()</code> method, as shown in the previous section. The <code>form.save()</code> method for modelforms is defined by <code>BaseModelForm</code> at <a href="https://github.com/django/django/blob/stable/1.5.x/django/forms/models.py#L357">forms/models.py#L357</a> and basically saves the instance of the Django model connected with the modelform, that is implements the actual creation at the base of the <code>CreateView</code> form view. As <code>form.save()</code> returns the object saved to the database, it makes sense to store it in <code>self.object</code> and pass it to the template.</p>
+
+<p>The execution of <code>form_valid()</code> continues with the implementation in the <code>FormMixin</code> class at <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L61">views/generic/edit.py#L61</a>. This method returns a <code>HttpResponseRedirect</code> object, which is the way you make the browser point to the given URL in Django. In this case the URL is given by <code>self.get_success_url()</code> which tries to return <code>self.success_url</code> if defined, otherwise returns the result of <code>get_absolute_url()</code> for the fresh-made object.</p>
+
+<p>On the other hand, <code>form_invalid()</code> at <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L67">views/generic/edit.py#L67</a> deals with the case of a form containing some errors and simply calls <code>render_to_response()</code> passing it the context with the compiled form under the <code>form</code> key.</p>
+
+<h2>Update and Delete operations</h2>
+
+<p>This rather rich code tour unveiled the inner mechanism of the <code>CreateView</code> class, which can be used to create a new object in the database. The <code>UpdateView</code> and <code>DeleteView</code> classes follow a similar path, with minor changes to perform the different action they are implementing.</p>
+
+<p><code>UpdateView</code> wants to show the form already filled with values, so it instances <code>self.object</code> before processing the request (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L210">views/generic/edit.py#L210</a>). This makes the object available in the keywords dictionary under the <code>instance</code> key (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L105">views/generic/edit.py#L105</a>), which is used by modelforms to initialize the data (<a href="https://github.com/django/django/blob/stable/1.5.x/django/forms/models.py#L244">forms/models.py#L244</a>). The <code>form.save()</code> method of <code>BaseModelForm</code> is smart enough to understand if the object has been created or just changed (<a href="https://github.com/django/django/blob/stable/1.5.x/django/forms/models.py#L365">forms/models.py#L365</a> so the <code>post()</code> method of <code>UpdateView</code> works just like the one of <code>CreateView</code>.</p>
+
+<p><code>DeleteView</code> is a bit different from <code>CreateView</code> and <code>UpdateView</code>. As <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-editing/#deleteview">the official documentation</a> states, if called with a GET method it shows a confirmation page that POSTs to the same URL. So, as for the GET requests, <code>DeleteView</code> just uses the <code>get()</code> method defined by its ancestor <code>BaseDetailView</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L103">views/generic/detail.py#L103</a>), which renders the template putting the object in the context. When called with a POST request, the view uses the <code>post()</code> method defined by <code>DeletionMixin</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L233">views/generic/edit.py#L233</a>, which in turn just calls the <code>delete()</code> method of the same class (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L239">views/generic/edit.py#L239</a>). This performs the deletion on the database and redirects to the success URL.</p>
+
+<h2>Conclusion</h2>
+
+<p>As you can see, the structure behind the current implementation of Django class-based form views is rather complex. This allows the user to achieve complex behaviours like the CUD operations just by defining a couple of classes as I did in the simple example at the beginning of the post. Most of the time, however, such a simplification makes it difficult for the programmer to understand how to achieve the desired changes to the class behaviour. So the purpose of this big tour I made inside the Django source code was to give an insight of what methods are called in the lifetime of your HTTP request so that you can better identify what methods you need to override.</p>
+
+<p>When performing special actions that fall outside the standard CUD operations you better inherit from <code>FormView</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L181">views/generic/edit.py#L181</a>). The first thing to do is to check if and how you need to customize the <code>get()</code> and <code>post()</code> methods; remember that you either need to implement the full behaviour of those methods or make you changes and call the parent implementation. If this is not enough for your application consider overriding one of the more dedicated methods, such as <code>get_form_kwargs()</code> or <code>form_valid()</code>.</p>
+
+<p>This post ends the series &#8220;Digging Up Django Class-based Views&#8221;. Stay tuned for other <a href="/blog/categories/django/">upcoming articles on Django</a>!</p>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post or to ask for an in-depth analysis of some topic. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+
+<h2>Previous articles</h2>
+
+<ul>
+<li><p><a href="/blog/2013/10/28/digging-up-django-class-based-views-1">Digging Up Django Class-based Views - 1</a></p></li>
+<li><p><a href="/blog/2013/12/11/digging-up-django-class-based-views-2">Digging Up Django Class-based Views - 2</a></p></li>
+</ul>
+
+
+        </div>
+
+<div class="meta">
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+    </div>
+    <footer id="footer">
+    <div style="display:inline">
+    Copyright &copy; 2014
+
+    Leonardo Giordani
+. Powered by <a href="http://octopress.org">Octopress</a> | 
+    Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
+</div>
+
+
+    </footer>
+    <script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+<!-- end toload --> 
+</div>
+</div>
+<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
+/*]]>*/
+</script><!-- remove it to remove the scroll to top button -->
+</body>
+</html>

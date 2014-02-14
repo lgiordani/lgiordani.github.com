@@ -6,14 +6,13 @@
 	<title>The digital cat</title>
     <meta name="author" content="Leonardo Giordani">
     
-	<meta name="description" content="Published on: Dec 11th, 2013 Tags: django, python Abstract This post refers to Django 1.5. Please be warned that some of the matters discussed here &hellip;">
+	<meta name="description" content="Published on: Feb 14th, 2014 Tags: django, python This post refers to Django 1.5. Please be warned that some of the matters discussed here, some &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
 	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
 	<link rel="canonical" href="">
-	<link href="/favicon.png" sizes="128x128" type="image/png" rel="shortcut icon">
-	<link href="/favicon.ico" sizes="128x128" type="image/vnd.microsoft.icon" rel="shortcut icon">
+	<link href="/favicon.ico" rel="shortcut icon">
     <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 
     <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
@@ -84,8 +83,7 @@
 
 <!-- use full url including 'index.html' for navigation bar if you are using ajax -->
 <ul id="nav">
-	<li id="ajax"><a href="/">Home</a></li>
-	<li id="ajax"><a href="/about/index.html">About</a></li>
+	<li id="ajax"><a href="/index.html">Home</a></li>
 	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
     <li><a href="/atom.xml">RSS</a></li>
     
@@ -111,15 +109,62 @@
 
 
     <article class="post">
-<h2 class="title">
+	<h2 class="title">
+		
+		<a href="/blog/2014/02/14/digging-up-django-class-based-views-3/">
+		
+			Digging Up Django Class-based Views - 3</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
+
+
+
+
+
+
+
+
   
-    <a href="/blog/2013/12/11/digging-up-django-class-based-views-2/">
-      
-      Digging Up Django Class-based Views - 2</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+
+
+<time datetime="2014-02-14T16:13:41+01:00" pubdate data-updated="true">Feb 14<span>th</span>, 2014</time></div>
+      <div class="tags">Tags: 
+
+
+	<a class='category' href='/blog/categories/django/'>django</a>, <a class='category' href='/blog/categories/python/'>python</a>
+
+
+</div>
+    </div>
+		<p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
+
+<p>In the first two issues of this short series we wandered around the basic concepts of class-based views in Django, and started understanding and using two of the basic generic views Django makes available to you: <code>ListView</code> and <code>DetailView</code>. Both are views that read some data from the database and show them on a rendered template.</p>
+
+<p>This third issue wants to introduce the reader to the class-based version of Django forms. This post is not meant to be a full introduction to the Django form library; rather, I want to show how class-based generic views implement the CUD part of the CRUD operations (Create, Read, Update, Delete), the Read one being implemented by &#8220;standard&#8221; generic views.</p>
+
+
+		
+		<a href="/blog/2014/02/14/digging-up-django-class-based-views-3/" class="more-link">Read on &rarr;</a>
+	</div>
+
+<div class="meta">
+	
+</div>
+</article>
+
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2013/12/11/digging-up-django-class-based-views-2/">
+		
+			Digging Up Django Class-based Views - 2</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -132,15 +177,15 @@
 
 
 <time datetime="2013-12-11T09:00:00+01:00" pubdate data-updated="true">Dec 11<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/django/'>django</a>, <a class='category' href='/blog/categories/python/'>python</a>
 
 
 </div>
-  </div>
-  <h2>Abstract</h2>
+    </div>
+		<h2>Abstract</h2>
 
 <p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
 
@@ -149,26 +194,26 @@
 <p>In this second post I want to talk about the second most used generic view, <code>DetailView</code>, and about custom querysets and arguments. Last, I&#8217;m going to introduce unspecialized class-based views that allow you to build more complex Web pages. To fully understand <code>DetailView</code>, however, you need to grasp two essential concepts, namely <strong>querysets</strong> and <strong>view parameters</strong>. So I&#8217;m sorry for the learn-by-doing readers, but this time too I&#8217;m going to start with some pure programming topics.</p>
 
 
-  
-  <a href="/blog/2013/12/11/digging-up-django-class-based-views-2/" class="more-link">Read on &rarr;</a>
-</div>
+		
+		<a href="/blog/2013/12/11/digging-up-django-class-based-views-2/" class="more-link">Read on &rarr;</a>
+	</div>
 
 <div class="meta">
-  
+	
 </div>
 </article>
 
 
     <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/10/28/digging-up-django-class-based-views-1/">
-      
-      Digging Up Django Class-based Views - 1</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+	<h2 class="title">
+		
+		<a href="/blog/2013/10/28/digging-up-django-class-based-views-1/">
+		
+			Digging Up Django Class-based Views - 1</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -181,15 +226,15 @@
 
 
 <time datetime="2013-10-28T08:43:00+01:00" pubdate data-updated="true">Oct 28<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/django/'>django</a>, <a class='category' href='/blog/categories/python/'>python</a>
 
 
 </div>
-  </div>
-  <h2>Abstract</h2>
+    </div>
+		<h2>Abstract</h2>
 
 <p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
 
@@ -200,26 +245,26 @@
 <p>I want to thank all Django developers for their work. Despite the previous criticism on documentation, this post wants to be a thanksgiving for their efforts.</p>
 
 
-  
-  <a href="/blog/2013/10/28/digging-up-django-class-based-views-1/" class="more-link">Read on &rarr;</a>
-</div>
+		
+		<a href="/blog/2013/10/28/digging-up-django-class-based-views-1/" class="more-link">Read on &rarr;</a>
+	</div>
 
 <div class="meta">
-  
+	
 </div>
 </article>
 
 
     <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/">
-      
-      Some Tips About AMQP Direct Exchanges</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+	<h2 class="title">
+		
+		<a href="/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/">
+		
+			Some Tips About AMQP Direct Exchanges</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -232,41 +277,41 @@
 
 
 <time datetime="2013-08-21T18:10:00+02:00" pubdate data-updated="true">Aug 21<span>st</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/amqp/'>amqp</a>, <a class='category' href='/blog/categories/rabbitmq/'>rabbitmq</a>
 
 
 </div>
-  </div>
-  <p><em>EDIT: thanks to Alvaro Videla that pointed out that a queue can be connected to more than one exchange; sorry for the wrong information.</em></p>
+    </div>
+		<p><em>EDIT: thanks to Alvaro Videla that pointed out that a queue can be connected to more than one exchange; sorry for the wrong information.</em></p>
 
 <p>Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.</p>
 
 <p>Now some time has passed since I started, and reading the <a href="http://www.rabbitmq.com/getstarted.html">RabbitMQ tutorials</a> again I can see that these properties are no mystery. However, in this short post I want to clearly point out three different uses of direct exchanges, in the hope that other novices will be helped to better understand those powerful components of an AMQP system.</p>
 
 
-  
-  <a href="/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/" class="more-link">Read on &rarr;</a>
-</div>
+		
+		<a href="/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/" class="more-link">Read on &rarr;</a>
+	</div>
 
 <div class="meta">
-  
+	
 </div>
 </article>
 
 
     <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/">
-      
-      Postage - a RabbitMQ-based Component Python Library</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+	<h2 class="title">
+		
+		<a href="/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/">
+		
+			Postage - a RabbitMQ-based Component Python Library</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -279,15 +324,15 @@
 
 
 <time datetime="2013-07-25T15:50:00+02:00" pubdate data-updated="true">Jul 25<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/pika/'>pika</a>, <a class='category' href='/blog/categories/postage/'>postage</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/rabbitmq/'>rabbitmq</a>
 
 
 </div>
-  </div>
-  <p><a href="https://github.com/pika/pika">Pika</a> is a wonderful pure Python implementation of the AMQP protocol. Using it you can exploit the full power of your RabbitMQ installation from your Python code.</p>
+    </div>
+		<p><a href="https://github.com/pika/pika">Pika</a> is a wonderful pure Python implementation of the AMQP protocol. Using it you can exploit the full power of your RabbitMQ installation from your Python code.</p>
 
 <p>When using pika to develop a component-based system I tried to write some code to simplify its use: the result is <a href="https://github.com/lgiordani/postage">Postage</a>, a Python library that provides higher level structures such as a message format, components fingerprint, rich producer and consumers.</p>
 
@@ -296,26 +341,26 @@
 <p>Postage is freely available under the GPL2. It is based on the pika BlockingConnection since I had no experience with other adapters. If you want to hack it, feel free to <a href="https://github.com/lgiordani/postage">fork it on Github</a> and submit a pull request.</p>
 
 
-  
-  <a href="/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/" class="more-link">Read on &rarr;</a>
-</div>
+		
+		<a href="/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/" class="more-link">Read on &rarr;</a>
+	</div>
 
 <div class="meta">
-  
+	
 </div>
 </article>
 
 
     <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/07/18/libqgit2-a-qt-wrapper-for-libgit2/">
-      
-      Libqgit2: A Qt Wrapper for Libgit2</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+	<h2 class="title">
+		
+		<a href="/blog/2013/07/18/libqgit2-a-qt-wrapper-for-libgit2/">
+		
+			Libqgit2: A Qt Wrapper for Libgit2</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -328,15 +373,15 @@
 
 
 <time datetime="2013-07-18T10:51:00+02:00" pubdate data-updated="true">Jul 18<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/c-plus-plus/'>c++</a>, <a class='category' href='/blog/categories/git/'>git</a>, <a class='category' href='/blog/categories/qt/'>qt</a>
 
 
 </div>
-  </div>
-  <p><a href="http://libgit2.github.com/">Libgit2</a> is &#8220;a portable, pure C implementation of the Git core methods&#8221; started in 2008 by Shawn O. Pearce. It is successfully used in both commercial an open source projects and wrapped in many languages (among the others Ruby, C#, Python). In 2011 Laszlo Papp from KDE started the libqgit2 project, aiming to port libgit2 features to C++/Qt. Sadly, lately the development slowed down a little and the library could not compile against the latest libgit2.</p>
+    </div>
+		<p><a href="http://libgit2.github.com/">Libgit2</a> is &#8220;a portable, pure C implementation of the Git core methods&#8221; started in 2008 by Shawn O. Pearce. It is successfully used in both commercial an open source projects and wrapped in many languages (among the others Ruby, C#, Python). In 2011 Laszlo Papp from KDE started the libqgit2 project, aiming to port libgit2 features to C++/Qt. Sadly, lately the development slowed down a little and the library could not compile against the latest libgit2.</p>
 
 <p>Being interested in using libgit2 in Qt/KDE projects, I am trying to restart the development.
 I managed to update the library to libgit2 0.19.0 (latest version), and you can find the <a href="https://github.com/lgiordani/libqgit2">code on GitHub</a>. Feel free to fork it and work on it, but remember that this is just an unofficial repository.</p>
@@ -348,26 +393,26 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 
 <p>Stay tuned for updates!</p>
 
-  
-  
-</div>
+		
+		
+	</div>
 
 <div class="meta">
-  
+	
 </div>
 </article>
 
 
     <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/">
-      
-      The Lord of the Rings: An Erlang Epic</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+	<h2 class="title">
+		
+		<a href="/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/">
+		
+			The Lord of the Rings: An Erlang Epic</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -380,15 +425,15 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 
 
 <time datetime="2013-06-20T17:49:00+02:00" pubdate data-updated="true">Jun 20<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/concurrent-programming/'>concurrent programming</a>, <a class='category' href='/blog/categories/erlang/'>erlang</a>
 
 
 </div>
-  </div>
-  <h2>Abstract</h2>
+    </div>
+		<h2>Abstract</h2>
 
 <p>One of the first really challenging problems an Erlang novice must face is the classical process ring, which can be found around the Internet and most notably in &#8220;Erlang Programming&#8221; by Cesarini and Thompson (page 115).</p>
 
@@ -397,26 +442,26 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <p>I try here to give an in-depth analysis of the matter, to point out some of the most interesting issues of this exercise. I strongly suggest the Erlang novice to try and solve the exercise before looking at the solutions proposed here.</p>
 
 
-  
-  <a href="/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/" class="more-link">Read on &rarr;</a>
-</div>
+		
+		<a href="/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/" class="more-link">Read on &rarr;</a>
+	</div>
 
 <div class="meta">
-  
+	
 </div>
 </article>
 
 
     <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/05/30/error-handling-in-erlang-a-primer/">
-      
-      Error Handling in Erlang - a Primer</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+	<h2 class="title">
+		
+		<a href="/blog/2013/05/30/error-handling-in-erlang-a-primer/">
+		
+			Error Handling in Erlang - a Primer</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -429,41 +474,41 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 
 
 <time datetime="2013-05-30T11:41:00+02:00" pubdate data-updated="true">May 30<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/concurrent-programming/'>concurrent programming</a>, <a class='category' href='/blog/categories/erlang/'>erlang</a>
 
 
 </div>
-  </div>
-  <h2>Abstract</h2>
+    </div>
+		<h2>Abstract</h2>
 
 <p>This article aims to summarize Erlang error handling both in sequential and in concurrent environments. The targets of this article are novices that, like me, make their first steps into the beautiful world of Erlang. Moreover, I always find that trying to explain things makes me understand them better.</p>
 
 <p>Disclaimer (for Erlang gurus): I&#8217;m a complete Erlang novice so please be indulgent with me while you read my thoughts. Corrections and suggestions are welcome!</p>
 
 
-  
-  <a href="/blog/2013/05/30/error-handling-in-erlang-a-primer/" class="more-link">Read on &rarr;</a>
-</div>
+		
+		<a href="/blog/2013/05/30/error-handling-in-erlang-a-primer/" class="more-link">Read on &rarr;</a>
+	</div>
 
 <div class="meta">
-  
+	
 </div>
 </article>
 
 
     <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/04/23/concurrent-programming-6/">
-      
-      Concurrent Programming - 6</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+	<h2 class="title">
+		
+		<a href="/blog/2013/04/23/concurrent-programming-6/">
+		
+			Concurrent Programming - 6</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -476,39 +521,39 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 
 
 <time datetime="2013-04-23T08:29:00+02:00" pubdate data-updated="true">Apr 23<span>rd</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/concurrent-programming/'>concurrent programming</a>, <a class='category' href='/blog/categories/operating-systems/'>operating systems</a>
 
 
 </div>
-  </div>
-  <h2>Abstract</h2>
+    </div>
+		<h2>Abstract</h2>
 
 <p>Issue 5 of this series ended with a small program where two processes exchanged ten numbers through a message queue, thus being a synchronized producer-consumer couple. This time I am going to show and comment the code of a very simple communication simulator written in C. The code leverages IPC queues to allow multiple processes to talk each other while running concurrently.</p>
 
 
-  
-  <a href="/blog/2013/04/23/concurrent-programming-6/" class="more-link">Read on &rarr;</a>
-</div>
+		
+		<a href="/blog/2013/04/23/concurrent-programming-6/" class="more-link">Read on &rarr;</a>
+	</div>
 
 <div class="meta">
-  
+	
 </div>
 </article>
 
 
     <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/">
-      
-      Python Generators - From Iterators to Cooperative Multitasking - 3</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
+	<h2 class="title">
+		
+		<a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/">
+		
+			Python Generators - From Iterators to Cooperative Multitasking - 3</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
 
 
 
@@ -521,70 +566,25 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 
 
 <time datetime="2013-03-29T13:25:00+01:00" pubdate data-updated="true">Mar 29<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
+      <div class="tags">Tags: 
 
 
 	<a class='category' href='/blog/categories/generators/'>generators</a>, <a class='category' href='/blog/categories/python/'>python</a>
 
 
 </div>
-  </div>
-  <h2>Introduction</h2>
+    </div>
+		<h2>Introduction</h2>
 
 <p>In this third issue we move on uncovering how generators can be the foundation of a cooperative multitasking system and show some code that implements it. Before we face this topic we will talk shortly about another interesting use of generators, namely generator expressions chains.</p>
 
 
-  
-  <a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/" class="more-link">Read on &rarr;</a>
-</div>
+		
+		<a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/" class="more-link">Read on &rarr;</a>
+	</div>
 
 <div class="meta">
-  
-</div>
-</article>
-
-
-    <article class="post">
-<h2 class="title">
-  
-    <a href="/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/">
-      
-      Python Generators - From Iterators to Cooperative Multitasking - 2</a>
-</h2>
-<div class="entry-content">
-  <div class="meta">
-    <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-26T14:05:00+01:00" pubdate data-updated="true">Mar 26<span>th</span>, 2013</time></div>
-    <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/generators/'>generators</a>, <a class='category' href='/blog/categories/python/'>python</a>
-
-
-</div>
-  </div>
-  <h2>Introduction</h2>
-
-<p>After the recap of the iteration process in Python, in this post we will introduce the concept of generator, which aims to solve some problems that arise from the use of iterators.</p>
-
-
-  
-  <a href="/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/" class="more-link">Read on &rarr;</a>
-</div>
-
-<div class="meta">
-  
+	
 </div>
 </article>
 
@@ -599,7 +599,7 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
     </div>
     <footer id="footer">
     <div style="display:inline">
-    Copyright &copy; 2013
+    Copyright &copy; 2014
 
     Leonardo Giordani
 . Powered by <a href="http://octopress.org">Octopress</a> | 

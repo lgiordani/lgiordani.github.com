@@ -2,102 +2,140 @@
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/03/20/versioning-an-underrated-discipline/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/
         </loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://lgiordani.github.io/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/
         </loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://lgiordani.github.io/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/
         </loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/04/23/concurrent-programming-6/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/05/30/error-handling-in-erlang-a-primer/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://lgiordani.github.io/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/
         </loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/2013/07/18/libqgit2-a-qt-wrapper-for-libgit2/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://lgiordani.github.io/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/
         </loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://lgiordani.github.io/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/
         </loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://lgiordani.github.io/blog/2013/10/28/digging-up-django-class-based-views-1/
         </loc>
-        <lastmod>2013-12-11T08:53:13+01:00</lastmod>
+        <lastmod>2014-02-06T20:11:41+01:00</lastmod>
     </url>
     <url>
         <loc>
             http://lgiordani.github.io/blog/2013/12/11/digging-up-django-class-based-views-2/
         </loc>
-        <lastmod>2013-12-11T08:53:13+01:00</lastmod>
+        <lastmod>2014-02-06T20:07:33+01:00</lastmod>
+    </url>
+    <url>
+        <loc>
+            http://lgiordani.github.io/blog/2014/02/14/digging-up-django-class-based-views-3/
+        </loc>
+        <lastmod>2014-02-14T13:44:54+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.io/robots.txt</loc>
+        <lastmod>2014-01-31T08:19:58+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/about/</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.io/assets/bootstrap/components.html</loc>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.io/assets/bootstrap/getting-started.html</loc>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.io/assets/bootstrap/css.html</loc>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.io/assets/bootstrap/</loc>
+        <lastmod>2014-02-14T13:44:54+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.io/assets/bootstrap/about.html</loc>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.io/assets/bootstrap/javascript.html</loc>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.github.io/assets/bootstrap/customize.html</loc>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/archives/</loc>
-        <lastmod>2013-12-11T08:53:13+01:00</lastmod>
+        <lastmod>2014-02-14T13:44:54+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/</loc>
-        <lastmod>2013-12-11T08:53:13+01:00</lastmod>
+        <lastmod>2014-02-14T13:44:54+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/search.html</loc>
-        <lastmod>2013-12-04T16:54:21+01:00</lastmod>
+        <lastmod>2014-01-31T08:33:33+01:00</lastmod>
     </url>
 </urlset>
