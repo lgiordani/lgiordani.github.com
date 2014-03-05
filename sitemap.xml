@@ -88,11 +88,13 @@
         <loc>
             http://lgiordani.github.io/blog/2014/02/14/digging-up-django-class-based-views-3/
         </loc>
-        <lastmod>2014-02-17T19:04:52+01:00</lastmod>
+        <lastmod>2014-03-04T13:18:45+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/robots.txt</loc>
-        <lastmod>2014-01-31T08:19:58+01:00</lastmod>
+        <loc>
+            http://lgiordani.github.io/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/
+        </loc>
+        <lastmod>2014-03-05T17:22:37+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/about/</loc>
@@ -100,11 +102,11 @@
     </url>
     <url>
         <loc>http://lgiordani.github.io/blog/archives/</loc>
-        <lastmod>2014-02-17T19:04:52+01:00</lastmod>
+        <lastmod>2014-03-05T17:22:37+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/</loc>
-        <lastmod>2014-02-17T19:04:52+01:00</lastmod>
+        <lastmod>2014-03-05T17:22:37+01:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.github.io/search.html</loc>
