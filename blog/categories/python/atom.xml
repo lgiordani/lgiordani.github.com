@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2014-03-10T08:38:35+01:00</updated>
+  <updated>2014-03-31T17:37:59+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,499 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[OOP concepts in Python 2.x - Part 2]]></title>
+    <link href="http://lgiordani.github.io/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/"/>
+    <updated>2014-03-10T18:56:56+01:00</updated>
+    <id>http://lgiordani.github.io/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p>This post continues the analysis of the Python OOP implementation started with <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">this post</a>, which I recommend reading before taking on this new one.</p>
+
+<p>This second post discusses the following OOP features in Python:</p>
+
+<ul>
+<li>Polymorphism</li>
+<li>Classes and instances (again)</li>
+<li>Metaclasses</li>
+<li>Object creation</li>
+</ul>
+
+
+<p><em>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. As soon as I feel comfortable with my Python 3 knowledge, I will post an update.</em></p>
+
+<!--more-->
+
+
+<h2>Good Morning, Polymorphism</h2>
+
+<p>The term <em>polymorphism</em>, in the OOP lingo, refers to the ability of an object to adapt the code to the type of the data it is processing.</p>
+
+<p>Polymorphism has two major applications in an OOP language. The first is that an object may provide different implementations of one of its methods depending on the type of the input parameters. The second is that code written for a given type of data may be used on data with a derived type, i.e. methods understand the class hierarchy of a type.</p>
+
+<p>In Python polymorphism is one of the key concepts, and we can say that it is a built-in feature. Let us deal with it step by step.</p>
+
+<p>First of all, you know that in Python the type of a variable is not explicitly declared. Beware that this does not mean that Python variables are <em>untyped</em>. On the contrary, everything in Python has a type, it just happens that the type is implicitly assigned. If you remember the last paragraph of the previous post, I stated that in Python variables are just pointers (using a C-like nomenclature), in other words they just tell the language <em>where</em> in memory a variable has been stored. What is stored at that address is not a business of the variable.</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>a = 5
+a
+5
+type(a)
+<type 'int'>
+hex(id(a))
+'0x89812b0'
+a = "five"
+a
+'five'
+type(a)
+<type 'str'>
+hex(id(a))
+'0xb74bb280L'
+```</p></blockquote></blockquote></blockquote>
+
+<p>This little example shows a lot about the Python typing system. The variable <code>a</code> is not statically declared, after all it can contain only one type of data: a memory address. When we assign the number 5 to it, Python stores in <code>a</code> the <em>address</em> of the number 5 (<code>0x89812b0</code> in my case, but your result will be different). The <code>type()</code> built-in function is smart enough to understand that we are not asking about the type of <code>a</code> (which is always a reference), but about the type of the content. When you store another value in <code>a</code>, the string <code>"five"</code>, Python shamelessly replaces the previous content of the variable with the new address.</p>
+
+<p>So, thanks to the reference system, Python type system is both <em>strong</em> and <em>dynamic</em>. The exact definition of those two concepts is not universal, so if you are interested be ready to dive into a broad matter. However, in Python, the meaning of those two words is the following:</p>
+
+<ul>
+<li>type system is <em>strong</em> because everything has a well-defined type, that you can check with the <code>type()</code> built-in</li>
+<li>type system is <em>dynamic</em> since the type of a variable is not explicitly declared, but changes with the content</li>
+</ul>
+
+
+<p>Onward! We just scratched the surface of the whole thing.</p>
+
+<p>To explore the subject a little more, try to define the simplest function in Python (apart from an empty function)</p>
+
+<p>``` python
+def echo(a):</p>
+
+<pre><code>return a
+</code></pre>
+
+<p>```</p>
+
+<p>Pretty straightforward, isn't it? Well, if you come from a statically compiled language such as C or C++ you should be at least puzzled. What is <code>a</code>? I mean: what type of data does it contain? Moreover, how can Python know what it is returning if there is no type specification?</p>
+
+<p>Again, if you recall the references stuff everything becomes clear: that function accepts a reference and returns a reference. In other words we just defined a sort of universal function, that does the same thing regardless of the input.</p>
+
+<p>This is exactly the problem that polymorphism wants to solve. We want to describe an action regardless of the type of objects, and this is what we do when we talk among humans. When you describe how to move an object by pushing it, you may explain it using a box, but you expect the person you are addressing to be able to repeat the action even if you need to move a pen, or a book, or a bottle.</p>
+
+<p>There are two main strategies you can apply to get code that performs the same operation regardless of the input types.</p>
+
+<p>The first approach is to cover all cases, and this is a typical approach of procedural languages. If you need to sum two numbers that can be integers, float or complex, you just need to write three <code>sum()</code> functions, one bound to the integer type, the second bound to the float type and the third bound to the complex type, and to have some language feature that takes charge of choosing the correct implementation depending on the input type. This logic can be implemented by a compiler (if the language is statically typed) or by a runtime environment (if the language is dynamically typed) and is the approach chosen by C++. The disadvantage of this solution is that it requires the programmer to forecast all the possible situations: what if I need to sum an integer with a float? What if I need to sum two lists? (Please note that C++ is not so poorly designed, and the operator overloading technique allows to manage such cases, but the base polymorphism strategy of that language is the one exposed here).</p>
+
+<p>The second strategy, the one implemented by Python, is simply to require the input objects to solve the problem for you. In other words you <em>ask the data itself to perform the operation</em>, reversing the problem. Instead of writing a bunch on functions that sum all the possible types in every possible combination you just write one function that requires the input data to sum, trusting that they know how to do it. Does it sound complex? It is not.</p>
+
+<p>Let's look at the Python implementation of the <code>+</code> operator. When we write <code>c = a + b</code>, Python actually executes <code>c = a.__add__(b)</code>. As you can see the sum operation is delegated to the first input variable. So if we write</p>
+
+<p>``` python
+def sum(a, b):</p>
+
+<pre><code>return a + b
+</code></pre>
+
+<p>```</p>
+
+<p>there is no need to specify the type of the two input variables. The object <code>a</code> (the object contained in the variable <code>a</code>) shall be able to sum with the object <code>b</code>. This is a very beautiful and simple implementation of the polymorphism concept. Python functions are polymorphic simply because they accept everything and trust the input data to be able to perform some actions.</p>
+
+<p>Let us consider another simple example before moving on. The built-in <code>len()</code> function returns the length of the input object. For example</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>l = [1, 2, 3]
+len(l)
+3
+s = "Just a sentence"
+len(s)
+15
+```</p></blockquote></blockquote></blockquote>
+
+<p>As you can see it is perfectly polymorphic: you can feed both a list or a string to it and it just computes its length. Does it work with any type? let's check</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>d = {'a': 1, 'b': 2}
+len(d)
+2
+i = 5
+len(i)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: object of type 'int' has no len()
+```</p></blockquote></blockquote></blockquote>
+
+<p>Ouch! Seems that the <code>len()</code> function is smart enough to deal with dictionaries, but not with integers. Well, after all, the length of an integer is not defined.</p>
+
+<p>Indeed this is exactly the point of Python polymorphism: <em>the integer type does not define a length operation</em>. While you blame the <code>len()</code> function, the <code>int</code> type is at fault. The <code>len()</code> function just calls the <code>__len__()</code> method of the input object, as you can see from this code</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>l.<strong>len</strong>()
+3
+s.<strong>len</strong>()
+15
+d.<strong>len</strong>()
+2
+i.<strong>len</strong>()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'int' object has no attribute '<strong>len</strong>'
+```</p></blockquote></blockquote></blockquote>
+
+<p>but the <code>'int' object</code> does not define any <code>__len__()</code> method.</p>
+
+<p>So, to sum up what we discovered until here, I would say that <em>Python polymorphism is based on delegation</em>. In the following sections we will talk about the <a href="http://docs.python.org/2/glossary.html#term-eafp">EAFP</a> Python principle, and you will see that the delegation principle is somehow ubiquitous in this language.</p>
+
+<h2>Type Hard</h2>
+
+<p>Another real-life concept that polymorphism wants to bring into a programming language is the ability to walk the class hierarchy, that is <em>to run code on specialized types</em>. This is a complex sentence to say something we are used to do every day, and an example will clarify the matter.</p>
+
+<p>You know how to open a door, it is something you learned in your early years. Under an OOP point of view you are an object (sorry, no humiliation intended) which is capable of interacting with a wood rectangle rotating on hinges. When you can open a door, however, you can also open a window, which, after all, is a specialized type of wood-rectangle-with-hinges, hopefully with some glass in it too. You are also able to open the car door, which is also a specialized type (this one is a mix between a standard door and a window). This shows that, once you know how to interact with the most generic type (basic door) you can also interact with specialized types (window, car door) as soon as they act like the ancestor type (e.g. as soon as they rotate on hinges).</p>
+
+<p>This directly translates into OOP languages: polymorphism requires that <em>code written for a given type may also be run on derived types</em>. For example, a list (a generic list object, not a Python one) that can contain "numbers" shall be able to accept integers because they <em>are</em> numbers. The list could specify an ordering operation which requires the numbers to be able to compare each other. So, as soon as integers specify a way to compare each other they can be inserted into the list and ordered.</p>
+
+<p>Statically compiled languages shall provide specific language features to implement this part of the polymorphism concept. In C++, for example, the language needs to introduce the concept of pointer compatibility between parent and child classes.</p>
+
+<p>In Python there is no need to provide special language features to implement subtype polymorphism. As we already discovered Python functions accept any variable without checking the type and rely on the variable itself to provide the correct methods. But you already know that a subtype must provide the methods of the parent type, either redefining them or through implicit delegation, so as you can see Python implements subtype polymorphism from the very beginning.</p>
+
+<p>I think this is one of the most important things to understand when working with this language. Python is not really interested in the actual type of the variables you are working with. It is interested in how those variables act, that is it just wants the variable <em>to provide the right methods</em>. So, if you come from statically typed languages, you need to make a special effort to think about <em>acting like</em> instead of <em>being</em>. This is what we called "duck typing".</p>
+
+<p>Time to do an example. Let us define a <code>Room</code> class</p>
+
+<p>``` python
+class Room(object):</p>
+
+<pre><code>def __init__(self, door):
+    self.door = door
+
+def open(self):
+    self.door.open()
+
+def close(self):
+    self.door.close()
+
+def is_open(self):
+    return self.door.is_open()
+</code></pre>
+
+<p>```</p>
+
+<p>A very simple class, as you can see, just enough to exemplify polymorphism. The <code>Room</code> class accepts a <code>door</code> variable, and the type of this variable is not specified. Duck typing in action: the actual type of <code>door</code> is not declared, there is no "acceptance test" built in the language. Indeed, the incoming variable shall export the following methods that are used in the <code>Room</code> class: <code>open()</code>, <code>close()</code>, <code>is_open()</code>. So we can build the following classes</p>
+
+<p>``` python
+class Door(object):</p>
+
+<pre><code>def __init__(self):
+    self.status = "closed"
+
+def open(self):
+    self.status = "open"
+
+def close(self):
+    self.status = "closed"
+
+def is_open(self):
+    return self.status == "open"
+</code></pre>
+
+<p>class BooleanDoor(object):</p>
+
+<pre><code>def __init__(self):
+    self.status = True
+
+def open(self):
+    self.status = True
+
+def close(self):
+    self.status = False
+
+def is_open(self):
+    return self.status
+</code></pre>
+
+<p>```</p>
+
+<p>Both represent a door that can be open or closed, and they implement the concept in two different ways: the first class relies on strings, while the second leverages booleans. Despite <em>being</em> two different types, both <em>act</em> the same way, so both can be used to build a <code>Room</code> object.</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>door = Door()
+bool_door = BooleanDoor()
+room = Room(door)
+bool_room = Room(bool_door)</p>
+
+<p>room.open()
+print room.is_open()
+True
+room.close()
+print room.is_open()
+False</p>
+
+<p>bool_room.open()
+print bool_room.is_open()
+True
+bool_room.close()
+print bool_room.is_open()
+False
+```</p></blockquote></blockquote></blockquote>
+
+<h4>File Like Us</h4>
+
+<p>File-like objects are a concrete and very useful example of polymorphism in Python. A file-like object is a class (or the instance of a class) that acts like a file, i.e. it provides those methods a file object exposes.</p>
+
+<p>Say for example that you code a class that parses an XML tree, and that you expect the XML code to be contained in a file. So your class accepts a file in its <code>__init__()</code> method, and reads the content from it</p>
+
+<p>``` python
+class XMLReader(object):</p>
+
+<pre><code>def __init__(xmlfile):
+    xmlfile.open()
+    self.content = xmlfile.read()
+    xmlfile.close()
+</code></pre>
+
+<p>[...]
+```</p>
+
+<p>The class works well until your application shall be modified to receive XML content from a network stream. To use the class without modifying it you shall write the stream in a temporary file and load this latter, but this sounds a little overkill. So you plan to change the class to accept a string, but this way you shall change every single code that uses the class to read a file, since now you shall open, read and close the file on your own, outside the class.</p>
+
+<p>Polymorphism offers a better way. Why not store the incoming stream inside an object that <em>acts like</em> a file, even if it is not an actual one? If you check the StringIO module you will find that such an object has been already invented and provided in the standard Python library.</p>
+
+<p>Other very useful file-like classes are those contained in the <code>gzip</code>, <code>bz2</code>, and <code>zipfile</code> modules (just to name some of the most used), which provide objects that allow you to manage compressed files just like plain files, hiding the decompression/compression machinery.</p>
+
+<h2>Unforgiveness</h2>
+
+<p>EAFP is a Python acronym that stands for <em>easier to ask for forgiveness than permission</em>. This coding style is highly pushed in the Python community because it completely relies on the duck typing concept, thus fitting well with the language philosophy.</p>
+
+<p>The concept behind EAFP is fairly easy: instead of checking if an object has a given attribute or method before actually accessing or using it, just trust the object to provide what you need and manage the error case. This can be probably better understood by looking at some code. According to EAFP, instead of writing</p>
+
+<p>``` python
+if hasattr(someobj, 'open'):</p>
+
+<pre><code>[...]
+</code></pre>
+
+<p>else:</p>
+
+<pre><code>[...]
+</code></pre>
+
+<p>```</p>
+
+<p>you shall write</p>
+
+<p>``` python
+try:</p>
+
+<pre><code>someobj.open()
+[...]
+</code></pre>
+
+<p>except AttributeError:</p>
+
+<pre><code>[...]
+</code></pre>
+
+<p>```</p>
+
+<p>As you can see, the second snippet directly uses the method and deals with the possible <code>AttributeError</code> exception (by the way: managing exceptions is one of the top Black Magic Topics in Python, more on it in a future post. A very quick preview: I think we may learn something from Erlang - check <a href="/blog/2013/05/30/error-handling-in-erlang-a-primer/">this</a>).</p>
+
+<p>Why is this coding style pushed so much in the Python community? I think the main reason is that through EAFP you <em>think</em> polymorphically: you are not interested in knowing if the object <em>has</em> the <code>open</code> attribute, you are interested in knowing if the object can satisfy your request, that is to perform the <code>open()</code> method call.</p>
+
+<h2>Intermezzo</h2>
+
+<p>Are you still with me? Good. Now go, make yourself a cup of tea and fasten belts: the Python roller coaster is about to start.</p>
+
+<p>We will leave the polymorphism palace for a while to explore other parts of the Python OOP world. Don't worry, however, it is just to lay some foundation before diving another time into the matter.</p>
+
+<h2>The Type Brothers</h2>
+
+<p>The first step into the most intimate secrets of Python objects comes from two components we already met in the first post: <code>type</code> and <code>object</code>. These two things are the very fundamental elements of Python OOP system, so it is worth spending some time to understand how they work and relate each other.</p>
+
+<p>First of all recall that in Python <em>everything is an object</em>, that is everything inherits from <code>object</code>. Thus, <code>object</code> seems to be the deepest thing you can find digging into Python veriables. Let's check this</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>a = 5
+type(a)
+<type 'int'>
+a.<strong>class</strong>
+<type 'int'>
+a.<strong>class</strong>.<strong>bases</strong>
+(<type 'object'>,)
+object.<strong>bases</strong>
+()
+```</p></blockquote></blockquote></blockquote>
+
+<p>The variable <code>a</code> is an instance of the <code>int</code> class, and this latter inherits from <code>object</code>, which inherits from nothing. This demonstrates that <code>object</code> is at the top of the class hierarchy. However, as you can see, both <code>int</code> and <code>object</code> are called <em>types</em> (<code>&lt;type 'int'&gt;</code>, <code>&lt;type 'object'&gt;</code>), which in Python is a pure alias of the word <em>class</em>. Indeed, while <code>a</code> is an instance of the <code>int</code> class, <code>int</code> itself is an instance of another class, <em>a class that is instanced to build classes</em></p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>type(a)
+<type 'int'>
+type(int)
+<type 'type'>
+type(float)
+<type 'type'>
+type(dict)
+<type 'type'>
+```</p></blockquote></blockquote></blockquote>
+
+<p>Since in Python everything is an object, everything is the instance of a class, even classes. Well, <code>type</code> is the class that is instanced to get classes. So remember this: <code>object</code> is the base of every object, <code>type</code> is the class of every type. Sounds puzzling? It is not your fault, don't worry. However, just to strike you with the finishing move, this is what Python is built on</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>type(object)
+<type 'type'>
+type.<strong>bases</strong>
+(<type 'object'>,)
+```</p></blockquote></blockquote></blockquote>
+
+<p>If you are not about to faint at this point chances are that you are Guido van Rossum of one of his friends down at the Python core development team (in this case let me thank you for your beautiful creation). You may get another cup of tea, if you need it.</p>
+
+<p>Jokes apart, at the very base of Python type system there are two things, <code>object</code> and <code>type</code>, which are inseparable. The previous code shows that <code>object</code> is an instance of <code>type</code>, and <code>type</code> inherits from <code>object</code>. Take your time to understand this subtle concept, as it is very important for the upcoming discussion about metaclasses.</p>
+
+<p>When you think you grasped the <code>type</code>/<code>object</code> matter read this and start thinking again</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>type(type)
+<type 'type'>
+```</p></blockquote></blockquote></blockquote>
+
+<p>Hint: type is a class (i.e. a type). =)</p>
+
+<h2>The Metaclasses Take Python</h2>
+
+<p>You are now familiar with Python classes. You know that a class is used to create an instance, and that the structure of this latter is ruled by the source class and all its parent classes (until you reach <code>object</code>).</p>
+
+<p>Since classes are objects too, you know that a class itself is an instance of a (super)class, and this class is <code>type</code>. That is, as already stated, <code>type</code> is the class that is used to build classes.</p>
+
+<p>So for example you know that a class may be instanced, i.e. it can be called and by calling it you obtain another object that is linked with the class. What prepares the class for being called? What gives the class all its methods? In Python the class in charge of performing such tasks is called <em>metaclass</em>, and <code>type</code> is the default metaclass of all classes.</p>
+
+<p>The point of exposing this structure of Python objects is that you may change the way classes are built. As you know, <code>type</code> is an object, so it can be subclassed just like any other class. Once you get a subclass of <code>type</code> you need to instruct your class to use it as the metaclass instead of type, and you can do this by setting the <code>__metaclass__</code> attribute.</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>class MyType(type):
+...  pass
+...
+class MySpecialClass(object):
+...  <strong>metaclass</strong> = MyType
+...
+msp = MySpecialClass()
+type(msp)
+<class '__main__.MySpecialClass'>
+type(MySpecialClass)
+<class '__main__.MyType'>
+type(MyType)
+<type 'type'>
+```</p></blockquote></blockquote></blockquote>
+
+<h4>Metaclasses 2: Singleton Day</h4>
+
+<p>Metaclasses are a very advanced topic in Python, but they have many practical uses. For example, by means of a custom metaclass you may log any time a class is instanced, which can be important for applications that shall keep a low memory usage or have to monitor it.</p>
+
+<p>I am going to show here a very simple example of metaclass, the Singleton. Singleton is a well known design pattern, and many description of it may be found on the Internet. It has also been heavily criticized mostly because its bad behaviour when subclassed, but here I do not want to introduce it for its technological value, but for its simplicity (so please do not question the choice, it is just an example). Check the links at the bottom if you are interested in this topic.</p>
+
+<p>Singleton has one purpose: to return the same instance every time it is instanced, like a sort of object-oriented global variable. So we need to build a class that does not work like standard classes, which return a new instance every time they are called.</p>
+
+<p>"Build a class"? This is a task for metaclasses. The following implementation comes from <a href="http://python-3-patterns-idioms-test.readthedocs.org/en/latest/Metaprogramming.html#intercepting-class-creation">Python 3 Patterns, Recipes and Idioms</a>, but is also valid for Python 2.x</p>
+
+<p>``` python
+class Singleton(type):</p>
+
+<pre><code>instance = None
+def __call__(cls, *args, **kw):
+    if not cls.instance:
+         cls.instance = super(Singleton, cls).__call__(*args, **kw)
+    return cls.instance
+</code></pre>
+
+<p>```</p>
+
+<p>We are defining a new type, which inherits from <code>type</code> to provide all bells and whistles of Python classes. We override the <code>__call__</code> method, that is a special method invoked when we call the class, i.e. when we instance it. The new method wraps the original method of <code>type</code> by calling it only when the <code>instance</code> attribute is not set, i.e. the first time the class is instanced, otherwise it just returns the recorded instance. As you can see this is a very basic cache class, the only trick is that it is applied to the creation of instances.</p>
+
+<p>To test the new type we need to define a new class that uses it as its metaclass</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>class ASingleton(object):
+...     <strong>metaclass</strong> = Singleton
+...
+a = ASingleton()
+b = ASingleton()
+a is b
+True
+hex(id(a))
+'0xb6aae28cL'
+hex(id(b))
+'0xb6aae28cL'
+```</p></blockquote></blockquote></blockquote>
+
+<p>By using the <code>is</code> operator we test that the two objects are the very same structure in memory, that is their ids are the same, as explicitly shown. What actually happens is that when you issue <code>a = ASingleton()</code> the <code>ASingleton</code> class runs its <code>__call__()</code> method, which is taken from the <code>Singleton</code> type behind the class. That method recognizes that no instance has been created (<code>Singleton.instance</code> is <code>None</code>) and acts just like any standard class does. When you issue <code>b = ASingleton()</code> the very same things happen, but since <code>Singleton.instance</code> is now different from <code>None</code> its value (the previous instance) is directly returned.</p>
+
+<p>Metaclasses are a very powerful programming tool and leveraging them you can achieve very complex behaviours with a small effort. Their use is a must every time you are actually metaprogramming, that is you are writing code that has to drive the way your code works. Good examples are creational patterns (injecting custom class attributes depending on some configuration), testing, debugging, and performance monitoring.</p>
+
+<h2>Coming to Instance</h2>
+
+<p>Before introducing you to a very smart use of metaclasses by talking about Abstract Base Classes (read: to save some topics for the third part of this series), I want to dive into the object creation procedure in Python, that is what happens when you instance a class. In the previous post this procedure was described only partially, by looking at the <code>__init_()</code> method.</p>
+
+<p>In the first post I recalled the object-oriented concept of <em>constructor</em>, which is a special method of the class that is automatically called when the instance is created. The class may also define a destructor, which is called when the object is destroyed. In languages without a garbage collection mechanism such as C++ the destructor shall be carefully designed. In Python the destructor may be defined through the <code>__del__()</code> method, but it is hardly used.</p>
+
+<p>The constructor mechanism in Python is on the contrary very important, and it is implemented by two methods, instead of just one: <code>__new__()</code> and <code>__init__()</code>. The tasks of the two methods are very clear and distinct: <code>__new__()</code> shall perform actions needed when <em>creating</em> a new instance while <code>__init__</code> deals with object <em>initialization</em>.</p>
+
+<p>Since in Python you do not need to declare attributes due to its dynamic nature, <code>__new__()</code> is rarely defined by programmers, who may rely on <code>__init__</code> to perform the majority of the usual tasks. Typical uses of <code>__new__()</code> are very similar to those listed in the previous section, since it allows to trigger some code whenever your class is instanced.</p>
+
+<p>The standard way to override <code>__new__()</code> is</p>
+
+<p>``` python
+class MyClass(object):</p>
+
+<pre><code>def __new__(cls, *args, **kwds):
+    obj = super(MyClass, cls).__new__(cls, *args, **kwds)
+    [put your code here]
+    return obj
+</code></pre>
+
+<p>```</p>
+
+<p>just like you usually do with <code>__init__()</code>. When your class inherits from <code>object</code> you do not need to call the parent method (<code>object.__init__()</code>) because it is empty.</p>
+
+<p>Remember that <code>__new__()</code> is not forced to return an instance of the class in which it is defined, even if you shall have very good reasons to break this behaviour. Anyway, <code>__init__()</code> will be called only if you return an instance of the container class. Please also note that <code>__new__()</code>, unlike <code>__init__()</code>, accepts the class as its first parameter. The name is not important in Python, and you can also call it <code>self</code>, but it is worth using <code>cls</code> to remember that it is not an instance.</p>
+
+<h2>Final words</h2>
+
+<p>Next post will introduce Abstract Base Classes as the major topic. Slots are another topic which for many people is buried into the Tome of Python Secrets and is worth uncovering. Stay tuned! You can <a href="https://twitter.com/tw_lgiordani/">follow me on Twitter</a> if you want to get the latest news from the blog.</p>
+
+<h2>Movie Trivia</h2>
+
+<p>This time section titles come from the following movies: <em>Good Morning, Vietnam</em>, <em>Die Hard</em>, <em>Spies Like Us</em>, <em>Unforgiven</em>, <em>The Blues Brothers</em>, <em>The Muppets Take Manhattan</em>, <em>Terminator 2: Judgement Day</em>, <em>Coming to America</em></p>
+
+<h2>Sources</h2>
+
+<p>Some sources for the content of this post. Thank you authors!</p>
+
+<ul>
+<li><a href="http://docs.python.org/2/tutorial/classes.html">The official Python documentation</a> and the Python source code.</li>
+<li><a href="http://www.cafepy.com/article/python_types_and_objects/">Python Types and Objects - by Shalabh Chaturvedi</a></li>
+<li><a href="http://www.amazon.com/Python-Nutshell-Second-Edition-In/dp/0596100469/">Python in a Nutshell - by Alex Martelli</a></li>
+<li><a href="http://www.amazon.com/Design-Patterns-Elements-Reusable-Object-Oriented/dp/0201633612/">Design Patterns: Elements of Reusable Object-Oriented Software - by Gamma, Helm, Johnson, Vlissides</a></li>
+<li><a href="http://python-3-patterns-idioms-test.readthedocs.org/en/latest/">Python 3 Patterns, Recipes and Idioms</a></li>
+<li><a href="http://www.aleax.it/5ep.html">Singleton and Borg patterns - by Alex Martelli</a></li>
+<li>Many <a href="http://stackoverflow.com/questions/tagged/python">Stackoverflow</a> questions and answers</li>
+</ul>
+
+
+<h2>Feedback</h2>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[OOP concepts in Python 2.x - Part 1]]></title>
@@ -1580,656 +2073,6 @@ def get_context_data(self, **kwargs):
 <li><a href="/blog/2013/12/11/digging-up-django-class-based-views-2">Digging Up Django Class-based Views - 2</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Postage - a RabbitMQ-based component Python library]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/"/>
-    <updated>2013-07-25T15:50:00+02:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library</id>
-    <content type="html"><![CDATA[<p><a href="https://github.com/pika/pika">Pika</a> is a wonderful pure Python implementation of the AMQP protocol. Using it you can exploit the full power of your RabbitMQ installation from your Python code.</p>
-
-<p>When using pika to develop a component-based system I tried to write some code to simplify its use: the result is <a href="https://github.com/lgiordani/postage">Postage</a>, a Python library that provides higher level structures such as a message format, components fingerprint, rich producer and consumers.</p>
-
-<p>Most notably it provides a handler mechanism for consumers that makes message processing a breeze.</p>
-
-<p>Postage is freely available under the GPL2. It is based on the pika BlockingConnection since I had no experience with other adapters. If you want to hack it, feel free to <a href="https://github.com/lgiordani/postage">fork it on Github</a> and submit a pull request.</p>
-
-<!--more-->
-
-
-<h2>A simple ping example</h2>
-
-<p>I'll describe here a very simple example of a producer/consumer system using Postage; I'll write a server that answers ping messages and a program that sends them. First I will implement a simple server that receives ping messages without answering, to introduce the reader to the base structures, then I will evolve it.</p>
-
-<p>To execute the program you need a working RabbitMQ system, check the RabbitMQ documentation to install and run it. Postage assumes that your system is configured with the standard values (a "/" virtualhost, "guest" user and password). If not check <a href="https://github.com/lgiordani/postage#environment-variables">this paragraph</a> of the documentation.</p>
-
-<h4>Setting up the exchange</h4>
-
-<p>Put the following code in a <code>facilities.py</code> file:</p>
-
-<p>``` python
-from postage import messaging</p>
-
-<p>class PingExchange(messaging.Exchange):</p>
-
-<pre><code>"""This is the exchange that receives ping messages."""
-name = "ping-exchange"
-exchange_type = "direct"
-passive = False
-durable = True
-auto_delete = False
-</code></pre>
-
-<p>```</p>
-
-<p>This imports the messaging part of Postage and declares a <code>PingExchange</code>, which is a simple direct RabbitMQ exchange, which name is <code>ping-exchange</code>. Remember that in a AMQP system exchanges are unique by name and virtualhost, i.e. given a virtualhost the name of the exchange uniquely identifies it.</p>
-
-<h4>Setting up the producer</h4>
-
-<p>Just below the exchange object we declare a producer, a class that can send a given set of messages:</p>
-
-<p>``` python
-class PingProducer(messaging.GenericProducer):</p>
-
-<pre><code>eks = [(PingExchange, 'ping_rk')]
-
-def build_message_ping(self):
-    return messaging.MessageCommand('ping')
-</code></pre>
-
-<p>```</p>
-
-<p>First of all our producer inherits from <code>GenericProducer</code>, a rich object that manages low-level stuff such as connection to the AMQP broker (RabbitMQ), exchange declaration and message creation.</p>
-
-<p>The <code>eks</code> class attribute is a list of exchange/routing key couples (tuples); we list here all the exchanges that will receive our messages when the object will send them and for each exchange we give a routing key. Recall that routing keys are used to label messages so that the exchange can route them to the subscribing queues (according to the rules of the exchange type). Here, we declare that the messages of our producer are going to be sent to the <code>PingExchange</code> exchange with the <code>ping_rk</code> routing key.</p>
-
-<p>Then we declare a <code>build_message_ping()</code> method, which simply builds a new message and returns it. This latter is a command message that in Postage lingo means a message that contains an action the receiver shall execute (a fire-and-forget call).</p>
-
-<h4>The producer</h4>
-
-<p>The program that sends ping messages is very straightforward; it shall declare a message producer and use it to send the message. Create the <code>send_ping.py</code> file and write the following code</p>
-
-<p>``` python
-from postage import messaging
-import facilities</p>
-
-<p>fingerprint = messaging.Fingerprint(name="ping_sender")</p>
-
-<p>```</p>
-
-<p>After the usual imports, I create a fingerprint for this program. As explained in <a href="https://github.com/lgiordani/postage#fingerprint">the documentation</a>, a fingerprint is a collection of useful information about the component that sends messages. It can be easily customized since all Postage objects expect it to be a dictionary, so any object that behaves like a dictionary works. The standard <code>Fingerprint</code> provided by Postage collects some useful properties from the OS and the RabbitMQ installation; here we customize the <code>name</code> value that otherwise would be set to <code>None</code>. The fingerprint, once loaded in a producer, will be automatically attached to any message the producer will send.</p>
-
-<p>``` python
-producer = facilities.PingProducer(fingerprint.as_dict())
-producer.message_ping()</p>
-
-<p>```</p>
-
-<p>The <code>PingProducer</code> we declared in <code>facilities.py</code> is instanced, and its <code>message_ping()</code> method is invoked.
-If you review the above paragraph you will notice that you never defined a <code>message_ping()</code> method; this is automatically implemented by the <code>GenericProducer</code> class from the <code>build_message_ping()</code> method. The class performs many actions under the hood: it executes some code to set up the correct RabbitMQ structures, calls your method to get the actual message data, attaches the fingerprint to the message, and serializes the message data. Eventually, the producer sends the message to the exchange defined in the class (<code>PingExchange</code>) with the linked routing key (<code>ping_rk</code>).</p>
-
-<h4>The server program</h4>
-
-<p>Now we will write a component that receives ping command messages and performs some action accordingly. Open a <code>receive_ping.py</code> file and write the following code</p>
-
-<p>``` python
-from postage import messaging
-from postage import microthreads</p>
-
-<p>import facilities</p>
-
-<p>fingerprint = messaging.Fingerprint(name="ping_receiver")
-```</p>
-
-<p>that loads the modules we need and builds the fingerprint of this application. Creating a receiver means declaring a class that inherits from <code>MessageProcessor</code> and implements a method for each incoming message we want to process.</p>
-
-<p>``` python
-class PingReceiver(messaging.MessageProcessor):</p>
-
-<pre><code>@messaging.MessageHandler('command', 'ping')
-def msg_ping(self, content):
-    print "Got a ping!"
-</code></pre>
-
-<p>```</p>
-
-<p>As you can see here the <code>msg_ping()</code> method is declared as a handler for the command message <code>ping</code>; the name of the method is arbitrary, but it has to accept one parameter, namely the content of the incoming message (more on this later). In this case, when the object receives a ping message it just prints out a string.</p>
-
-<p>``` python
-eqks = [(facilities.PingExchange, [('ping_queue', 'ping_rk')])]
-receiver = PingReceiver(fingerprint.as_dict(), eqks,</p>
-
-<pre><code>                    None, messaging.global_vhost)
-</code></pre>
-
-<p>```</p>
-
-<p>To start the receiver we have to connect it to an exchange; recall that the AMQP mechanism requires you to declare a queue and to connect it to an exchange through a key, which format depends on the exchange type. Being the <code>PingExchange</code> a direct exchange we want to connect to it with the exact routing key we want to match, that is <code>ping_rk</code>. The <code>eqks</code> structure is rather complex and may result overblown in such a simple context: it is a list of tuples in the form <code>(exchange_class, qk_list)</code> that links the given exchange class to a list of queues; this latter list contains tuples in the form <code>(queue_name, key)</code>. Each queue listed here connects to the exchange and fetches messages that match the linked key.</p>
-
-<p>In this case, we simply subscribe the <code>facilities.PingExchange</code> exchange with a <code>ping_queue</code> queue receiving messages routed with the <code>ping_rk</code> key.</p>
-
-<p>The receiver is then instanced. The arguments we pass are the fingerprint dictionary, the eqks we just discussed, a HUP tuple (Host, User, Password) to connect to RabbitMQ and the RabbitMQ virtualhost we want to use. In this case, we stick to the <a href="https://github.com/lgiordani/postage#environment-variables">default HUP</a> and to the default virtualhost.</p>
-
-<p>``` python
-scheduler = microthreads.MicroScheduler()
-scheduler.add_microthread(receiver)</p>
-
-<p>for i in scheduler.main():</p>
-
-<pre><code>pass
-</code></pre>
-
-<p>```</p>
-
-<p>This code creates a scheduler and adds the receiver, which is a <code>microthreads.Microthread</code>, then starts the execution loop.</p>
-
-<h4>Execution</h4>
-
-<p>Open two different shells on your system and execute the receiver in the first</p>
-
-<p><code>text
-$ python receive_ping.py
-postage.messaging: global_vhost set to /
-</code></p>
-
-<p>and the sender in the second</p>
-
-<p><code>text
-$ python send_ping.py
-postage.messaging: global_vhost set to /
-$  
-</code></p>
-
-<p>The receiver shall at this point notify that a message has been sent</p>
-
-<p><code>text
-$ python receive_ping.py
-postage.messaging: global_vhost set to /
-Got a ping!
-</code></p>
-
-<p>which is what we expected. You can stop the receiver with <code>Ctrl-C</code>, this kills the Pika connection somehow abruptly, but I am not going to implement in this article a good signal management.</p>
-
-<h4>Adding message parameters</h4>
-
-<p>Now we want to add a parameter to the message we send, namely the time at which the message was sent. To do this we make some changes to <code>facilities.py</code></p>
-
-<p>``` python
-import time</p>
-
-<p>[...]</p>
-
-<p>class PingProducer(messaging.GenericProducer):</p>
-
-<pre><code>eks = [(PingExchange, 'ping_rk')]
-
-def build_message_ping(self):
-    return messaging.MessageCommand('ping')
-
-def build_message_timed_ping(self):
-    return messaging.MessageCommand('timed_ping',
-                                    parameters={'time':time.time()})
-</code></pre>
-
-<p>```</p>
-
-<p>As you can see I just added the <code>build_message_timed_ping()</code> method, which sends a <code>timed_ping</code> command, but this time I added a <code>parameters</code> dictionary that encompasses all the parameters of the command. Remember that all the structures you put in a message are serialized in JSON by default so they must be processable by <code>json.dumps()</code>; if you need to send very complex structures you can customize Postage to use another encoder, either a customized JSON or a completely different one; see <a href="https://github.com/lgiordani/postage#encoder">the documentation</a>.</p>
-
-<p>The receiver has to be modified accordingly:</p>
-
-<p>``` python
-class PingReceiver(messaging.MessageProcessor):</p>
-
-<pre><code>@messaging.MessageHandler('command', 'ping')
-def msg_ping(self, content):
-    print "Got a ping!"
-
-@messaging.MessageHandler('command', 'timed_ping')
-def msg_timed_ping(self, content):
-    print "Got a timed ping! Time is %s" %(content['parameters']['time'])
-</code></pre>
-
-<p>```</p>
-
-<p>Here the new method, <code>msg_timed_ping()</code>, prints a different message extracting the parameters from the message content.
-Last, you need to add the actual call that sends the message to <code>send_ping.py</code>:</p>
-
-<p><code>python
-producer = facilities.PingProducer(fingerprint.as_dict())
-producer.message_ping()
-producer.message_timed_ping()
-</code></p>
-
-<p>The execution shows that everything works as expected</p>
-
-<p><code>text
-$ python receive_ping.py
-postage.messaging: global_vhost set to /
-Got a ping!
-Got a timed ping! Time is 1374826309.06
-</code></p>
-
-<h4>Adding call parameters</h4>
-
-<p>If you want to allow the user to pass a parameter when sending the message, you just need to accept and use it in your <code>build_message_NAME()</code> method. In <code>facilities.py</code> add:</p>
-
-<p>``` python
-class PingProducer(messaging.GenericProducer):</p>
-
-<pre><code>[...]
-def build_message_custom_ping(self, custom_value):
-    return messaging.MessageCommand('custom_ping',
-                                parameters={'custom_value':custom_value})
-</code></pre>
-
-<p>```</p>
-
-<p>Add a handler in the receiver (<code>receive_ping.py</code>):</p>
-
-<p>``` python
-class PingReceiver(messaging.MessageProcessor):</p>
-
-<pre><code>[...]
-@messaging.MessageHandler('command', 'custom_ping')
-def msg_custom_ping(self, content):
-    print "Got a custom ping! The custom value is %s"\
-          %(content['parameters']['custom_value'])
-</code></pre>
-
-<p>```</p>
-
-<p>And exploit it when sending the message (<code>send_ping.py</code>):</p>
-
-<p><code>python
-producer.message_custom_ping(("Just ping me", 1))
-</code></p>
-
-<p>When you execute it you get:</p>
-
-<p><code>text
-$ python receive_ping.py
-postage.messaging: global_vhost set to /
-Got a ping!
-Got a timed ping! Time is 1374832738.18
-Got a custom ping! The custom value is [u'Just ping me', 1]
-</code></p>
-
-<p>Pay attention to JSON, which does not tell apart tuples from lists.</p>
-
-<h4>RPC calls to the rescue</h4>
-
-<p>The ping mechanism is not really working until the server answers the message. To answer incoming messages we can implement two different strategies; the first is the asynchronous one, which leverages fire-and-forget messages, the second uses RPC calls. While the first is simpler to implement at a system level (you just send messages as usual), it is complex on the user side since it requires the programmer to structure the whole program in an asynchronous way. The second approach, resembling usual function calls, is easier to understand and include in a program; it has many downsides and caveats, however, so do not abuse it.</p>
-
-<p>For the sake of simplicity let us implement a RPC version of the ping mechanism. First we add a specific message to the producer</p>
-
-<p>``` python
-class PingProducer(messaging.GenericProducer):</p>
-
-<pre><code>[...]
-def build_rpc_ping(self):
-    return messaging.RpcCommand('ping')
-</code></pre>
-
-<p>```</p>
-
-<p>Things are not very different from the previous cases here: we use the <code>build_rpc_NAME()</code> form of the method then we return an RpcCommand, instead of a MessageCommand. Beware that, alas!, nomenclature here is a little misleading: both are messages in the sense of "something that will be sent on the AMQP network", but while MessageCommand does not expect an answer, RpcCommand does.</p>
-
-<p>I want to point out that the name of the message is <code>ping</code> just like the previous one; Postage tells the two messages apart using the name (<code>ping</code>), the type (<code>command</code>) and the category (<code>rpc</code> or <code>message</code>), although this latter is somewhat concealed.</p>
-
-<p>The receiver needs a new handler to process the incoming RPC <code>ping</code> message:</p>
-
-<p>``` python
-class PingReceiver(messaging.MessageProcessor):</p>
-
-<pre><code>[...]
-@messaging.RpcHandler('command', 'ping')
-def msg_rpc_ping(self, content, reply_func):
-    print "Got a ping! Answering..."
-    reply_func(messaging.MessageResult('Pong'))
-</code></pre>
-
-<p>```</p>
-
-<p>Accordingly, there is an RPC version of <code>MessageHandler</code>, <code>RpcHandler</code>. The method has to accept an additional parameter that is a reply function; this latter can be called at any time from the method, allowing it to perform some cleanup after answering if needed. In this case, it simply sends a <code>MessageResult</code> object back with <code>'Pong'</code> as value.</p>
-
-<p>In <code>send_ping.py</code> you can now make a remote call:</p>
-
-<p>``` python
-answer = producer.rpc_ping()</p>
-
-<p>if answer.body['content']['type'] == 'success':</p>
-
-<pre><code>print "Answer: %s" %(answer.body['content']['value'])
-</code></pre>
-
-<p>elif answer.body['content']['type'] == 'exception':</p>
-
-<pre><code>print "An exception occoured! (%s)" %(answer.body['content']['value'])
-</code></pre>
-
-<p>```</p>
-
-<p>The first part is straightforward: you call the RPC just like a local function. What you get is always a <code>MessageResult</code> object or derived (<code>MessageResultError</code> or <code>MessageResultException</code>). Be warned that the API here is awkward, to be indulgent. I wrote it, but probably the good-coder-in-me (TM) was on holiday that time; <a href="https://github.com/lgiordani/postage/issues/1">I am going to fix it</a> in a short time.</p>
-
-<p>Anyway, you have to check the answer to be sure that the call was successful; never, never, never trust RPC calls, network is in the middle and everything can happen (yes, even someone tripping over the network cable).</p>
-
-<p>If the receiver is unreachable the producer waits some time and then tries the call again: by default it waits 30 seconds and tries again 4 times; after all that it returns a <code>MessageResultException</code> containing a <code>TimeoutError</code> exception. You can try it changing the decorator of <code>msg_rpc_ping()</code> to match <code>ping_other</code> (or whatever) instead of <code>ping</code>. After two minutes, you will get your exception. You can easily customize these values by setting the value of <code>GenericProducer.rpc_timeout</code> and <code>GenericProducer.max_retry</code>.</p>
-
-<h4>Handlers unleashed</h4>
-
-<p>Message handlers are powerful, but there is a couple of tricks more in Postage. The first one is <code>MessageHandlerFullBody</code> that you can use exactly like <code>MessageHandler</code>; the difference is that the decorated method does not receive the message content (the <code>content</code> key of the body) but the full body. You can leverage this to access the underlying message structure: this allows you to access the fingerprint included in the message, which contains precious information about the process that sent the message. Let's show how it works; add a new handler to the receiver:</p>
-
-<p>``` python
-class PingReceiver(messaging.MessageProcessor):</p>
-
-<pre><code>[...]
-@messaging.MessageHandlerFullBody('command', 'ping')
-def msg_ping_full(self, body):
-    fingerprint = body['fingerprint']
-    print "Got a ping from %s running on %s with pid %s"\
-          %(fingerprint['name'], fingerprint['host'], fingerprint['pid'])
-</code></pre>
-
-<p>```</p>
-
-<p>Here, we handle the <code>ping</code> command, just like the method <code>msg_ping()</code> does; indeed nothing stops you to write more than a handler for a given message, but remember that they are processed in random order. Obviously we need to give the decorated method a different name, otherwise the second one will redefine the first one. Being decorated with <code>MessageHandlerFullBody</code> the method receives the full body of the message and can access the fingerprint.</p>
-
-<p>Executing it we get:</p>
-
-<p><code>text
-$ python receive_ping.py
-postage.messaging: global_vhost set to staging
-Got a ping from ping_sender running on yoda with pid 26812
-Got a ping!
-</code></p>
-
-<p>As we expected both handlers have been activated by the incoming message, and, not surprisingly, they have been processed out of order.</p>
-
-<p>The second trick handlers have in store for you is the Handler class. Instead of decorating a method you can define a class that inherits from <code>Handler</code> and decorate that; this class shall at least define a <code>call()</code> method without arguments (aside from <code>self</code>) that will be executed when the relative message arrives. This class can access <code>self.data</code>, which is the data passed by the decorator (either the message content or the full body), <code>self.reply_func</code> that defaults to <code>None</code> for non-RPC messages, and <code>self.processor</code> that is the underlying <code>MessageProcessor</code> object hosting the handler.</p>
-
-<p>To show how it works let's add another handler to the receiver:</p>
-
-<p>``` python
-class PingReceiver(messaging.MessageProcessor):</p>
-
-<pre><code>[...]
-@messaging.MessageHandler('command', 'ping')
-class MsgPing(messaging.Handler):
-    def call(self):
-        print "Got a ping - processed by %s hosted by %s"\
-              %(self.__class__, self.processor.__class__)
-</code></pre>
-
-<p>```</p>
-
-<p>You can see that the definition of a basic handler class is pretty simple. When executed this gives the following:</p>
-
-<p>``` text
-$ python receive_ping.py
-postage.messaging: global_vhost set to staging
-Got a ping - processed by <class '__main__.MsgPing'></p>
-
-<pre><code>         hosted by &lt;class '__main__.PingReceiver'&gt;
-</code></pre>
-
-<p>Got a ping from ping_sender running on yoda with pid 27596
-Got a ping!
-```</p>
-
-<p>Leveraging the full body access and the class handlers you can write advanced filters on incoming messages, and add interesting features like runtime configuration of your handlers or configuration through incoming messages.</p>
-
-<h2>Full code</h2>
-
-<p>This is the full code of the discussed examples.</p>
-
-<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (facilities.py)</span> <a href='/downloads/code/postage/facilities.py'>download</a></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">time</span>
-</span><span class='line'><span class="kn">from</span> <span class="nn">postage</span> <span class="kn">import</span> <span class="n">messaging</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">PingExchange</span><span class="p">(</span><span class="n">messaging</span><span class="o">.</span><span class="n">Exchange</span><span class="p">):</span>
-</span><span class='line'>    <span class="sd">&quot;&quot;&quot;This is the exchange that receives ping messages.&quot;&quot;&quot;</span>
-</span><span class='line'>    <span class="n">name</span> <span class="o">=</span> <span class="s">&quot;ping-exchange&quot;</span>
-</span><span class='line'>    <span class="n">exchange_type</span> <span class="o">=</span> <span class="s">&quot;direct&quot;</span>
-</span><span class='line'>    <span class="n">passive</span> <span class="o">=</span> <span class="bp">False</span>
-</span><span class='line'>    <span class="n">durable</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>    <span class="n">auto_delete</span> <span class="o">=</span> <span class="bp">False</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">PingProducer</span><span class="p">(</span><span class="n">messaging</span><span class="o">.</span><span class="n">GenericProducer</span><span class="p">):</span>
-</span><span class='line'>    <span class="c"># Send messages to this exchange with this routing key</span>
-</span><span class='line'>    <span class="n">eks</span> <span class="o">=</span> <span class="p">[(</span><span class="n">PingExchange</span><span class="p">,</span> <span class="s">&#39;ping_rk&#39;</span><span class="p">)]</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Send a &#39;ping&#39; command</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">build_message_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">messaging</span><span class="o">.</span><span class="n">MessageCommand</span><span class="p">(</span><span class="s">&#39;ping&#39;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Send a &#39;timed_ping&#39; command</span>
-</span><span class='line'>    <span class="c"># Parameters: time</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">build_message_timed_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">messaging</span><span class="o">.</span><span class="n">MessageCommand</span><span class="p">(</span><span class="s">&#39;timed_ping&#39;</span><span class="p">,</span>
-</span><span class='line'>	    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;time&#39;</span><span class="p">:</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()})</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Send a &#39;custom_ping&#39; command</span>
-</span><span class='line'>    <span class="c"># Parameters: custom_value</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">build_message_custom_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">custom_value</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">messaging</span><span class="o">.</span><span class="n">MessageCommand</span><span class="p">(</span><span class="s">&#39;custom_ping&#39;</span><span class="p">,</span>
-</span><span class='line'>	    <span class="n">parameters</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;custom_value&#39;</span><span class="p">:</span><span class="n">custom_value</span><span class="p">})</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Send a &#39;ping&#39; RPC command</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">build_rpc_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">messaging</span><span class="o">.</span><span class="n">RpcCommand</span><span class="p">(</span><span class="s">&#39;ping&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (send_ping.py)</span> <a href='/downloads/code/postage/send_ping.py'>download</a></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">postage</span> <span class="kn">import</span> <span class="n">messaging</span>
-</span><span class='line'><span class="kn">import</span> <span class="nn">facilities</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Build the fingerprint of this application</span>
-</span><span class='line'><span class="n">fingerprint</span> <span class="o">=</span> <span class="n">messaging</span><span class="o">.</span><span class="n">Fingerprint</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;ping_sender&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Instance the ping producer</span>
-</span><span class='line'><span class="n">producer</span> <span class="o">=</span> <span class="n">facilities</span><span class="o">.</span><span class="n">PingProducer</span><span class="p">(</span><span class="n">fingerprint</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Send a &#39;ping&#39; command</span>
-</span><span class='line'><span class="n">producer</span><span class="o">.</span><span class="n">message_ping</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Send a &#39;timed_ping&#39; command</span>
-</span><span class='line'><span class="n">producer</span><span class="o">.</span><span class="n">message_timed_ping</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Send a &#39;custom_ping&#39; command</span>
-</span><span class='line'><span class="n">producer</span><span class="o">.</span><span class="n">message_custom_ping</span><span class="p">((</span><span class="s">&quot;Just ping me&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Send a &#39;ping&#39; RPC call</span>
-</span><span class='line'><span class="n">answer</span> <span class="o">=</span> <span class="n">producer</span><span class="o">.</span><span class="n">rpc_ping</span><span class="p">()</span>
-</span><span class='line'><span class="k">if</span> <span class="n">answer</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s">&#39;content&#39;</span><span class="p">][</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;success&#39;</span><span class="p">:</span>
-</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;Answer: </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">answer</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s">&#39;content&#39;</span><span class="p">][</span><span class="s">&#39;value&#39;</span><span class="p">])</span>
-</span><span class='line'><span class="k">elif</span> <span class="n">answer</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s">&#39;content&#39;</span><span class="p">][</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;exception&#39;</span><span class="p">:</span>
-</span><span class='line'>    <span class="k">print</span> <span class="s">&quot;An exception occoured! (</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">answer</span><span class="o">.</span><span class="n">body</span><span class="p">[</span><span class="s">&#39;content&#39;</span><span class="p">][</span><span class="s">&#39;value&#39;</span><span class="p">])</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div>
-<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span> (receive_ping.py)</span> <a href='/downloads/code/postage/receive_ping.py'>download</a></figcaption>
-<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-<span class='line-number'>47</span>
-<span class='line-number'>48</span>
-<span class='line-number'>49</span>
-<span class='line-number'>50</span>
-<span class='line-number'>51</span>
-<span class='line-number'>52</span>
-<span class='line-number'>53</span>
-<span class='line-number'>54</span>
-<span class='line-number'>55</span>
-<span class='line-number'>56</span>
-<span class='line-number'>57</span>
-<span class='line-number'>58</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">postage</span> <span class="kn">import</span> <span class="n">messaging</span>
-</span><span class='line'><span class="kn">from</span> <span class="nn">postage</span> <span class="kn">import</span> <span class="n">microthreads</span>
-</span><span class='line'>
-</span><span class='line'><span class="kn">import</span> <span class="nn">facilities</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Build the fingerprint of this application</span>
-</span><span class='line'><span class="n">fingerprint</span> <span class="o">=</span> <span class="n">messaging</span><span class="o">.</span><span class="n">Fingerprint</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;ping_receiver&quot;</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">PingReceiver</span><span class="p">(</span><span class="n">messaging</span><span class="o">.</span><span class="n">MessageProcessor</span><span class="p">):</span>
-</span><span class='line'>    <span class="c"># Process an incoming &#39;ping&#39; command</span>
-</span><span class='line'>    <span class="nd">@messaging.MessageHandler</span><span class="p">(</span><span class="s">&#39;command&#39;</span><span class="p">,</span> <span class="s">&#39;ping&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">msg_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;Got a ping!&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Process an incoming &#39;timed_ping&#39; command</span>
-</span><span class='line'>    <span class="nd">@messaging.MessageHandler</span><span class="p">(</span><span class="s">&#39;command&#39;</span><span class="p">,</span> <span class="s">&#39;timed_ping&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">msg_timed_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;Got a timed ping! Time is </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="s">&#39;parameters&#39;</span><span class="p">][</span><span class="s">&#39;time&#39;</span><span class="p">])</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Process an incoming &#39;custom_ping&#39; command</span>
-</span><span class='line'>    <span class="nd">@messaging.MessageHandler</span><span class="p">(</span><span class="s">&#39;command&#39;</span><span class="p">,</span> <span class="s">&#39;custom_ping&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">msg_custom_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;Got a custom ping! The custom value is </span><span class="si">%s</span><span class="s">&quot;</span>\
-</span><span class='line'>	    <span class="o">%</span><span class="p">(</span><span class="n">content</span><span class="p">[</span><span class="s">&#39;parameters&#39;</span><span class="p">][</span><span class="s">&#39;custom_value&#39;</span><span class="p">])</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Process an incoming &#39;ping&#39; RPC command</span>
-</span><span class='line'>    <span class="nd">@messaging.RpcHandler</span><span class="p">(</span><span class="s">&#39;command&#39;</span><span class="p">,</span> <span class="s">&#39;ping&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">msg_rpc_ping</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">reply_func</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;Got a ping! Answering...&quot;</span>
-</span><span class='line'>        <span class="n">reply_func</span><span class="p">(</span><span class="n">messaging</span><span class="o">.</span><span class="n">MessageResult</span><span class="p">(</span><span class="s">&#39;Pong&#39;</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Process the full body of an incoming &#39;ping&#39; command</span>
-</span><span class='line'>    <span class="nd">@messaging.MessageHandlerFullBody</span><span class="p">(</span><span class="s">&#39;command&#39;</span><span class="p">,</span> <span class="s">&#39;ping&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">msg_ping_full</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">body</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">fingerprint</span> <span class="o">=</span> <span class="n">body</span><span class="p">[</span><span class="s">&#39;fingerprint&#39;</span><span class="p">]</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;Got a ping from </span><span class="si">%s</span><span class="s"> running on </span><span class="si">%s</span><span class="s"> with pid </span><span class="si">%s</span><span class="s">&quot;</span>\
-</span><span class='line'>	    <span class="o">%</span><span class="p">(</span><span class="n">fingerprint</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span> <span class="n">fingerprint</span><span class="p">[</span><span class="s">&#39;host&#39;</span><span class="p">],</span> <span class="n">fingerprint</span><span class="p">[</span><span class="s">&#39;pid&#39;</span><span class="p">])</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># Process an incoming &#39;ping&#39; command with a class handler</span>
-</span><span class='line'>    <span class="nd">@messaging.MessageHandler</span><span class="p">(</span><span class="s">&#39;command&#39;</span><span class="p">,</span> <span class="s">&#39;ping&#39;</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">class</span> <span class="nc">MsgPing</span><span class="p">(</span><span class="n">messaging</span><span class="o">.</span><span class="n">Handler</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>            <span class="k">print</span> <span class="s">&quot;Got a ping - processed by </span><span class="si">%s</span><span class="s"> hosted by </span><span class="si">%s</span><span class="s">&quot;</span>\
-</span><span class='line'>		<span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">processor</span><span class="o">.</span><span class="n">__class__</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Exchange/Queue/Key</span>
-</span><span class='line'><span class="n">eqks</span> <span class="o">=</span> <span class="p">[(</span><span class="n">facilities</span><span class="o">.</span><span class="n">PingExchange</span><span class="p">,</span> <span class="p">[(</span><span class="s">&#39;ping_queue&#39;</span><span class="p">,</span> <span class="s">&#39;ping_rk&#39;</span><span class="p">)])]</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Instance the receiver</span>
-</span><span class='line'><span class="n">receiver</span> <span class="o">=</span> <span class="n">PingReceiver</span><span class="p">(</span><span class="n">fingerprint</span><span class="o">.</span><span class="n">as_dict</span><span class="p">(),</span> <span class="n">eqks</span><span class="p">,</span>
-</span><span class='line'>			<span class="bp">None</span><span class="p">,</span> <span class="n">messaging</span><span class="o">.</span><span class="n">global_vhost</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># Instance the scheduler and run the receiver</span>
-</span><span class='line'><span class="n">scheduler</span> <span class="o">=</span> <span class="n">microthreads</span><span class="o">.</span><span class="n">MicroScheduler</span><span class="p">()</span>
-</span><span class='line'><span class="n">scheduler</span><span class="o">.</span><span class="n">add_microthread</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">scheduler</span><span class="o">.</span><span class="n">main</span><span class="p">():</span>
-</span><span class='line'>    <span class="k">pass</span>
-</span></code></pre></td></tr></table></div></figure></notextile></div></p>
-
-<h2>Conclusion</h2>
-
-<p>Postage aims to make it simple to write components in Python to fully exploit the power of RabbitMQ. It is highly customizable, and its handler mechanism keeps the code compact.</p>
-
-<p>Even if the API is already in its third implementation, you can see that it is still not perfect so stay tuned for upcoming versions. Feel free to fork the project, to submit issues or pull request, or to contact me for any question.</p>
-
-<p>Oh, did I remember to tell you to never trust RPC calls? =)</p>
 ]]></content>
   </entry>
   
