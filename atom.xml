@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.io/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2014-03-31T17:37:59+02:00</updated>
+  <updated>2014-04-02T08:11:55+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -633,6 +633,13 @@
 <h2>Feedback</h2>
 
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+
+<h2>Previous articles</h2>
+
+<ul>
+<li><a href="http://lgiordani.github.io/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">OOP Concepts in Python 2.x - Part 1</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -1674,6 +1681,13 @@
 <h2>Feedback</h2>
 
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+
+<h2>Next articles</h2>
+
+<ul>
+<li><a href="http://lgiordani.github.io/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2">OOP Concepts in Python 2.x - Part 2</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
