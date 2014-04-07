@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.io/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2014-04-07T08:20:25+02:00</updated>
+  <updated>2014-04-07T08:24:48+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -1677,6 +1677,8 @@
 <p>2014-03-08: &#8220;When methods met classes&#8221; section had a typo: the sentence &#8220;The class method is bound to the class itself, while the instance method is bound to the class of the instance.&#8221; is &#8220;while the instance method is bound to instance of the class.&#8221;. Thanks <a href="https://plus.google.com/u/0/116309787480950087834/posts">Mohcin Shah</a> for spotting it!</p>
 
 <p>2014-03-10: Fixed link to Alex Martelli&#8217;s presentation.</p>
+
+<p>2014-04-07: A typo when discussing <code>door1.colour</code> has been fixed. Thanks to <a href="http://www.reddit.com/user/pujuma">pujuma</a>.</p>
 
 <h2>Feedback</h2>
 
