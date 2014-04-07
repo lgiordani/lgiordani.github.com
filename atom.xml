@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.io/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2014-04-02T08:11:55+02:00</updated>
+  <updated>2014-04-07T08:20:25+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -1085,7 +1085,7 @@
 
 <p>Leaving aside the difference between a dictionary and a <code>dict_proxy</code> object, you can see that the <code>colour</code> attribute is listed among the <code>Door</code> class attributes, while <code>status</code> and <code>number</code> are listed for the instance.</p>
 
-<p>How comes that we can call <code>door1.color</code>, if that attribute is not listed for that instance? This is a job performed by the magic <code>__getattribute__()</code> method; in Python the dotted syntax automatically invokes this method so when we write <code>door1.colour</code>, Python executes <code>door1.__getattribute__('colour')</code>. That method performs the  <em>attribute  lookup</em> action, i.e. finds the value of the attribute by looking in different places.</p>
+<p>How comes that we can call <code>door1.colour</code>, if that attribute is not listed for that instance? This is a job performed by the magic <code>__getattribute__()</code> method; in Python the dotted syntax automatically invokes this method so when we write <code>door1.colour</code>, Python executes <code>door1.__getattribute__('colour')</code>. That method performs the  <em>attribute  lookup</em> action, i.e. finds the value of the attribute by looking in different places.</p>
 
 <p>The standard implementation of <code>__getattribute__()</code> searches first the internal dictionary (<code>__dict__</code>) of an object, then the type of the object itself; in this case <code>door1.__getattribute__('colour')</code> executes first <code>door1.__dict__['colour']</code> and then <code>door1.__class__.__dict__['colour']</code></p>
 
