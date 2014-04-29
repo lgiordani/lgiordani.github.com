@@ -4,7 +4,7 @@
   <title><![CDATA[Category: django | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/django/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2014-04-07T08:24:48+02:00</updated>
+  <updated>2014-04-29T11:16:50+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -499,6 +499,13 @@ def get_context_data(self, **kwargs):
 <li><a href="/blog/2013/10/28/digging-up-django-class-based-views-1">Digging Up Django Class-based Views - 1</a></li>
 </ul>
 
+
+<h2>Next articles</h2>
+
+<ul>
+<li><a href="/blog/2014/02/14/digging-up-django-class-based-views-3">Digging Up Django Class-based Views - 3</a></li>
+</ul>
+
 ]]></content>
   </entry>
   
@@ -751,7 +758,8 @@ def get_context_data(self, **kwargs):
 <h2>Next articles</h2>
 
 <ul>
-<li><a href="/blog/2013/12/11/digging-up-django-class-based-views-2">Digging Up Django Class-based Views - 2</a></li>
+<li><p><a href="/blog/2013/12/11/digging-up-django-class-based-views-2">Digging Up Django Class-based Views - 2</a></p></li>
+<li><p><a href="/blog/2014/02/14/digging-up-django-class-based-views-3">Digging Up Django Class-based Views - 3</a></p></li>
 </ul>
 
 ]]></content>
