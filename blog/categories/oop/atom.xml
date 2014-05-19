@@ -4,7 +4,7 @@
   <title><![CDATA[Category: oop | The digital cat]]></title>
   <link href="http://lgiordani.github.io/blog/categories/oop/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2014-04-29T11:16:50+02:00</updated>
+  <updated>2014-05-19T14:32:43+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,252 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Method overriding in Python]]></title>
+    <link href="http://lgiordani.github.io/blog/2014/05/19/method-overriding-in-python/"/>
+    <updated>2014-05-19T13:51:26+02:00</updated>
+    <id>http://lgiordani.github.io/blog/2014/05/19/method-overriding-in-python</id>
+    <content type="html"><![CDATA[<p>What is overriding? Overriding is the ability of a class to change the implementation of a method provided by one of its ancestors.</p>
+
+<p>Overriding is a very important part of OOP since it is the feature that makes inheritance exploit its full power. Through method overriding a class may "copy" another class, avoiding duplicated code, and at the same time enhance or customize part of it. Method overriding is thus a strict part of the inheritance mechanism.</p>
+
+<!--more-->
+
+
+<h2>A quick glance to inheritance</h2>
+
+<p>As for most OOP languages, in Python inheritance works through implicit delegation: when the object cannot satisfy a request, it first tries to forward the request to its ancestors, following the specific language rules in the case of multiple inheritance.</p>
+
+<p>An exemple:</p>
+
+<p>``` python
+class Parent(object):</p>
+
+<pre><code>def __init__(self):
+    self.value = 5
+
+def get_value(self):
+    return self.value
+</code></pre>
+
+<p>class Child(Parent):</p>
+
+<pre><code>pass
+</code></pre>
+
+<p>```</p>
+
+<p>As you can see the <code>Child</code> class is empty, but since it inherits from <code>Parent</code> Python takes charge of routing all method calls. So you may use the <code>get_value()</code> method of <code>Child</code> objects and exerything works as expected.</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>c = Child()
+c.get_value()
+5
+```</p></blockquote></blockquote></blockquote>
+
+<p>Indeed <code>get_value()</code> is not exactly part of the <code>Child</code> class as if it were defined in it</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>p = Parent()
+c = Child()</p>
+
+<p>dir(p)
+['<strong>class</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>doc</strong>', '<strong>format</strong>',
+ '<strong>getattribute</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>module</strong>', '<strong>new</strong>',
+ '<strong>reduce</strong>', '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>',
+ '<strong>str</strong>', '<strong>subclasshook</strong>', '<strong>weakref</strong>', 'get_value', 'value']</p>
+
+<p>dir(c)
+['<strong>class</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>doc</strong>', '<strong>format</strong>',
+ '<strong>getattribute</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>module</strong>', '<strong>new</strong>',
+ '<strong>reduce</strong>', '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>',
+ '<strong>str</strong>', '<strong>subclasshook</strong>', '<strong>weakref</strong>', 'get_value', 'value']</p>
+
+<p>dir(Parent)
+['<strong>class</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>doc</strong>', '<strong>format</strong>',
+ '<strong>getattribute</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>module</strong>', '<strong>new</strong>',
+ '<strong>reduce</strong>', '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>',
+ '<strong>str</strong>', '<strong>subclasshook</strong>', '<strong>weakref</strong>', 'get_value']</p>
+
+<p>dir(Child)
+['<strong>class</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>doc</strong>', '<strong>format</strong>',
+ '<strong>getattribute</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>module</strong>', '<strong>new</strong>',
+ '<strong>reduce</strong>', '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>',
+ '<strong>str</strong>', '<strong>subclasshook</strong>', '<strong>weakref</strong>', 'get_value']</p>
+
+<p>Parent.<strong>dict</strong>
+dict_proxy({'<strong>module</strong>': '<strong>main</strong>',</p>
+
+<pre><code>        'get_value': &lt;function get_value at 0xb69a656c&gt;,
+        '__dict__': &lt;attribute '__dict__' of 'Parent' objects&gt;,
+        '__weakref__': &lt;attribute '__weakref__' of 'Parent' objects&gt;,
+        '__doc__': None,
+        '__init__': &lt;function __init__ at 0xb69a6534&gt;})
+</code></pre>
+
+<p>Child.<strong>dict</strong>
+dict_proxy({'<strong>module</strong>': '<strong>main</strong>', '<strong>doc</strong>': None})
+```</p></blockquote></blockquote></blockquote>
+
+<p>This shows that the <code>Child</code> class does not actually contain the <code>get_value()</code> method and that a mechanism of automatical delegation is active under the hood. For an insight on this mechanism check <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">this post</a>.</p>
+
+<h2>Method overriding in action</h2>
+
+<p>In Python method overriding occours simply defining in the child class a method with the same name of a method in the parent class. When you define a method in the object you make this latter able to satisfy that method call, so the implementations of its ancestors do not come in play.</p>
+
+<p>``` python
+class Parent(object):</p>
+
+<pre><code>def __init__(self):
+    self.value = 5
+
+def get_value(self):
+    return self.value
+</code></pre>
+
+<p>class Child(Parent):</p>
+
+<pre><code>def get_value(self):
+    return self.value + 1
+</code></pre>
+
+<p>```</p>
+
+<p>Now <code>Child</code> objects behave differently</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>c = Child()
+c.get_value()
+6
+```</p></blockquote></blockquote></blockquote>
+
+<p>and taking a look inside the class we spot a difference</p>
+
+<p>```</p>
+
+<blockquote><blockquote><blockquote><p>Parent.<strong>dict</strong>
+dict_proxy({'<strong>module</strong>': '<strong>main</strong>',</p>
+
+<pre><code>        'get_value': &lt;function get_value at 0xb69a656c&gt;,
+        '__dict__': &lt;attribute '__dict__' of 'Parent' objects&gt;,
+        '__weakref__': &lt;attribute '__weakref__' of 'Parent' objects&gt;,
+        '__doc__': None,
+        '__init__': &lt;function __init__ at 0xb69a6534&gt;})
+</code></pre>
+
+<p>Child.<strong>dict</strong>
+dict_proxy({'<strong>module</strong>': '<strong>main</strong>',</p>
+
+<pre><code>        'get_value': &lt;function get_value at 0xb69a65a4&gt;,
+        '__doc__': None})
+</code></pre>
+
+<p>```</p></blockquote></blockquote></blockquote>
+
+<p>since now the <code>Child</code> class actually contains a <code>get_value()</code> method with a different implementation (the id of the two functions are different).</p>
+
+<p>This is of uttermost importance in Python. Inheritance delegation occours automatically, but if a method is overridden the implementation of the ancestors is not considered at all. So, if you want to run the implementation of one or more of the ancestors of your class, you have to call them explicitly.</p>
+
+<p>Why should you want to call the implementation of objects that are deeper in the class hierarchy?</p>
+
+<p>You may want to call it because many times you override a method to enhance its nature, that is to improve the "quality" of the result, and to improve something you need to first access it. So, by calling the original implementation, you get the result you later want to improve.</p>
+
+<p>There is however a well defined reason why <strong>you must always call the original implementation</strong>. This reason may be called "hidden side effects".</p>
+
+<p>When you inherit from a class, you are actually inheriting a whole class hierarchy which internal structure is (or shall be considered) unknown. This means that any method call may hide a complex set of operations on the whole class hierarchy, and some of them may be vital for the library or the framework you are using.</p>
+
+<p>Python makes you call the original implementation of an overridden method explicitly (not differently from other object-oriented languages). This surely follows the Python idea that "Explicit is better than implicit" (<a href="http://legacy.python.org/dev/peps/pep-0020/">The Zen of Python</a>), but this advice is not just a matter of taste or some sort of programming mannerism.</p>
+
+<p>When you override you have to think if you want to filter the arguments for the original implementation, if you want to filter its results, or both. You typically want to filter arguments (pre-filter) if you want to change the data that the parent implementation shall process while you filter the results (post-filter) if you want to add an additional processing layer. Obviously both things may be done together in the same method. Since you have to explicitly call the parent implementation you are free to do it where you want in the code of the new method: the decision about the type of filtering you want to achieve affects the position of the call.</p>
+
+<h4>An example of pre-filtering</h4>
+
+<p>``` python
+import datetime</p>
+
+<p>class Logger(object):</p>
+
+<pre><code>def log(self, message):
+    print message
+</code></pre>
+
+<p>class TimestampLogger(Logger):</p>
+
+<pre><code>def log(self, message):
+    message = "{ts} {msg}".format(ts=datetime.datetime.now().isoformat(),
+                                  msg=message)
+    super(TimestampLogger, self).log(message)
+</code></pre>
+
+<p>```</p>
+
+<p>The <code>TimestampLogger</code> object adds some information to the message string before calling the original implementation of its <code>log()</code> method.</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>l = Logger()
+l.log('hi!')
+hi!</p>
+
+<p>t = TimestampLogger()
+t.log('hi!')
+2014-05-19T13:18:53.402123 hi!</p>
+
+<p>```</p></blockquote></blockquote></blockquote>
+
+<h4>An example of post-filtering</h4>
+
+<p>``` python
+import os</p>
+
+<p>class FileCat(object):</p>
+
+<pre><code>def cat(self, filepath):
+    f = file(filepath)
+    lines = f.readlines()
+    f.close()
+    return lines
+</code></pre>
+
+<p>class FileCatNoEmpty(FileCat):</p>
+
+<pre><code>def cat(self, filepath):
+    lines = super(FileCatNoEmpty, self).cat(filepath)
+    nonempty_lines = [l for l in lines if l != '\n']
+    return nonempty_lines
+</code></pre>
+
+<p>```</p>
+
+<p>When you use the <code>FileCatNoEmpty</code> object you get the result of the <code>FileCat</code> object with the empty lines stripped.</p>
+
+<p>As you can see while in the first example the original implementation has been called as the last thing, in the second one it is called before everything else. There is therefore no fixed position for the call of the original method, and it depends on what you want to do.</p>
+
+<h2>Summary</h2>
+
+<ul>
+<li>Always call the original implementation of a method you are overriding. This meakes the underlying API work as expected.</li>
+<li>Always use <code>super(cls, self)</code> for Python 2.x or <code>super()</code> for Python 3.x to call the original implementation of a method. This respects the resolution order in case of multiple inheritance and, for Python 3.x, protects from changes in the class hierarchy.</li>
+<li>Call to the original implementation of a method as soon as you have all the data you need to run it.</li>
+</ul>
+
+
+<h2>Links</h2>
+
+<ul>
+<li><a href="https://docs.python.org/3/tutorial/classes.html">Python official documentation on classes</a></li>
+</ul>
+
+
+<h2>Feedback</h2>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[OOP concepts in Python 2.x - Part 2]]></title>
