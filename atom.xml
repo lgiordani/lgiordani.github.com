@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.github.io/atom.xml" rel="self"/>
   <link href="http://lgiordani.github.io/"/>
-  <updated>2014-05-19T14:32:43+02:00</updated>
+  <updated>2014-05-21T09:30:37+02:00</updated>
   <id>http://lgiordani.github.io/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -312,14 +312,22 @@
 
 <p>As you can see while in the first example the original implementation has been called as the last thing, in the second one it is called before everything else. There is therefore no fixed position for the call of the original method, and it depends on what you want to do.</p>
 
+<h2>Always call super()?</h2>
+
+<p>Shall we <em>always</em> call the original method implementation? In theory a well designed API should make it always possible but we know that boundary cases exist: the original method may have side effect that you want to avoid and sometimes the API cannot be refactored to avoid them. In those cases you may prefer to skip the call to the original implementation of the method; Python does not make it mandatory, so feel free to walk that path if you think the situation requires it. Be sure to know what you are doing, however, and document why you are completely overwriting the method.</p>
+
 <h2>Summary</h2>
 
 <ul>
-<li>Always call the original implementation of a method you are overriding. This meakes the underlying API work as expected.</li>
+<li>Call the original implementation of a method you are overriding whenever possible. This meakes the underlying API work as expected. When in need of skipping the call be sure to document the reasons.</li>
 <li>Always use <code>super(cls, self)</code> for Python 2.x or <code>super()</code> for Python 3.x to call the original implementation of a method. This respects the resolution order in case of multiple inheritance and, for Python 3.x, protects from changes in the class hierarchy.</li>
-<li>Call to the original implementation of a method as soon as you have all the data you need to run it.</li>
+<li>If you call to the original implementation of a method do it as soon as you have all the data you need to run it.</li>
 </ul>
 
+
+<h2>Updates</h2>
+
+<p>2014-05-21 As suggested by <a href="http://www.reddit.com/user/caseyweb">caseyweb</a> in <a href="http://www.reddit.com/r/Python/comments/25y4hu/method_overriding_in_python/chn5v1q">this comment</a> the conclusions of the post were too strong, so I updated the post with a new section (&#8220;Always call super()?&#8221;) and the summary. Many thanks caseyweb!</p>
 
 <h2>Links</h2>
 
