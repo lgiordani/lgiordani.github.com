@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: django | The digital cat]]></title>
-  <link href="http://lgiordani.github.io/blog/categories/django/atom.xml" rel="self"/>
-  <link href="http://lgiordani.github.io/"/>
-  <updated>2014-05-21T09:30:37+02:00</updated>
-  <id>http://lgiordani.github.io/</id>
+  <link href="http://lgiordani.com/blog/categories/django/atom.xml" rel="self"/>
+  <link href="http://lgiordani.com/"/>
+  <updated>2014-07-01T08:55:54+02:00</updated>
+  <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Digging up Django class-based views - 3]]></title>
-    <link href="http://lgiordani.github.io/blog/2014/02/14/digging-up-django-class-based-views-3/"/>
+    <link href="http://lgiordani.com/blog/2014/02/14/digging-up-django-class-based-views-3/"/>
     <updated>2014-02-14T16:13:41+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2014/02/14/digging-up-django-class-based-views-3</id>
+    <id>http://lgiordani.com/blog/2014/02/14/digging-up-django-class-based-views-3</id>
     <content type="html"><![CDATA[<p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
 
 <p>In the first two issues of this short series we wandered around the basic concepts of class-based views in Django, and started understanding and using two of the basic generic views Django makes available to you: <code>ListView</code> and <code>DetailView</code>. Both are views that read some data from the database and show them on a rendered template.</p>
@@ -264,9 +264,9 @@ return kwargs
   
   <entry>
     <title type="html"><![CDATA[Digging up Django class-based views - 2]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/12/11/digging-up-django-class-based-views-2/"/>
+    <link href="http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/"/>
     <updated>2013-12-11T09:00:00+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/12/11/digging-up-django-class-based-views-2</id>
+    <id>http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
@@ -511,9 +511,9 @@ def get_context_data(self, **kwargs):
   
   <entry>
     <title type="html"><![CDATA[Digging up Django class-based views - 1]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/10/28/digging-up-django-class-based-views-1/"/>
+    <link href="http://lgiordani.com/blog/2013/10/28/digging-up-django-class-based-views-1/"/>
     <updated>2013-10-28T08:43:00+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/10/28/digging-up-django-class-based-views-1</id>
+    <id>http://lgiordani.com/blog/2013/10/28/digging-up-django-class-based-views-1</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>

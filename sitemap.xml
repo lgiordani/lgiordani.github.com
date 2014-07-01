@@ -1,125 +1,111 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/01/31/concurrent-programming-1/</loc>
+        <loc>http://lgiordani.com/blog/2013/01/31/concurrent-programming-1/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/02/04/concurrent-programming-2/</loc>
+        <loc>http://lgiordani.com/blog/2013/02/04/concurrent-programming-2/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/02/06/concurrent-programming-3/</loc>
+        <loc>http://lgiordani.com/blog/2013/02/06/concurrent-programming-3/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4/</loc>
+        <loc>http://lgiordani.com/blog/2013/02/13/concurrent-programming-4/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5/</loc>
+        <loc>http://lgiordani.com/blog/2013/02/28/concurrent-programming-5/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/03/20/versioning-an-underrated-discipline/</loc>
+        <loc>http://lgiordani.com/blog/2013/03/20/versioning-an-underrated-discipline/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
         <loc>
-            http://lgiordani.github.io/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/
+            http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/
         </loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
         <loc>
-            http://lgiordani.github.io/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/
+            http://lgiordani.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/
         </loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
         <loc>
-            http://lgiordani.github.io/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/
+            http://lgiordani.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/
         </loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/04/23/concurrent-programming-6/</loc>
+        <loc>http://lgiordani.com/blog/2013/04/23/concurrent-programming-6/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/05/30/error-handling-in-erlang-a-primer/</loc>
+        <loc>http://lgiordani.com/blog/2013/05/30/error-handling-in-erlang-a-primer/</loc>
+        <lastmod>2014-02-17T19:04:52+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.com/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/</loc>
+        <lastmod>2014-02-17T19:04:52+01:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.com/blog/2013/07/18/libqgit2-a-qt-wrapper-for-libgit2/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
         <loc>
-            http://lgiordani.github.io/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/
+            http://lgiordani.com/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/
         </loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2013/07/18/libqgit2-a-qt-wrapper-for-libgit2/</loc>
+        <loc>http://lgiordani.com/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://lgiordani.github.io/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/
-        </loc>
-        <lastmod>2014-02-17T19:04:52+01:00</lastmod>
-    </url>
-    <url>
-        <loc>
-            http://lgiordani.github.io/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/
-        </loc>
-        <lastmod>2014-02-17T19:04:52+01:00</lastmod>
-    </url>
-    <url>
-        <loc>
-            http://lgiordani.github.io/blog/2013/10/28/digging-up-django-class-based-views-1/
-        </loc>
+        <loc>http://lgiordani.com/blog/2013/10/28/digging-up-django-class-based-views-1/</loc>
         <lastmod>2014-05-21T09:24:11+02:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://lgiordani.github.io/blog/2013/12/11/digging-up-django-class-based-views-2/
-        </loc>
+        <loc>http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/</loc>
         <lastmod>2014-05-21T09:24:11+02:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://lgiordani.github.io/blog/2014/02/14/digging-up-django-class-based-views-3/
-        </loc>
+        <loc>http://lgiordani.com/blog/2014/02/14/digging-up-django-class-based-views-3/</loc>
         <lastmod>2014-03-04T13:18:45+01:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://lgiordani.github.io/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/
-        </loc>
-        <lastmod>2014-04-29T11:15:58+02:00</lastmod>
+        <loc>http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/</loc>
+        <lastmod>2014-07-01T08:45:31+02:00</lastmod>
     </url>
     <url>
-        <loc>
-            http://lgiordani.github.io/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/
-        </loc>
-        <lastmod>2014-04-29T11:15:58+02:00</lastmod>
+        <loc>http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/</loc>
+        <lastmod>2014-07-01T08:52:21+02:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/2014/05/19/method-overriding-in-python/</loc>
+        <loc>http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/</loc>
         <lastmod>2014-05-21T09:24:11+02:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/about/</loc>
+        <loc>http://lgiordani.com/about/</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/blog/archives/</loc>
-        <lastmod>2014-05-21T09:24:11+02:00</lastmod>
+        <loc>http://lgiordani.com/blog/archives/</loc>
+        <lastmod>2014-07-01T08:52:21+02:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/</loc>
-        <lastmod>2014-05-21T09:24:11+02:00</lastmod>
+        <loc>http://lgiordani.com/</loc>
+        <lastmod>2014-07-01T08:52:21+02:00</lastmod>
     </url>
     <url>
-        <loc>http://lgiordani.github.io/search.html</loc>
+        <loc>http://lgiordani.com/search.html</loc>
         <lastmod>2014-02-17T19:04:52+01:00</lastmod>
     </url>
 </urlset>

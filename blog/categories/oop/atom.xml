@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: oop | The digital cat]]></title>
-  <link href="http://lgiordani.github.io/blog/categories/oop/atom.xml" rel="self"/>
-  <link href="http://lgiordani.github.io/"/>
-  <updated>2014-05-21T09:30:37+02:00</updated>
-  <id>http://lgiordani.github.io/</id>
+  <link href="http://lgiordani.com/blog/categories/oop/atom.xml" rel="self"/>
+  <link href="http://lgiordani.com/"/>
+  <updated>2014-07-01T08:55:54+02:00</updated>
+  <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Method overriding in Python]]></title>
-    <link href="http://lgiordani.github.io/blog/2014/05/19/method-overriding-in-python/"/>
+    <link href="http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/"/>
     <updated>2014-05-19T13:51:26+02:00</updated>
-    <id>http://lgiordani.github.io/blog/2014/05/19/method-overriding-in-python</id>
+    <id>http://lgiordani.com/blog/2014/05/19/method-overriding-in-python</id>
     <content type="html"><![CDATA[<p>What is overriding? Overriding is the ability of a class to change the implementation of a method provided by one of its ancestors.</p>
 
 <p>Overriding is a very important part of OOP since it is the feature that makes inheritance exploit its full power. Through method overriding a class may "copy" another class, avoiding duplicated code, and at the same time enhance or customize part of it. Method overriding is thus a strict part of the inheritance mechanism.</p>
@@ -269,9 +269,9 @@ import os</p>
   
   <entry>
     <title type="html"><![CDATA[OOP concepts in Python 2.x - Part 2]]></title>
-    <link href="http://lgiordani.github.io/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/"/>
+    <link href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/"/>
     <updated>2014-03-10T18:56:56+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2</id>
+    <id>http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>This post continues the analysis of the Python OOP implementation started with <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">this post</a>, which I recommend reading before taking on this new one.</p>
@@ -579,7 +579,7 @@ try:</p>
 
 <p>The first step into the most intimate secrets of Python objects comes from two components we already met in the first post: <code>type</code> and <code>object</code>. These two things are the very fundamental elements of Python OOP system, so it is worth spending some time to understand how they work and relate each other.</p>
 
-<p>First of all recall that in Python <em>everything is an object</em>, that is everything inherits from <code>object</code>. Thus, <code>object</code> seems to be the deepest thing you can find digging into Python veriables. Let's check this</p>
+<p>First of all recall that in Python <em>everything is an object</em>, that is everything inherits from <code>object</code>. Thus, <code>object</code> seems to be the deepest thing you can find digging into Python variables. Let's check this</p>
 
 <p>``` python</p>
 
@@ -769,9 +769,9 @@ class MyClass(object):</p>
   
   <entry>
     <title type="html"><![CDATA[OOP concepts in Python 2.x - Part 1]]></title>
-    <link href="http://lgiordani.github.io/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/"/>
+    <link href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/"/>
     <updated>2014-03-05T12:46:06+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1</id>
+    <id>http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>Object-oriented programming (OOP) has been the leading programming paradigm for several decades now, starting from the initial attempts back in the 60s to some of the most important languages used nowadays. Being a set of programming concepts and design methodologies, OOP can never be said to be "correctly" or "fully" implemented by a language: indeed there are as many implementations as languages.</p>

@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: pika | The digital cat]]></title>
-  <link href="http://lgiordani.github.io/blog/categories/pika/atom.xml" rel="self"/>
-  <link href="http://lgiordani.github.io/"/>
-  <updated>2014-05-21T09:30:37+02:00</updated>
-  <id>http://lgiordani.github.io/</id>
+  <link href="http://lgiordani.com/blog/categories/pika/atom.xml" rel="self"/>
+  <link href="http://lgiordani.com/"/>
+  <updated>2014-07-01T08:55:54+02:00</updated>
+  <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Postage - a RabbitMQ-based component Python library]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/"/>
+    <link href="http://lgiordani.com/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/"/>
     <updated>2013-07-25T15:50:00+02:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library</id>
+    <id>http://lgiordani.com/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library</id>
     <content type="html"><![CDATA[<p><a href="https://github.com/pika/pika">Pika</a> is a wonderful pure Python implementation of the AMQP protocol. Using it you can exploit the full power of your RabbitMQ installation from your Python code.</p>
 
 <p>When using pika to develop a component-based system I tried to write some code to simplify its use: the result is <a href="https://github.com/lgiordani/postage">Postage</a>, a Python library that provides higher level structures such as a message format, components fingerprint, rich producer and consumers.</p>

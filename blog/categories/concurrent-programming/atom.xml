@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: concurrent programming | The digital cat]]></title>
-  <link href="http://lgiordani.github.io/blog/categories/concurrent-programming/atom.xml" rel="self"/>
-  <link href="http://lgiordani.github.io/"/>
-  <updated>2014-05-21T09:30:37+02:00</updated>
-  <id>http://lgiordani.github.io/</id>
+  <link href="http://lgiordani.com/blog/categories/concurrent-programming/atom.xml" rel="self"/>
+  <link href="http://lgiordani.com/"/>
+  <updated>2014-07-01T08:55:54+02:00</updated>
+  <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[The Lord of the Rings: an Erlang epic]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/"/>
+    <link href="http://lgiordani.com/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic/"/>
     <updated>2013-06-20T17:49:00+02:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic</id>
+    <id>http://lgiordani.com/blog/2013/06/20/the-lord-of-the-rings-an-erlang-epic</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>One of the first really challenging problems an Erlang novice must face is the classical process ring, which can be found around the Internet and most notably in "Erlang Programming" by Cesarini and Thompson (page 115).</p>
@@ -1257,9 +1257,9 @@ register(ring_master_functional, spawn(?MODULE, create, [NumberProcesses])),
   
   <entry>
     <title type="html"><![CDATA[Error handling in Erlang - a primer]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/05/30/error-handling-in-erlang-a-primer/"/>
+    <link href="http://lgiordani.com/blog/2013/05/30/error-handling-in-erlang-a-primer/"/>
     <updated>2013-05-30T11:41:00+02:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/05/30/error-handling-in-erlang-a-primer</id>
+    <id>http://lgiordani.com/blog/2013/05/30/error-handling-in-erlang-a-primer</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>This article aims to summarize Erlang error handling both in sequential and in concurrent environments. The targets of this article are novices that, like me, make their first steps into the beautiful world of Erlang. Moreover, I always find that trying to explain things makes me understand them better.</p>
@@ -1482,9 +1482,9 @@ my_function(Somebadvalue) -&gt; throw({badvalue, Somebadvalue}).
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 6]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/04/23/concurrent-programming-6/"/>
+    <link href="http://lgiordani.com/blog/2013/04/23/concurrent-programming-6/"/>
     <updated>2013-04-23T08:29:00+02:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/04/23/concurrent-programming-6</id>
+    <id>http://lgiordani.com/blog/2013/04/23/concurrent-programming-6</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>Issue 5 of this series ended with a small program where two processes exchanged ten numbers through a message queue, thus being a synchronized producer-consumer couple. This time I am going to show and comment the code of a very simple communication simulator written in C. The code leverages IPC queues to allow multiple processes to talk each other while running concurrently.</p>
@@ -2085,9 +2085,9 @@ gcc -o ipc_demo main.c layer1.c layer2.c
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 5]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5/"/>
+    <link href="http://lgiordani.com/blog/2013/02/28/concurrent-programming-5/"/>
     <updated>2013-02-28T17:49:00+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/02/28/concurrent-programming-5</id>
+    <id>http://lgiordani.com/blog/2013/02/28/concurrent-programming-5</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>In the past articles we introduced the concept of concurrent programming and studied a first solution to the problem of intercommunication: semaphores. As explained, the use of semaphores allows us to manage access to shared resources, and this is a first and very simple form of synchronization. In this issue, we will go one step further introducing a richer tool for concurrent programming: <em>message queues</em>.</p>
@@ -2566,9 +2566,9 @@ int msgctl(int msqid, int cmd, struct msqid_ds *buf);
   
   <entry>
     <title type="html"><![CDATA[Concurrent programming - 4]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4/"/>
+    <link href="http://lgiordani.com/blog/2013/02/13/concurrent-programming-4/"/>
     <updated>2013-02-13T10:50:00+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/02/13/concurrent-programming-4</id>
+    <id>http://lgiordani.com/blog/2013/02/13/concurrent-programming-4</id>
     <content type="html"><![CDATA[<h2>Abstract</h2>
 
 <p>In the past issue, of this series of articles about concurrent programming we started to concern ourselves with the problems of synchronization between processes. In this installment, we will investigate further the subject introducing some structures and functions collectively known as <em>Unix System V IPC</em>.</p>

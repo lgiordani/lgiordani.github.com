@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[Category: versioning | The digital cat]]></title>
-  <link href="http://lgiordani.github.io/blog/categories/versioning/atom.xml" rel="self"/>
-  <link href="http://lgiordani.github.io/"/>
-  <updated>2014-05-21T09:30:37+02:00</updated>
-  <id>http://lgiordani.github.io/</id>
+  <link href="http://lgiordani.com/blog/categories/versioning/atom.xml" rel="self"/>
+  <link href="http://lgiordani.com/"/>
+  <updated>2014-07-01T08:55:54+02:00</updated>
+  <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Versioning - An underrated discipline]]></title>
-    <link href="http://lgiordani.github.io/blog/2013/03/20/versioning-an-underrated-discipline/"/>
+    <link href="http://lgiordani.com/blog/2013/03/20/versioning-an-underrated-discipline/"/>
     <updated>2013-03-20T10:02:00+01:00</updated>
-    <id>http://lgiordani.github.io/blog/2013/03/20/versioning-an-underrated-discipline</id>
+    <id>http://lgiordani.com/blog/2013/03/20/versioning-an-underrated-discipline</id>
     <content type="html"><![CDATA[<h2>Overture</h2>
 
 <p>Everyone uses a computer has to deal in their everyday life with software version numbers, and even who deals with computers just as bare user shall sooner or later introduce the word <em>version</em> in their speech. Alas, this made it one of those concepts so pervading that it is now taken for granted, and this is so widespread that even professionals often forget or do not even know the complexity of the matter behind. This article is an attempt to shine a light on this topic.</p>
