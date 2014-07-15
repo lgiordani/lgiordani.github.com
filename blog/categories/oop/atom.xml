@@ -4,7 +4,7 @@
   <title><![CDATA[Category: oop | The digital cat]]></title>
   <link href="http://lgiordani.com/blog/categories/oop/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-07-04T13:25:48+02:00</updated>
+  <updated>2014-07-15T11:05:04+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -1134,6 +1134,7 @@ class MyClass(object):</p>
 
 <ul>
 <li><a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">OOP Concepts in Python 2.x - Part 1</a></li>
+<li><a href="/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3">OOP Concepts in Python 2.x - Part 3</a></li>
 </ul>
 
 ]]></content>
@@ -1969,6 +1970,7 @@ def __getattr__(self, attr):
 
 <ul>
 <li><a href="/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2">OOP Concepts in Python 2.x - Part 2</a></li>
+<li><a href="/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3">OOP Concepts in Python 2.x - Part 3</a></li>
 </ul>
 
 ]]></content>
