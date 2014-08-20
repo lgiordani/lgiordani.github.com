@@ -1,0 +1,777 @@
+
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Python 3 OOP Part 2 - Classes and members - The digital cat</title>
+    <meta name="author" content="Leonardo Giordani">
+    
+	<meta name="description" content="Published on: Aug 20th, 2014 Tags: oop, python, python3 Posted by Leonardo Giordani Previous post Python 3 OOP Part 1 - Objects and types Python &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+
+    <!-- remove or comment it to disable ajaxification -->   
+    <script src="/javascripts/ajaxify.js"></script>
+   
+    
+    
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-38715090-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</head>
+
+
+<body>
+    <div id="wrapper">
+    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
+<h1 class="animated pulse">
+    <div id="headerbg">
+        The digital cat
+    </div>
+</h1>
+<br>
+
+<ul id="social-links" style="text-align:center">
+  
+  <!-- GitHub -->
+  <li>
+  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
+  </li>
+  
+  
+  <!-- Google Plus -->
+  <li>
+  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
+  </li>
+  
+  
+  
+  <!-- Twitter -->
+  <li>
+  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
+  </li>
+  
+  
+  
+  
+  
+</ul>
+
+
+<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
+<ul id="nav">
+	<li id="ajax"><a href="/index.html">Home</a></li>
+	<li id="ajax"><a href="/about">About me</a></li>
+	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
+    <li><a href="/atom.xml">RSS</a></li>
+    
+    <li>
+    <div id="dark">
+        <form method="get" action="/search.html" id="search">
+            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
+        </form>
+    </div>
+    </li>
+        
+</ul>
+
+
+
+
+</header>
+
+<div id="toload">
+<!-- begin toload --> 
+    <div id="content" class="inner">
+        <article class="post">
+	<h2 class="title">Python 3 OOP Part 2 - Classes and Members</h2>
+	<div class="entry-content">
+          <div class="meta">
+            <div class="date">Published on: 
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-20T14:00:00+02:00" pubdate data-updated="true">Aug 20<span>th</span>, 2014</time></div>
+            <div class="tags">Tags: 
+
+
+	<a class='category' href='/blog/categories/oop/'>oop</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/python3/'>python3</a>
+
+
+</div>
+          </div>
+          
+  
+
+<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
+
+          <!--more-->
+
+
+<h2>Previous post</h2>
+
+<p><a href="/blog/2014/08/20/python-3-oop-part-1-objects-and-types">Python 3 OOP Part 1 - Objects and types</a></p>
+
+<h2>Python Classes Strike Again</h2>
+
+<p>The Python implementation of classes has some peculiarities. The bare truth is that in Python the class of an object is an object itself. You can check this by issuing <code>type()</code> on the class</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">type</span><span class="s">&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This shows that the <code>int</code> class is an object, an instance of the <code>type</code> class.</p>
+
+<p>This concept is not so difficult to grasp as it can seem at first sight: in the real world we deal with <em>concepts</em> using them like <em>things</em>: for example we can talk about the concept of &#8220;door&#8221;, telling people how a door looks like and how it works. In this case the concept of door is the topic of our discussion, so in our everyday experience the <em>type</em> of an object is an object itself. In Python this can be expressed by saying that <em>everything is an object</em>.</p>
+
+<p>If the class of an object is itself an instance it is a concrete object and is stored somewhere in memory. Let us leverage the <em>inspection</em> capabilities of Python and its <code>id()</code> function to check the status of our objects. The <code>id()</code> built-in function returns the memory position of an object.</p>
+
+<p>In the first post we defined this class</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Door</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>First of all, let&#8217;s create two instances of the <code>Door</code> class and check that the two objects are stored at different addresses</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb67e148c&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb67e144c&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This confirms that the two instances are separate and unrelated.
+<strong>Please note that your values are very likely to be different from the ones I got. Being memory addresses they change at every execution.</strong> The second instance was given the same attributes of the first instance to show that the two are different objects regardless of the value of the attributes.</p>
+
+<p>However if we use <code>id()</code> on the class of the two instances we discover that the class is <em>exactly</em> the same</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb685f56c&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb685f56c&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Well this is very important. In Python, a class is not just the schema used to build an object. Rather, the class is a shared living object, which code is accessed at run time.</p>
+
+<p>As we already tested, however, attributes are not stored in the class but in every instance, due to the fact that <code>__init__()</code> works on <code>self</code> when creating them. Classes, however, can be given attributes like any other object; with a terrific effort of imagination, let&#8217;s call them <em>class attributes</em>.</p>
+
+<p>As you can expect, class attributes are shared among the class instances just like their container</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Door</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;brown&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Pay attention: the <code>colour</code> attribute here is not created using <code>self</code>, so it is contained in the class and shared among instances</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;brown&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;brown&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;brown&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Until here things are not different from the previous case. Let&#8217;s see if changes of the shared value reflect on all instances</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb67e1500&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb67e1500&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb67e1500&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Raiders of the Lost Attribute</h2>
+
+<p>Any Python object is automatically given a <code>__dict__</code> attribute, which contains its list of attributes. Let&#8217;s investigate what this dictionary contains for our example objects:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
+</span><span class='line'><span class="n">mappingproxy</span><span class="p">({</span><span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">at</span> <span class="mh">0xb68604ac</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s">&#39;__dict__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__dict__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s">&#39;__weakref__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__weakref__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s">&#39;__init__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">__init__</span> <span class="n">at</span> <span class="mh">0xb7062854</span><span class="o">&gt;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
+</span><span class='line'>    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+</span><span class='line'>    <span class="s">&#39;close&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">close</span> <span class="n">at</span> <span class="mh">0xb686041c</span><span class="o">&gt;</span><span class="p">})</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span>
+</span><span class='line'><span class="p">{</span><span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;closed&#39;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Leaving aside the difference between a dictionary and a <code>mappingproxy</code> object, you can see that the <code>colour</code> attribute is listed among the <code>Door</code> class attributes, while <code>status</code> and <code>number</code> are listed for the instance.</p>
+
+<p>How comes that we can call <code>door1.colour</code>, if that attribute is not listed for that instance? This is a job performed by the magic <code>__getattribute__()</code> method; in Python the dotted syntax automatically invokes this method so when we write <code>door1.colour</code>, Python executes <code>door1.__getattribute__('colour')</code>. That method performs the  <em>attribute  lookup</em> action, i.e. finds the value of the attribute by looking in different places.</p>
+
+<p>The standard implementation of <code>__getattribute__()</code> searches first the internal dictionary (<code>__dict__</code>) of an object, then the type of the object itself; in this case <code>door1.__getattribute__('colour')</code> executes first <code>door1.__dict__['colour']</code> and then, since the latter raises a <code>KeyError</code> exception, <code>door1.__class__.__dict__['colour']</code></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+</span><span class='line'><span class="ne">KeyError</span><span class="p">:</span> <span class="s">&#39;colour&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="s">&#39;brown&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Indeed, if we compare the objects&#8217; equality through the <code>is</code> operator we can confirm that both <code>door1.colour</code> and <code>Door.colour</code> are exactly the same object</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When we try to assign a value to a class attribute directly on an instance, we just put in the <code>__dict__</code> of the instance a value with that name, and this value masks the class attribute since it is found first by <code>__getattribute__()</code>. As you can see from the examples of the previous section, this is different from changing the value of the attribute on the class itself.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="s">&#39;brown&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;red&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="s">&#39;red&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Revenge of the Methods</h2>
+
+<p>Let&#8217;s play the same game with methods. First of all you can see that, just like class attributes, methods are listed only in the class <code>__dict__</code>. Chances are that they behave the same as attributes when we get them</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
+</span><span class='line'><span class="bp">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Whoops. Let us further investigate the matter</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">at</span> <span class="mh">0xb68604ac</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">at</span> <span class="mh">0xb68604ac</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb67e162c</span><span class="o">&gt;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>So, the class method is listed in the members dictionary as <em>function</em>. So far, so good. The same happens when taking it directly from the class; here Python 2 needed to introduce <em>unbound methods</em>, which are not present in Python 3. Taking it from the instance returns a <em>bound method</em>.</p>
+
+<p>Well, a <em>function</em> is a procedure you named and defined with the <code>def</code> statement. When you refer to a function as part of a class in Python 3 you get a plain function, without any difference from a function defined outside a class.</p>
+
+<p>When you get the function from an instance, however, it becomes a bound method. The name <em>method</em> simply means &#8220;a function inside an object&#8221;, according to the usual OOP definitions, while <em>bound</em> signals that the method is linked to that instance. Why does Python bother with methods being bound or not? And how does Python transform a function into a bound method?</p>
+
+<p>First of all, if you try to call a class function you get an error</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="nb">open</span><span class="p">()</span> <span class="n">missing</span> <span class="mi">1</span> <span class="n">required</span> <span class="n">positional</span> <span class="n">argument</span><span class="p">:</span> <span class="s">&#39;self&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Yes. Indeed the function was defined to require an argument called &#8216;self&#8217;, and calling it without an argument raises an exception. This perhaps means that we can give it one instance of the class and make it work</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
+</span><span class='line'><span class="s">&#39;open&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Python does not complain here, and the method works as expected. So <code>Door.open(door1)</code> is the same as <code>door1.open()</code>, and this is the difference between a plain function coming from a class an a bound method: the bound method automatically passes the instance as an argument to the function.</p>
+
+<p>Again, under the hood, <code>__getattribute__()</code> is working to make everything work and when we call <code>door1.open()</code>, Python actually calls <code>door1.__class__.open(door1)</code>. However, <code>door1.__class__.open</code> is a plain function, so there is something more that converts it into a bound method that Python can safely call.</p>
+
+<p>When you access a member of an object, Python calls <code>__getattribute__()</code> to satisfy the request. This magic method, however, conforms to a procedure known as <em>descriptor protocol</em>. For the read access <code>__getattribute__()</code> checks if the object has a <code>__get__()</code> method and calls this latter. So the converstion of a function into a bound method happens through such a mechanism. Let us review it by means of an example.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">at</span> <span class="mh">0xb68604ac</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This syntax retrieves the function defined in the class; the function knows nothing about objects, but it <em>is</em> an object (remember &#8220;everything is an object&#8221;). So we can look inside it with the <code>dir()</code> built-in function</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">dir</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">])</span>
+</span><span class='line'><span class="p">[</span><span class="s">&#39;__annotations__&#39;</span><span class="p">,</span> <span class="s">&#39;__call__&#39;</span><span class="p">,</span> <span class="s">&#39;__class__&#39;</span><span class="p">,</span> <span class="s">&#39;__closure__&#39;</span><span class="p">,</span> <span class="s">&#39;__code__&#39;</span><span class="p">,</span>
+</span><span class='line'> <span class="s">&#39;__defaults__&#39;</span><span class="p">,</span> <span class="s">&#39;__delattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__dict__&#39;</span><span class="p">,</span> <span class="s">&#39;__dir__&#39;</span><span class="p">,</span> <span class="s">&#39;__doc__&#39;</span><span class="p">,</span> <span class="s">&#39;__eq__&#39;</span><span class="p">,</span>
+</span><span class='line'> <span class="s">&#39;__format__&#39;</span><span class="p">,</span> <span class="s">&#39;__ge__&#39;</span><span class="p">,</span> <span class="s">&#39;__get__&#39;</span><span class="p">,</span> <span class="s">&#39;__getattribute__&#39;</span><span class="p">,</span> <span class="s">&#39;__globals__&#39;</span><span class="p">,</span>
+</span><span class='line'> <span class="s">&#39;__gt__&#39;</span><span class="p">,</span> <span class="s">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s">&#39;__init__&#39;</span><span class="p">,</span> <span class="s">&#39;__kwdefaults__&#39;</span><span class="p">,</span> <span class="s">&#39;__le__&#39;</span><span class="p">,</span> <span class="s">&#39;__lt__&#39;</span><span class="p">,</span>
+</span><span class='line'> <span class="s">&#39;__module__&#39;</span><span class="p">,</span> <span class="s">&#39;__name__&#39;</span><span class="p">,</span> <span class="s">&#39;__ne__&#39;</span><span class="p">,</span> <span class="s">&#39;__new__&#39;</span><span class="p">,</span> <span class="s">&#39;__qualname__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce__&#39;</span><span class="p">,</span>
+</span><span class='line'> <span class="s">&#39;__reduce_ex__&#39;</span><span class="p">,</span> <span class="s">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s">&#39;__setattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s">&#39;__str__&#39;</span><span class="p">,</span>
+</span><span class='line'> <span class="s">&#39;__subclasshook__&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">method</span><span class="o">-</span><span class="n">wrapper</span> <span class="s">&#39;__get__&#39;</span> <span class="n">of</span> <span class="n">function</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb68604ac</span><span class="o">&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see, a <code>__get__</code> method is listed among the members of the function, and Python recognizes it as a <em>method-wrapper</em>. This method shall connect the <code>open</code> function to the <code>door1</code> instance, so we can call it passing the instance alone</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb67e162c</span><span class="o">&gt;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and we get exactly what we were looking for. This complex syntax is what happens behind the scenes when we call a method of an instance.</p>
+
+<h2>When Methods met Classes</h2>
+
+<p>Using <code>type()</code> on functions defined inside classes reveals some other details on their internal representation</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">at</span> <span class="mh">0xb687e074</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb6f9834c</span><span class="o">&gt;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">function</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">open</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">method</span><span class="s">&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see, Python tells the two apart recognizing the first as a <em>function</em> and the second as a <em>method</em>, where the second is a function bound to an instance.</p>
+
+<p>What if we want to define a function that operates on the class instead of operating on the instance? As we may define class attributes, we may also define <em>class methods</em> in Python, through the <code>classmethod</code> decorator. Class methods are functions that are bound to the class and not to an instance.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Door</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;brown&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@classmethod</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">knock</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Knock!&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Such a definition makes the method callable on both the instance and the class</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
+</span><span class='line'><span class="n">Knock</span><span class="err">!</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
+</span><span class='line'><span class="n">Knock</span><span class="err">!</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>and Python identifies both as (bound) methods</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span>
+</span><span class='line'><span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb67ff6ac</span><span class="o">&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">knock</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">knock</span>
+</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">Door</span><span class="o">.</span><span class="n">knock</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">method</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">knock</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">method</span><span class="s">&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see the <code>knock()</code> function accepts one argument, which is called <code>cls</code> just to remember that it is not an instance but the class itself. This means that inside the function we can operate on the class, and the class is shared among instances.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Door</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;brown&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@classmethod</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">knock</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">print</span><span class="p">(</span><span class="s">&quot;Knock!&quot;</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="nd">@classmethod</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">paint</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">colour</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">cls</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="n">colour</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The <code>paint()</code> classmethod now changes the class attribute <code>colour</code> which is shared among instances. Let&#8217;s check how it works</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;brown&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;brown&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;brown&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="s">&#39;white&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;white&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;white&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The class method can be called on the class, but this affects both the class and the instances, since the <code>colour</code> attribute of instances is taken at runtime from the shared class.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">paint</span><span class="p">(</span><span class="s">&#39;yellow&#39;</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;yellow&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;yellow&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+</span><span class='line'><span class="s">&#39;yellow&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Class methods can be called on instances too, however, and their effect is the same as before. The class method is bound to the class, so it works on this latter regardless of the actual object that calls it (class or instance).</p>
+
+<h2>Movie Trivia</h2>
+
+<p>Section titles come from the following movies: <em>The Empire Strikes Back (1980)</em>, <em>Raiders of the Lost Ark (1981)</em>, <em>Revenge of the Nerds (1984)</em>, <em>When Harry Met Sally (1989)</em>.</p>
+
+<h2>Sources</h2>
+
+<p>You will find a lot of documentation in <a href="http://www.reddit.com/r/Python/comments/226ahl/some_links_about_python_oop/">this Reddit post</a>. Most of the information contained in this series come from those sources.</p>
+
+<h2>Feedback</h2>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+
+<h2>Next post</h2>
+
+<p><a href="/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance">Python 3 OOP Part 3 - Delegation: composition and inheritance</a></p>
+
+        </div>
+
+<div class="meta">
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+    </div>
+    <footer id="footer">
+    <div style="display:inline">
+    Copyright &copy; 2014
+
+    Leonardo Giordani
+. Powered by <a href="http://octopress.org">Octopress</a> | 
+    Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
+</div>
+
+
+    </footer>
+    <script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+<!-- end toload --> 
+</div>
+</div>
+<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
+/*]]>*/
+</script><!-- remove it to remove the scroll to top button -->
+</body>
+</html>
