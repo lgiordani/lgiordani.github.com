@@ -4,7 +4,7 @@
   <title><![CDATA[Category: oop | The digital cat]]></title>
   <link href="http://lgiordani.com/blog/categories/oop/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-08-20T15:18:11+02:00</updated>
+  <updated>2014-08-21T11:43:18+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,320 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Python 3 OOP Part 4 - Polymorphism]]></title>
+    <link href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/"/>
+    <updated>2014-08-21T10:00:00+02:00</updated>
+    <id>http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<h2>Previous post</h2>
+
+<p><a href="/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance">Python 3 OOP Part 3 - Delegation: composition and inheritance</a></p>
+
+<h2>Good Morning, Polymorphism</h2>
+
+<p>The term <em>polymorphism</em>, in the OOP lingo, refers to the ability of an object to adapt the code to the type of the data it is processing.</p>
+
+<p>Polymorphism has two major applications in an OOP language. The first is that an object may provide different implementations of one of its methods depending on the type of the input parameters. The second is that code written for a given type of data may be used on data with a derived type, i.e. methods understand the class hierarchy of a type.</p>
+
+<p>In Python polymorphism is one of the key concepts, and we can say that it is a built-in feature. Let us deal with it step by step.</p>
+
+<p>First of all, you know that in Python the type of a variable is not explicitly declared. Beware that this does not mean that Python variables are <em>untyped</em>. On the contrary, everything in Python has a type, it just happens that the type is implicitly assigned. If you remember the last paragraph of the previous post, I stated that in Python variables are just pointers (using a C-like nomenclature), in other words they just tell the language <em>where</em> in memory a variable has been stored. What is stored at that address is not a business of the variable.</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>a = 5
+a
+5
+type(a)
+<class 'int'>
+hex(id(a))
+'0x83fe540'
+a = 'five'
+a
+'five'
+type(a)
+<class 'str'>
+hex(id(a))
+'0xb70d6560'
+```</p></blockquote></blockquote></blockquote>
+
+<p>This little example shows a lot about the Python typing system. The variable <code>a</code> is not statically declared, after all it can contain only one type of data: a memory address. When we assign the number 5 to it, Python stores in <code>a</code> the <em>address</em> of the number 5 (<code>0x83fe540</code> in my case, but your result will be different). The <code>type()</code> built-in function is smart enough to understand that we are not asking about the type of <code>a</code> (which is always a reference), but about the type of the content. When you store another value in <code>a</code>, the string <code>'five'</code>, Python shamelessly replaces the previous content of the variable with the new address.</p>
+
+<p>So, thanks to the reference system, Python type system is both <em>strong</em> and <em>dynamic</em>. The exact definition of those two concepts is not universal, so if you are interested be ready to dive into a broad matter. However, in Python, the meaning of those two words is the following:</p>
+
+<ul>
+<li>type system is <em>strong</em> because everything has a well-defined type that you can check with the <code>type()</code> built-in function</li>
+<li>type system is <em>dynamic</em> since the type of a variable is not explicitly declared, but changes with the content</li>
+</ul>
+
+
+<p>Onward! We just scratched the surface of the whole thing.</p>
+
+<p>To explore the subject a little more, try to define the simplest function in Python (apart from an empty function)</p>
+
+<p>``` python
+def echo(a):</p>
+
+<pre><code>return a
+</code></pre>
+
+<p>```</p>
+
+<p>The function works as expected, just echoes the given parameter</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>echo(5)
+5
+echo('five')
+'five'
+```</p></blockquote></blockquote></blockquote>
+
+<p>Pretty straightforward, isn't it? Well, if you come from a statically compiled language such as C or C++ you should be at least puzzled. What is <code>a</code>? I mean: what type of data does it contain? Moreover, how can Python know what it is returning if there is no type specification?</p>
+
+<p>Again, if you recall the references stuff everything becomes clear: that function accepts a reference and returns a reference. In other words we just defined a sort of universal function, that does the same thing regardless of the input.</p>
+
+<p>This is exactly the problem that polymorphism wants to solve. We want to describe an action regardless of the type of objects, and this is what we do when we talk among humans. When you describe how to move an object by pushing it, you may explain it using a box, but you expect the person you are addressing to be able to repeat the action even if you need to move a pen, or a book, or a bottle.</p>
+
+<p>There are two main strategies you can apply to get code that performs the same operation regardless of the input types.</p>
+
+<p>The first approach is to cover all cases, and this is a typical approach of procedural languages. If you need to sum two numbers that can be integers, float or complex, you just need to write three <code>sum()</code> functions, one bound to the integer type, the second bound to the float type and the third bound to the complex type, and to have some language feature that takes charge of choosing the correct implementation depending on the input type. This logic can be implemented by a compiler (if the language is statically typed) or by a runtime environment (if the language is dynamically typed) and is the approach chosen by C++. The disadvantage of this solution is that it requires the programmer to forecast all the possible situations: what if I need to sum an integer with a float? What if I need to sum two lists? (Please note that C++ is not so poorly designed, and the operator overloading technique allows to manage such cases, but the base polymorphism strategy of that language is the one exposed here).</p>
+
+<p>The second strategy, the one implemented by Python, is simply to require the input objects to solve the problem for you. In other words you <em>ask the data itself to perform the operation</em>, reversing the problem. Instead of writing a bunch on functions that sum all the possible types in every possible combination you just write one function that requires the input data to sum, trusting that they know how to do it. Does it sound complex? It is not.</p>
+
+<p>Let's look at the Python implementation of the <code>+</code> operator. When we write <code>c = a + b</code>, Python actually executes <code>c = a.__add__(b)</code>. As you can see the sum operation is delegated to the first input variable. So if we write</p>
+
+<p>``` python
+def sum(a, b):</p>
+
+<pre><code>return a + b
+</code></pre>
+
+<p>```</p>
+
+<p>there is no need to specify the type of the two input variables. The object <code>a</code> (the object contained in the variable <code>a</code>) shall be able to sum with the object <code>b</code>. This is a very beautiful and simple implementation of the polymorphism concept. Python functions are polymorphic simply because they accept everything and trust the input data to be able to perform some actions.</p>
+
+<p>Let us consider another simple example before moving on. The built-in <code>len()</code> function returns the length of the input object. For example</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>l = [1, 2, 3]
+len(l)
+3
+s = "Just a sentence"
+len(s)
+15
+```</p></blockquote></blockquote></blockquote>
+
+<p>As you can see it is perfectly polymorphic: you can feed both a list or a string to it and it just computes its length. Does it work with any type? let's check</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>d = {'a': 1, 'b': 2}
+len(d)
+2
+i = 5
+len(i)
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: object of type 'int' has no len()
+```</p></blockquote></blockquote></blockquote>
+
+<p>Ouch! Seems that the <code>len()</code> function is smart enough to deal with dictionaries, but not with integers. Well, after all, the length of an integer is not defined.</p>
+
+<p>Indeed this is exactly the point of Python polymorphism: <em>the integer type does not define a length operation</em>. While you blame the <code>len()</code> function, the <code>int</code> type is at fault. The <code>len()</code> function just calls the <code>__len__()</code> method of the input object, as you can see from this code</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>l.<strong>len</strong>()
+3
+s.<strong>len</strong>()
+15
+d.<strong>len</strong>()
+2
+i.<strong>len</strong>()
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+AttributeError: 'int' object has no attribute '<strong>len</strong>'
+```</p></blockquote></blockquote></blockquote>
+
+<p>Very straightforward: the <code>'int' object</code> does not define any <code>__len__()</code> method.</p>
+
+<p>So, to sum up what we discovered until here, I would say that <em>Python polymorphism is based on delegation</em>. In the following sections we will talk about the <a href="https://docs.python.org/3/glossary.html#term-eafp">EAFP</a> Python principle, and you will see that the delegation principle is somehow ubiquitous in this language.</p>
+
+<h2>Type Hard</h2>
+
+<p>Another real-life concept that polymorphism wants to bring into a programming language is the ability to walk the class hierarchy, that is <em>to run code on specialized types</em>. This is a complex sentence to say something we are used to do every day, and an example will clarify the matter.</p>
+
+<p>You know how to open a door, it is something you learned in your early years. Under an OOP point of view you are an object (sorry, no humiliation intended) which is capable of interacting with a wood rectangle rotating on hinges. When you can open a door, however, you can also open a window, which, after all, is a specialized type of wood-rectangle-with-hinges, hopefully with some glass in it too. You are also able to open the car door, which is also a specialized type (this one is a mix between a standard door and a window). This shows that, once you know how to interact with the most generic type (basic door) you can also interact with specialized types (window, car door) as soon as they act like the ancestor type (e.g. as soon as they rotate on hinges).</p>
+
+<p>This directly translates into OOP languages: polymorphism requires that <em>code written for a given type may also be run on derived types</em>. For example, a list (a generic list object, not a Python one) that can contain "numbers" shall be able to accept integers because they <em>are</em> numbers. The list could specify an ordering operation which requires the numbers to be able to compare each other. So, as soon as integers specify a way to compare each other they can be inserted into the list and ordered.</p>
+
+<p>Statically compiled languages shall provide specific language features to implement this part of the polymorphism concept. In C++, for example, the language needs to introduce the concept of pointer compatibility between parent and child classes.</p>
+
+<p>In Python there is no need to provide special language features to implement subtype polymorphism. As we already discovered Python functions accept any variable without checking the type and rely on the variable itself to provide the correct methods. But you already know that a subtype must provide the methods of the parent type, either redefining them or through implicit delegation, so as you can see Python implements subtype polymorphism from the very beginning.</p>
+
+<p>I think this is one of the most important things to understand when working with this language. Python is not really interested in the actual type of the variables you are working with. It is interested in how those variables act, that is it just wants the variable <em>to provide the right methods</em>. So, if you come from statically typed languages, you need to make a special effort to think about <em>acting like</em> instead of <em>being</em>. This is what we called "duck typing".</p>
+
+<p>Time to do an example. Let us define a <code>Room</code> class</p>
+
+<p>``` python
+class Room:</p>
+
+<pre><code>def __init__(self, door):
+    self.door = door
+
+def open(self):
+    self.door.open()
+
+def close(self):
+    self.door.close()
+
+def is_open(self):
+    return self.door.is_open()
+</code></pre>
+
+<p>```</p>
+
+<p>A very simple class, as you can see, just enough to exemplify polymorphism. The <code>Room</code> class accepts a <code>door</code> variable, and the type of this variable is not specified. Duck typing in action: the actual type of <code>door</code> is not declared, there is no "acceptance test" built in the language. Indeed, the incoming variable shall export the following methods that are used in the <code>Room</code> class: <code>open()</code>, <code>close()</code>, <code>is_open()</code>. So we can build the following classes</p>
+
+<p>``` python
+class Door:</p>
+
+<pre><code>def __init__(self):
+    self.status = "closed"
+
+def open(self):
+    self.status = "open"
+
+def close(self):
+    self.status = "closed"
+
+def is_open(self):
+    return self.status == "open"
+</code></pre>
+
+<p>class BooleanDoor:</p>
+
+<pre><code>def __init__(self):
+    self.status = True
+
+def open(self):
+    self.status = True
+
+def close(self):
+    self.status = False
+
+def is_open(self):
+    return self.status
+</code></pre>
+
+<p>```</p>
+
+<p>Both represent a door that can be open or closed, and they implement the concept in two different ways: the first class relies on strings, while the second leverages booleans. Despite <em>being</em> two different types, both <em>act</em> the same way, so both can be used to build a <code>Room</code> object.</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>door = Door()
+bool_door = BooleanDoor()
+room = Room(door)
+bool_room = Room(bool_door)</p>
+
+<p>room.open()
+room.is_open()
+True
+room.close()
+room.is_open()
+False</p>
+
+<p>bool_room.open()
+bool_room.is_open()
+True
+bool_room.close()
+bool_room.is_open()
+False
+```</p></blockquote></blockquote></blockquote>
+
+<h2>File Like Us</h2>
+
+<p>File-like objects are a concrete and very useful example of polymorphism in Python. A file-like object is a class (or the instance of a class) that acts like a file, i.e. it provides those methods a file object exposes.</p>
+
+<p>Say for example that you code a class that parses an XML tree, and that you expect the XML code to be contained in a file. So your class accepts a file in its <code>__init__()</code> method, and reads the content from it</p>
+
+<p>``` python
+class XMLReader:</p>
+
+<pre><code>def __init__(xmlfile):
+    xmlfile.open()
+    self.content = xmlfile.read()
+    xmlfile.close()
+</code></pre>
+
+<p>[...]
+```</p>
+
+<p>The class works well until your application shall be modified to receive XML content from a network stream. To use the class without modifying it you shall write the stream in a temporary file and load this latter, but this sounds a little overkill. So you plan to change the class to accept a string, but this way you shall change every single code that uses the class to read a file, since now you shall open, read and close the file on your own, outside the class.</p>
+
+<p>Polymorphism offers a better way. Why not storing the incoming stream inside an object that <em>acts like</em> a file, even if it is not an actual one? If you check the <a href="https://docs.python.org/3/library/io.html"><code>io</code></a> module you will find that such an object has been already invented and provided in the standard Python library.</p>
+
+<p>Other very useful file-like classes are those contained in the <code>gzip</code>, <code>bz2</code>, and <code>zipfile</code> modules (just to name some of the most used), which provide objects that allow you to manage compressed files just like plain files, hiding the decompression/compression machinery.</p>
+
+<h2>Unforgiveness</h2>
+
+<p>EAFP is a Python acronym that stands for <em>easier to ask for forgiveness than permission</em>. This coding style is highly pushed in the Python community because it completely relies on the duck typing concept, thus fitting well with the language philosophy.</p>
+
+<p>The concept behind EAFP is fairly easy: instead of checking if an object has a given attribute or method before actually accessing or using it, just trust the object to provide what you need and manage the error case. This can be probably better understood by looking at some code. According to EAFP, instead of writing</p>
+
+<p>``` python
+if hasattr(someobj, 'open'):</p>
+
+<pre><code>[...]
+</code></pre>
+
+<p>else:</p>
+
+<pre><code>[...]
+</code></pre>
+
+<p>```</p>
+
+<p>you shall write</p>
+
+<p>``` python
+try:</p>
+
+<pre><code>someobj.open()
+[...]
+</code></pre>
+
+<p>except AttributeError:</p>
+
+<pre><code>[...]
+</code></pre>
+
+<p>```</p>
+
+<p>As you can see, the second snippet directly uses the method and deals with the possible <code>AttributeError</code> exception (by the way: managing exceptions is one of the top Black Magic Topics in Python, more on it in a future post. A very quick preview: I think we may learn something from Erlang - check <a href="/blog/2013/05/30/error-handling-in-erlang-a-primer/">this</a>).</p>
+
+<p>Why is this coding style pushed so much in the Python community? I think the main reason is that through EAFP you <em>think</em> polymorphically: you are not interested in knowing if the object <em>has</em> the <code>open</code> attribute, you are interested in knowing if the object can satisfy your request, that is to perform the <code>open()</code> method call.</p>
+
+<h2>Movie Trivia</h2>
+
+<p>Section titles come from the following movies: <em>Good Morning, Vietnam (1987)</em>, <em>Die Hard (1988)</em>, <em>Spies Like Us (1985)</em>, <em>Unforgiven (1992)</em>.</p>
+
+<h2>Sources</h2>
+
+<p>You will find a lot of documentation in <a href="http://www.reddit.com/r/Python/comments/226ahl/some_links_about_python_oop/">this Reddit post</a>. Most of the information contained in this series come from those sources.</p>
+
+<h2>Feedback</h2>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Python 3 OOP Part 3 - Delegation: composition and inheritance]]></title>
@@ -295,6 +609,10 @@ def __getattr__(self, attr):
 <h2>Feedback</h2>
 
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+
+<h2>Next post</h2>
+
+<p><a href="/blog/2014/08/21/python-3-oop-part-4-polymorphism">Python 3 OOP Part 4 - Polymorphism</a></p>
 ]]></content>
   </entry>
   
@@ -1344,260 +1662,6 @@ TypeError: 'int' object is not callable
 <li><a href="/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2">OOP Concepts in Python 2.x - Part 2</a></li>
 </ul>
 
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Method overriding in Python]]></title>
-    <link href="http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/"/>
-    <updated>2014-05-19T13:51:26+02:00</updated>
-    <id>http://lgiordani.com/blog/2014/05/19/method-overriding-in-python</id>
-    <content type="html"><![CDATA[<p>What is overriding? Overriding is the ability of a class to change the implementation of a method provided by one of its ancestors.</p>
-
-<p>Overriding is a very important part of OOP since it is the feature that makes inheritance exploit its full power. Through method overriding a class may "copy" another class, avoiding duplicated code, and at the same time enhance or customize part of it. Method overriding is thus a strict part of the inheritance mechanism.</p>
-
-<!--more-->
-
-
-<h2>A quick glance to inheritance</h2>
-
-<p>As for most OOP languages, in Python inheritance works through implicit delegation: when the object cannot satisfy a request, it first tries to forward the request to its ancestors, following the specific language rules in the case of multiple inheritance.</p>
-
-<p>An exemple:</p>
-
-<p>``` python
-class Parent(object):</p>
-
-<pre><code>def __init__(self):
-    self.value = 5
-
-def get_value(self):
-    return self.value
-</code></pre>
-
-<p>class Child(Parent):</p>
-
-<pre><code>pass
-</code></pre>
-
-<p>```</p>
-
-<p>As you can see the <code>Child</code> class is empty, but since it inherits from <code>Parent</code> Python takes charge of routing all method calls. So you may use the <code>get_value()</code> method of <code>Child</code> objects and exerything works as expected.</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>c = Child()
-c.get_value()
-5
-```</p></blockquote></blockquote></blockquote>
-
-<p>Indeed <code>get_value()</code> is not exactly part of the <code>Child</code> class as if it were defined in it</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>p = Parent()
-c = Child()</p>
-
-<p>dir(p)
-['<strong>class</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>doc</strong>', '<strong>format</strong>',
- '<strong>getattribute</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>module</strong>', '<strong>new</strong>',
- '<strong>reduce</strong>', '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>',
- '<strong>str</strong>', '<strong>subclasshook</strong>', '<strong>weakref</strong>', 'get_value', 'value']</p>
-
-<p>dir(c)
-['<strong>class</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>doc</strong>', '<strong>format</strong>',
- '<strong>getattribute</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>module</strong>', '<strong>new</strong>',
- '<strong>reduce</strong>', '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>',
- '<strong>str</strong>', '<strong>subclasshook</strong>', '<strong>weakref</strong>', 'get_value', 'value']</p>
-
-<p>dir(Parent)
-['<strong>class</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>doc</strong>', '<strong>format</strong>',
- '<strong>getattribute</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>module</strong>', '<strong>new</strong>',
- '<strong>reduce</strong>', '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>',
- '<strong>str</strong>', '<strong>subclasshook</strong>', '<strong>weakref</strong>', 'get_value']</p>
-
-<p>dir(Child)
-['<strong>class</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>doc</strong>', '<strong>format</strong>',
- '<strong>getattribute</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>module</strong>', '<strong>new</strong>',
- '<strong>reduce</strong>', '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>',
- '<strong>str</strong>', '<strong>subclasshook</strong>', '<strong>weakref</strong>', 'get_value']</p>
-
-<p>Parent.<strong>dict</strong>
-dict_proxy({'<strong>module</strong>': '<strong>main</strong>',</p>
-
-<pre><code>        'get_value': &lt;function get_value at 0xb69a656c&gt;,
-        '__dict__': &lt;attribute '__dict__' of 'Parent' objects&gt;,
-        '__weakref__': &lt;attribute '__weakref__' of 'Parent' objects&gt;,
-        '__doc__': None,
-        '__init__': &lt;function __init__ at 0xb69a6534&gt;})
-</code></pre>
-
-<p>Child.<strong>dict</strong>
-dict_proxy({'<strong>module</strong>': '<strong>main</strong>', '<strong>doc</strong>': None})
-```</p></blockquote></blockquote></blockquote>
-
-<p>This shows that the <code>Child</code> class does not actually contain the <code>get_value()</code> method and that a mechanism of automatical delegation is active under the hood. For an insight on this mechanism check <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">this post</a>.</p>
-
-<h2>Method overriding in action</h2>
-
-<p>In Python method overriding occours simply defining in the child class a method with the same name of a method in the parent class. When you define a method in the object you make this latter able to satisfy that method call, so the implementations of its ancestors do not come in play.</p>
-
-<p>``` python
-class Parent(object):</p>
-
-<pre><code>def __init__(self):
-    self.value = 5
-
-def get_value(self):
-    return self.value
-</code></pre>
-
-<p>class Child(Parent):</p>
-
-<pre><code>def get_value(self):
-    return self.value + 1
-</code></pre>
-
-<p>```</p>
-
-<p>Now <code>Child</code> objects behave differently</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>c = Child()
-c.get_value()
-6
-```</p></blockquote></blockquote></blockquote>
-
-<p>and taking a look inside the class we spot a difference</p>
-
-<p>```</p>
-
-<blockquote><blockquote><blockquote><p>Parent.<strong>dict</strong>
-dict_proxy({'<strong>module</strong>': '<strong>main</strong>',</p>
-
-<pre><code>        'get_value': &lt;function get_value at 0xb69a656c&gt;,
-        '__dict__': &lt;attribute '__dict__' of 'Parent' objects&gt;,
-        '__weakref__': &lt;attribute '__weakref__' of 'Parent' objects&gt;,
-        '__doc__': None,
-        '__init__': &lt;function __init__ at 0xb69a6534&gt;})
-</code></pre>
-
-<p>Child.<strong>dict</strong>
-dict_proxy({'<strong>module</strong>': '<strong>main</strong>',</p>
-
-<pre><code>        'get_value': &lt;function get_value at 0xb69a65a4&gt;,
-        '__doc__': None})
-</code></pre>
-
-<p>```</p></blockquote></blockquote></blockquote>
-
-<p>since now the <code>Child</code> class actually contains a <code>get_value()</code> method with a different implementation (the id of the two functions are different).</p>
-
-<p>This is of uttermost importance in Python. Inheritance delegation occours automatically, but if a method is overridden the implementation of the ancestors is not considered at all. So, if you want to run the implementation of one or more of the ancestors of your class, you have to call them explicitly.</p>
-
-<p>Why should you want to call the implementation of objects that are deeper in the class hierarchy?</p>
-
-<p>You may want to call it because many times you override a method to enhance its nature, that is to improve the "quality" of the result, and to improve something you need to first access it. So, by calling the original implementation, you get the result you later want to improve.</p>
-
-<p>There is however a well defined reason why <strong>you must always call the original implementation</strong>. This reason may be called "hidden side effects".</p>
-
-<p>When you inherit from a class, you are actually inheriting a whole class hierarchy which internal structure is (or shall be considered) unknown. This means that any method call may hide a complex set of operations on the whole class hierarchy, and some of them may be vital for the library or the framework you are using.</p>
-
-<p>Python makes you call the original implementation of an overridden method explicitly (not differently from other object-oriented languages). This surely follows the Python idea that "Explicit is better than implicit" (<a href="http://legacy.python.org/dev/peps/pep-0020/">The Zen of Python</a>), but this advice is not just a matter of taste or some sort of programming mannerism.</p>
-
-<p>When you override you have to think if you want to filter the arguments for the original implementation, if you want to filter its results, or both. You typically want to filter arguments (pre-filter) if you want to change the data that the parent implementation shall process while you filter the results (post-filter) if you want to add an additional processing layer. Obviously both things may be done together in the same method. Since you have to explicitly call the parent implementation you are free to do it where you want in the code of the new method: the decision about the type of filtering you want to achieve affects the position of the call.</p>
-
-<h4>An example of pre-filtering</h4>
-
-<p>``` python
-import datetime</p>
-
-<p>class Logger(object):</p>
-
-<pre><code>def log(self, message):
-    print message
-</code></pre>
-
-<p>class TimestampLogger(Logger):</p>
-
-<pre><code>def log(self, message):
-    message = "{ts} {msg}".format(ts=datetime.datetime.now().isoformat(),
-                                  msg=message)
-    super(TimestampLogger, self).log(message)
-</code></pre>
-
-<p>```</p>
-
-<p>The <code>TimestampLogger</code> object adds some information to the message string before calling the original implementation of its <code>log()</code> method.</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>l = Logger()
-l.log('hi!')
-hi!</p>
-
-<p>t = TimestampLogger()
-t.log('hi!')
-2014-05-19T13:18:53.402123 hi!</p>
-
-<p>```</p></blockquote></blockquote></blockquote>
-
-<h4>An example of post-filtering</h4>
-
-<p>``` python
-import os</p>
-
-<p>class FileCat(object):</p>
-
-<pre><code>def cat(self, filepath):
-    f = file(filepath)
-    lines = f.readlines()
-    f.close()
-    return lines
-</code></pre>
-
-<p>class FileCatNoEmpty(FileCat):</p>
-
-<pre><code>def cat(self, filepath):
-    lines = super(FileCatNoEmpty, self).cat(filepath)
-    nonempty_lines = [l for l in lines if l != '\n']
-    return nonempty_lines
-</code></pre>
-
-<p>```</p>
-
-<p>When you use the <code>FileCatNoEmpty</code> object you get the result of the <code>FileCat</code> object with the empty lines stripped.</p>
-
-<p>As you can see while in the first example the original implementation has been called as the last thing, in the second one it is called before everything else. There is therefore no fixed position for the call of the original method, and it depends on what you want to do.</p>
-
-<h2>Always call super()?</h2>
-
-<p>Shall we <em>always</em> call the original method implementation? In theory a well designed API should make it always possible but we know that boundary cases exist: the original method may have side effect that you want to avoid and sometimes the API cannot be refactored to avoid them. In those cases you may prefer to skip the call to the original implementation of the method; Python does not make it mandatory, so feel free to walk that path if you think the situation requires it. Be sure to know what you are doing, however, and document why you are completely overwriting the method.</p>
-
-<h2>Summary</h2>
-
-<ul>
-<li>Call the original implementation of a method you are overriding whenever possible. This meakes the underlying API work as expected. When in need of skipping the call be sure to document the reasons.</li>
-<li>Always use <code>super(cls, self)</code> for Python 2.x or <code>super()</code> for Python 3.x to call the original implementation of a method. This respects the resolution order in case of multiple inheritance and, for Python 3.x, protects from changes in the class hierarchy.</li>
-<li>If you call to the original implementation of a method do it as soon as you have all the data you need to run it.</li>
-</ul>
-
-
-<h2>Updates</h2>
-
-<p>2014-05-21 As suggested by <a href="http://www.reddit.com/user/caseyweb">caseyweb</a> in <a href="http://www.reddit.com/r/Python/comments/25y4hu/method_overriding_in_python/chn5v1q">this comment</a> the conclusions of the post were too strong, so I updated the post with a new section ("Always call super()?") and the summary. Many thanks caseyweb!</p>
-
-<h2>Links</h2>
-
-<ul>
-<li><a href="https://docs.python.org/3/tutorial/classes.html">Python official documentation on classes</a></li>
-</ul>
-
-
-<h2>Feedback</h2>
-
-<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
 ]]></content>
   </entry>
   
