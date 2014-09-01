@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.com/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-09-01T15:07:30+02:00</updated>
+  <updated>2014-09-01T15:49:54+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -1895,7 +1895,7 @@
 
 <p>This post will continue the discussion about metaclasses, introducing Abstract Base Classes, and give some insights on callable objects.</p>
 
-<p><em>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. As soon as I feel comfortable with my Python 3 knowledge, I will post an update.</em></p>
+<p>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the <strong>updated version</strong> <a href="blog/categories/python3/">here</a>.</p>
 
 <!--more-->
 
@@ -2699,7 +2699,7 @@
 </ul>
 
 
-<p><em>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. As soon as I feel comfortable with my Python 3 knowledge, I will post an update.</em></p>
+<p>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the <strong>updated version</strong> <a href="blog/categories/python3/">here</a>.</p>
 
 <!--more-->
 
@@ -3338,7 +3338,7 @@
 </ul>
 
 
-<p><em>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. As soon as I feel comfortable with my Python 3 knowledge, I will post an update.</em></p>
+<p>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the <strong>updated version</strong> <a href="blog/categories/python3/">here</a>.</p>
 
 <!--more-->
 
