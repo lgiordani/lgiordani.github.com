@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.com/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-08-21T11:43:18+02:00</updated>
+  <updated>2014-09-01T15:07:30+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,232 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Python 3 OOP Part 5 - Metaclasses]]></title>
+    <link href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/"/>
+    <updated>2014-09-01T15:00:00+02:00</updated>
+    <id>http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<h2>Previous post</h2>
+
+<p><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism">Python 3 OOP Part 4 - Polymorphism</a></p>
+
+<h2>The Type Brothers</h2>
+
+<p>The first step into the most intimate secrets of Python objects comes from two components we already met in the first post: <code>class</code> and <code>object</code>. These two things are the very fundamental elements of Python OOP system, so it is worth spending some time to understand how they work and relate each other.</p>
+
+<p>First of all recall that in Python <em>everything is an object</em>, that is everything inherits from <code>object</code>. Thus, <code>object</code> seems to be the deepest thing you can find digging into Python variables. Let&#8217;s check this</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span>
+</span><span class='line'><span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">object</span><span class="s">&#39;&gt;,)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">object</span><span class="o">.</span><span class="n">__bases__</span>
+</span><span class='line'><span class="p">()</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>The variable <code>a</code> is an instance of the <code>int</code> class, and this latter inherits from <code>object</code>, which inherits from nothing. This demonstrates that <code>object</code> is at the top of the class hierarchy. However, as you can see, both <code>int</code> and <code>object</code> are called <em>classes</em> (<code>&lt;class 'int'&gt;</code>, <code>&lt;class 'object'&gt;</code>). Indeed, while <code>a</code> is an instance of the <code>int</code> class, <code>int</code> itself is an instance of another class, <em>a class that is instanced to build classes</em></p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">type</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">type</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">type</span><span class="s">&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Since in Python everything is an object, everything is the instance of a class, even classes. Well, <code>type</code> is the class that is instanced to get classes. So remember this: <code>object</code> is the base of every object, <code>type</code> is the class of every type. Sounds puzzling? It is not your fault, don&#8217;t worry. However, just to strike you with the finishing move, this is what Python is built on</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">type</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">__bases__</span>
+</span><span class='line'><span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">object</span><span class="s">&#39;&gt;,)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>If you are not about to faint at this point chances are that you are Guido van Rossum of one of his friends down at the Python core development team (in this case let me thank you for your beautiful creation). You may get a cup of tea, if you need it.</p>
+
+<p>Jokes apart, at the very base of Python type system there are two things, <code>object</code> and <code>type</code>, which are inseparable. The previous code shows that <code>object</code> is an instance of <code>type</code>, and <code>type</code> inherits from <code>object</code>. Take your time to understand this subtle concept, as it is very important for the upcoming discussion about metaclasses.</p>
+
+<p>When you think you grasped the <code>type</code>/<code>object</code> matter read this and start thinking again</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">type</span><span class="s">&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>The Metaclasses Take Python</h2>
+
+<p>You are now familiar with Python classes. You know that a class is used to create an instance, and that the structure of this latter is ruled by the source class and all its parent classes (until you reach <code>object</code>).</p>
+
+<p>Since classes are objects too, you know that a class itself is an instance of a (super)class, and this class is <code>type</code>. That is, as already stated, <code>type</code> is the class that is used to build classes.</p>
+
+<p>So for example you know that a class may be instanced, i.e. it can be called and by calling it you obtain another object that is linked with the class. What prepares the class for being called? What gives the class all its methods? In Python the class in charge of performing such tasks is called <em>metaclass</em>, and <code>type</code> is the default metaclass of all classes.</p>
+
+<p>The point of exposing this structure of Python objects is that you may change the way classes are built. As you know, <code>type</code> is an object, so it can be subclassed just like any other class. Once you get a subclass of <code>type</code> you need to instruct your class to use it as the metaclass instead of type, and you can do this by passing it as the <code>metaclass</code> keyword argument in the class definition.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MySpecialClass</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">MyType</span><span class="p">):</span>
+</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">msp</span> <span class="o">=</span> <span class="n">MySpecialClass</span><span class="p">()</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">msp</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">MySpecialClass</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">MySpecialClass</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">MyType</span><span class="s">&#39;&gt;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">MyType</span><span class="p">)</span>
+</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">type</span><span class="s">&#39;&gt;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h4>Metaclasses 2: Singleton Day</h4>
+
+<p>Metaclasses are a very advanced topic in Python, but they have many practical uses. For example, by means of a custom metaclass you may log any time a class is instanced, which can be important for applications that shall keep a low memory usage or have to monitor it.</p>
+
+<p>I am going to show here a very simple example of metaclass, the Singleton. Singleton is a well known design pattern, and many description of it may be found on the Internet. It has also been heavily criticized mostly because its bad behaviour when subclassed, but here I do not want to introduce it for its technological value, but for its simplicity (so please do not question the choice, it is just an example).</p>
+
+<p>Singleton has one purpose: to return the same instance every time it is instanced, like a sort of object-oriented global variable. So we need to build a class that does not work like standard classes, which return a new instance every time they are called.</p>
+
+<p>&#8220;Build a class&#8221;? This is a task for metaclasses. The following implementation comes from <a href="http://python-3-patterns-idioms-test.readthedocs.org/en/latest/Metaprogramming.html#intercepting-class-creation">Python 3 Patterns, Recipes and Idioms</a>.</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+</span><span class='line'>    <span class="n">instance</span> <span class="o">=</span> <span class="bp">None</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">instance</span><span class="p">:</span>
+</span><span class='line'>             <span class="n">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Singleton</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">instance</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>We are defining a new type, which inherits from <code>type</code> to provide all bells and whistles of Python classes. We override the <code>__call__</code> method, that is a special method invoked when we call the class, i.e. when we instance it. The new method wraps the original method of <code>type</code> by calling it only when the <code>instance</code> attribute is not set, i.e. the first time the class is instanced, otherwise it just returns the recorded instance. As you can see this is a very basic cache class, the only trick is that it is applied to the creation of instances.</p>
+
+<p>To test the new type we need to define a new class that uses it as its metaclass</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">ASingleton</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">Singleton</span><span class="p">):</span>
+</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">ASingleton</span><span class="p">()</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="n">ASingleton</span><span class="p">()</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="ow">is</span> <span class="n">b</span>
+</span><span class='line'><span class="bp">True</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb68030ec&#39;</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+</span><span class='line'><span class="s">&#39;0xb68030ec&#39;</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>By using the <code>is</code> operator we test that the two objects are the very same structure in memory, that is their ids are the same, as explicitly shown. What actually happens is that when you issue <code>a = ASingleton()</code> the <code>ASingleton</code> class runs its <code>__call__()</code> method, which is taken from the <code>Singleton</code> type behind the class. That method recognizes that no instance has been created (<code>Singleton.instance</code> is <code>None</code>) and acts just like any standard class does. When you issue <code>b = ASingleton()</code> the very same things happen, but since <code>Singleton.instance</code> is now different from <code>None</code> its value (the previous instance) is directly returned.</p>
+
+<p>Metaclasses are a very powerful programming tool and leveraging them you can achieve very complex behaviours with a small effort. Their use is a must every time you are actually metaprogramming, that is you are writing code that has to drive the way your code works. Good examples are creational patterns (injecting custom class attributes depending on some configuration), testing, debugging, and performance monitoring.</p>
+
+<h2>Coming to Instance</h2>
+
+<p>Before introducing you to a very smart use of metaclasses by talking about Abstract Base Classes (read: to save some topics for the next part of this series), I want to dive into the object creation procedure in Python, that is what happens when you instance a class. In the first post this procedure was described only partially, by looking at the <code>__init_()</code> method.</p>
+
+<p>In the first post I recalled the object-oriented concept of <em>constructor</em>, which is a special method of the class that is automatically called when the instance is created. The class may also define a destructor, which is called when the object is destroyed. In languages without a garbage collection mechanism such as C++ the destructor shall be carefully designed. In Python the destructor may be defined through the <code>__del__()</code> method, but it is hardly used.</p>
+
+<p>The constructor mechanism in Python is on the contrary very important, and it is implemented by two methods, instead of just one: <code>__new__()</code> and <code>__init__()</code>. The tasks of the two methods are very clear and distinct: <code>__new__()</code> shall perform actions needed when <em>creating</em> a new instance while <code>__init__</code> deals with object <em>initialization</em>.</p>
+
+<p>Since in Python you do not need to declare attributes due to its dynamic nature, <code>__new__()</code> is rarely defined by programmers, who may rely on <code>__init__</code> to perform the majority of the usual tasks. Typical uses of <code>__new__()</code> are very similar to those listed in the previous section, since it allows to trigger some code whenever your class is instanced.</p>
+
+<p>The standard way to override <code>__new__()</code> is</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">MyClass</span><span class="p">():</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+</span><span class='line'>        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+</span><span class='line'>        <span class="p">[</span><span class="n">put</span> <span class="n">your</span> <span class="n">code</span> <span class="n">here</span><span class="p">]</span>
+</span><span class='line'>        <span class="k">return</span> <span class="n">obj</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>just like you usually do with <code>__init__()</code>. When your class inherits from <code>object</code> you do not need to call the parent method (<code>object.__init__()</code>), because it is empty, but you need to do it when overriding <code>__new__</code>.</p>
+
+<p>Remember that <code>__new__()</code> is not forced to return an instance of the class in which it is defined, even if you shall have very good reasons to break this behaviour. Anyway, <code>__init__()</code> will be called only if you return an instance of the container class. Please also note that <code>__new__()</code>, unlike <code>__init__()</code>, accepts the class as its first parameter. The name is not important in Python, and you can also call it <code>self</code>, but it is worth using <code>cls</code> to remember that it is not an instance.</p>
+
+<h2>Movie Trivia</h2>
+
+<p>Section titles come from the following movies: <em>The Blues Brothers (1980)</em>, <em>The Muppets Take Manhattan (1984)</em>, <em>Terminator 2: Judgement Day (1991)</em>, <em>Coming to America (1988)</em>.</p>
+
+<h2>Sources</h2>
+
+<p>You will find a lot of documentation in <a href="http://www.reddit.com/r/Python/comments/226ahl/some_links_about_python_oop/">this Reddit post</a>. Most of the information contained in this series come from those sources.</p>
+
+<h2>Feedback</h2>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Python 3 OOP Part 4 - Polymorphism]]></title>
@@ -409,6 +635,10 @@
 <h2>Feedback</h2>
 
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+
+<h2>Next post</h2>
+
+<p><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses">Python 3 OOP Part 5 - Metaclasses</a></p>
 ]]></content>
   </entry>
   
@@ -1371,7 +1601,7 @@
 
 <p>This series of posts wants to introduce the reader to the Python 3 implementation of Object Oriented Programming concepts. The content of this and the following posts will not be completely different from that of the previous &#8220;OOP Concepts in Python 2.x&#8221; series, however. The reason is that while some of the internal structures change a lot, the global philosophy doesn&#8217;t, being Python 3 an <em>evolution</em> of Python 2 and not a new language.</p>
 
-<p>So I chose to split the previous series and to adapt the content to Python 3 instead of posting a mere list of corrections. I find this way to be more useful for new readers, that otherwise sould be forced to read the previoous series.</p>
+<p>So I chose to split the previous series and to adapt the content to Python 3 instead of posting a mere list of corrections. I find this way to be more useful for new readers, that otherwise sould be forced to read the previous series.</p>
 
 <h3>Print</h3>
 
@@ -9047,198 +9277,6 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <h2>Next articles</h2>
 
 <ul>
-<li><a href="http://lgiordani.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Python generators - from iterators to cooperative multitasking]]></title>
-    <link href="http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/"/>
-    <updated>2013-03-25T10:41:00+01:00</updated>
-    <id>http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking</id>
-    <content type="html"><![CDATA[<h2>Introduction</h2>
-
-<p>Python is a language that in 11 years of life has been through a very remarkable development and the introduction of several new features, sometimes borrowed from other languages, sometimes arisen from the needs of developers and heavily discussed before being officially implemented. One of these improvements concerns generators, a concept which can be found in the computer science environment since the 70s; it has been implemented in Python from version 2.2 (2001) and became popular from version 2.3 (2003).</p>
-
-<!--more-->
-
-
-<p>Generators are a generalization of functions that allow to deal in a more complete and rich way with iterations, repeated executions and in general with everything concerns the program flow. In the last years a concept which was considered obsolete started to spread again, namely that of cooperative multitasking. This concept has been shadowed for some years by the advent of multiprocessing and multithreading but, as happened to interpreted languages and virtual machines, as time passes and contexts change good ideas rise again and prove to be anything but dead.</p>
-
-<p>In the Python world, in particular, numerous solutions have appeared which endorse the use of microthreads: these are parallel execution flows without implicit scheduling as opposed to what happens with traditional processes and threads. The big advantage of such objects is the ease of implementation and management of the multiprogramming code, since all synchronization and data protection problems simply do not exist. On the other hand, their use requires a voluntary scheduling, in other words a system that explicitly acquires and releases system resources.</p>
-
-<p>To start talking about cooperative multitasking in Python, thus, it is imperative to understand generators. This first post reviews the concept of iteration and its implementation.</p>
-
-<h2>Iterations</h2>
-
-<p><strong>Iteration</strong> in Python, like in other languages, is a process ruled by the <strong>for</strong> statement and allows to repeatedly execute a block of code, assigning to a variable a value extracted at each execution from a given ordered set. The simplest case of iteration is the processing of a list of values</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]:</span>
-</span><span class='line'>  <span class="k">print</span> <span class="n">i</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>In Python, however, iteration is more than simple loop over the elements of an array. The for statement implements a well-defined and nontrivial protocol, which allows to build very complex objects.</p>
-
-<p>To understand the structure of iteration in Python we have to clarify what is the difference between iterable and iterator objects.</p>
-
-<h4>Iterators</h4>
-
-<p>In Python jargon an iterator is an object with the following properties:</p>
-
-<ul>
-<li>it contains a <strong>set of data</strong></li>
-<li>it exposes the <code>next()</code> method, which returns one of the contained elements at each call. Each element is returned only one time. This method goes through the whole set of data the iterator incorporates. In Python 3 this method has been renamed <code>__next__()</code>.</li>
-<li>after the <code>next()</code> method returns the last element any successive call of this method raises the <code>StopIteration</code> exception. This signals that the iterator is exhausted.</li>
-<li>it exposes the <code>__iter__()</code> method that returns the iterator itself.</li>
-</ul>
-
-
-<h4>Iterables</h4>
-
-<p>The definition of iterable, on the other hand, is more generic: an iterable is a container of data that exposes either the <code>__getitem__()</code> or the <code>__iter__()</code> methods (or both):</p>
-
-<ul>
-<li><code>__getitem__(i)</code> shall return the value at the given position <code>i</code> or raise the <code>IndexError</code> exception if there is no data at that position.</li>
-<li><code>__iter__()</code> shall return an iterator on the data contained in the iterable</li>
-</ul>
-
-
-<p>As you can see the <code>__getitem__()</code> method considers the data as an ordered set, which is not always the case; for this reason an iterable may define the two different methods, or both.</p>
-
-<p>From the previous definitions you see that an iterator is also automatically an iterable, since it exposes the <code>__iter__()</code> method that returns an iterator (itself).</p>
-
-<h4>Loop protocol</h4>
-
-<p>Back to the loop syntax from above we can clarify the matter saying that in Python <strong>the for statement expects an iterable as argument</strong>. This means that we can give any object the capability of being used in a for loop, simply exposing one of the two previously mentioned methods, <code>__getitem__()</code> or <code>__iter__()</code>.</p>
-
-<p>Let’s look at an example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">AnIterator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</span><span class='line'>      
-</span><span class='line'>  <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class='line'>          <span class="k">raise</span> <span class="ne">StopIteration</span>
-</span><span class='line'>      <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">tmp</span>
-</span><span class='line'>      
-</span><span class='line'>  <span class="k">def</span> <span class="nf">__iter__</span><span class="p">():</span>
-</span><span class='line'>      <span class="k">return</span> <span class="bp">self</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This object is an iterator since it exposes <code>__iter__()</code>. Its <code>next()</code> method returns the decreasing sequence of integer numbers starting from a given number. Testing it we obtain</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
-</span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-</span><span class='line'>3
-</span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-</span><span class='line'>2
-</span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-</span><span class='line'>1
-</span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-</span><span class='line'>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
-</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 7, in next
-</span><span class='line'>StopIteration
-</span><span class='line'>&gt;&gt;&gt;
-</span><span class='line'>&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
-</span><span class='line'>&gt;&gt;&gt; <span class="k">for </span>i in iterator:
-</span><span class='line'>...     print i
-</span><span class='line'>...
-</span><span class='line'>3
-</span><span class='line'>2
-</span><span class='line'>1
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>This execution shows that the iterator can be used in a for loop. Pay attention to the fact that I had to instance twice the class, since the first three calls of next() exhausted the first instance.</p>
-
-<p>Let’s dive a little more inside what happens when the for loop runs. The Python code</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
-</span><span class='line'>  <span class="n">some_code</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>is equivalent to</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">_iter</span> <span class="o">=</span> <span class="n">iterable</span><span class="o">.</span><span class="n">__iter__</span><span class="p">()</span>
-</span><span class='line'><span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
-</span><span class='line'>  <span class="k">try</span><span class="p">:</span>
-</span><span class='line'>      <span class="n">i</span> <span class="o">=</span> <span class="n">_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-</span><span class='line'>  <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-</span><span class='line'>      <span class="k">break</span>
-</span><span class='line'>  <span class="n">some_code</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>The for construct receives here an <strong>iterable</strong> object and calls its <code>__iter__()</code> method, obtaining an <strong>iterator</strong> object; then it calls the <code>next()</code> method of this latter until the <code>StopIteration</code> exception is raised. The actual code is a little different, here simplified for clarity’s sake; if you want to learn more about it check the following addresses</p>
-
-<ul>
-<li><a href="http://docs.python.org/2/glossary.html">Python Glossary</a></li>
-<li><a href="http://docs.python.org/2/library/functions.html#iter">Built-in iter()</a></li>
-<li><a href="http://docs.python.org/2/library/stdtypes.html#typeiter">Iterators and sequences</a></li>
-</ul>
-
-
-<h2>Conclusion</h2>
-
-<p>This first post tried to summarize the loop protocol implemented by the for statement, which is in Python very different from many classic languages. Next post will explore the concept of generator and its Python implementation.</p>
-
-<h2>Next articles</h2>
-
-<ul>
-<li><a href="http://lgiordani.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
 <li><a href="http://lgiordani.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
 </ul>
 
