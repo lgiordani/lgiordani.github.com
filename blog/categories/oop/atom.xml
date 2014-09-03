@@ -4,7 +4,7 @@
   <title><![CDATA[Category: oop | The digital cat]]></title>
   <link href="http://lgiordani.com/blog/categories/oop/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-09-01T15:49:54+02:00</updated>
+  <updated>2014-09-03T15:33:05+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -154,7 +154,7 @@ hex(id(b))
 
 <h2>Coming to Instance</h2>
 
-<p>Before introducing you to a very smart use of metaclasses by talking about Abstract Base Classes (read: to save some topics for the next part of this series), I want to dive into the object creation procedure in Python, that is what happens when you instance a class. In the first post this procedure was described only partially, by looking at the <code>__init_()</code> method.</p>
+<p>Before introducing you to a very smart use of metaclasses by talking about Abstract Base Classes (read: to save some topics for the next part of this series), I want to dive into the object creation procedure in Python, that is what happens when you instance a class. In the first post this procedure was described only partially, by looking at the <code>__init__()</code> method.</p>
 
 <p>In the first post I recalled the object-oriented concept of <em>constructor</em>, which is a special method of the class that is automatically called when the instance is created. The class may also define a destructor, which is called when the object is destroyed. In languages without a garbage collection mechanism such as C++ the destructor shall be carefully designed. In Python the destructor may be defined through the <code>__del__()</code> method, but it is hardly used.</p>
 
