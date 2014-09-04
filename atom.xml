@@ -4,7 +4,7 @@
   <title><![CDATA[The digital cat]]></title>
   <link href="http://lgiordani.com/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-09-03T15:33:05+02:00</updated>
+  <updated>2014-09-04T10:07:53+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,250 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Python 3 OOP Part 6 - Abstract Base Classes]]></title>
+    <link href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/"/>
+    <updated>2014-09-04T10:00:00+02:00</updated>
+    <id>http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<h2>Previous post</h2>
+
+<p><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses">Python 3 OOP Part 5 - Metaclasses</a></p>
+
+<h2>The Inspection Club</h2>
+
+<p>As you know, Python leverages polymorphism at its maximum by dealing only with generic references to objects. This makes OOP not an addition to the language but part of its structure from the ground up. Moreover, Python pushes the EAFP appoach, which tries to avoid direct inspection of objects as much as possible.</p>
+
+<p>It is however very interesting to read what Guido van Rossum says in <a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a>: <em>Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object&#8217;s methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [&#8230;] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python.</em></p>
+
+<p>The author of Python recognizes that forcing the use of a pure polymorphic approach leads sometimes to solutions that are too complex or even incorrect. In this section I want to show some of the problems that can arise from a pure polymorphic approach and introduce Abstract Base Classes, which aim to solve them. I strongly suggest to read <a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a> (as for any other PEP) since it contains a deeper and better explanation of the whole matter. Indeed I think that this PEP is so well written that any further explanation is hardly needed. I am however used to write explanations to check how much I understood about the topic, so I am going to try it this time too.</p>
+
+<h4>E.A.F.P the Extra Test Trial</h4>
+
+<p>The EAFP coding style requires you to trust the incoming objects to provide the attributes and methods you need, and to manage the possible exceptions, if you know how to do it. Sometimes, however, you need to test if the incoming object matches a complex behaviour. For example, you could be interested in testing if the object <em>acts</em> like a list, but you quickly realize that the amount of methods a <code>list</code> provides is very big and this could lead to odd EAFP code like</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">try</span><span class="p">:</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">append</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">count</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">extend</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
+</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">insert</span>
+</span><span class='line'>    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</span><span class='line'><span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+</span><span class='line'>    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>where the methods of the <code>list</code> type are accessed (not called) just to force the object to raise the <code>AttributeError</code> exception if they are not present. This code, however, is not only ugly but also wrong. If you recall the &#8220;Enter the Composition&#8221; section of the <a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance">third post</a> of this series, you know that in Python you can always customize the <code>__getattr__()</code> method, which is called whenever the requested attribute is not found in the object. So I could write a class that passes the test but actually does not act like a list</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">FakeList</span><span class="p">:</span>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">fakemethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'>    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;append&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;extend&#39;</span><span class="p">,</span> <span class="s">&#39;index&#39;</span><span class="p">,</span> <span class="s">&#39;insert&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+</span><span class='line'>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fakemethod</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This is obviously just an example, and no one will ever write such a class, but this demonstrates that just accessing methods does not guarantee that a class <em>acts</em> like the one we are expecting.</p>
+
+<p>There are many examples that could be done leveraging the highly dynamic nature of Python and its rich object model. I would summarize them by saying that sometimes you&#8217;d better to check the type of the incoming object.</p>
+
+<p>In Python you can obtain the type of an object using the <code>type()</code> built-in function, but to check it you&#8217;d better use <code>isinstance()</code>, which returns a boolean value. Let us see an example before moving on</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">([],</span> <span class="nb">list</span><span class="p">)</span>
+</span><span class='line'><span class="bp">True</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+</span><span class='line'><span class="bp">True</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Door</span><span class="p">:</span>
+</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Door</span><span class="p">()</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
+</span><span class='line'><span class="bp">True</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">EnhancedDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
+</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">ed</span> <span class="o">=</span> <span class="n">EnhancedDoor</span><span class="p">()</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ed</span><span class="p">,</span> <span class="n">EnhancedDoor</span><span class="p">)</span>
+</span><span class='line'><span class="bp">True</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ed</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
+</span><span class='line'><span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see the function can also walk the class hierarchy, so the check is not so trivial like the one you would obtain by directly using <code>type()</code>.</p>
+
+<p>The <code>isinstance()</code> function, however, does not completely solve the problem. If we write a class that actually <em>acts</em> like a <code>list</code> but does not inherit from it, <code>isinstance()</code> does not recognize the fact that the two may be considered the same thing. The following code returns <code>False</code> regardless the content of the <code>MyList</code> class</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyList</span><span class="p">:</span>
+</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
+</span><span class='line'><span class="o">...</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">ml</span> <span class="o">=</span> <span class="n">MyList</span><span class="p">()</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+</span><span class='line'><span class="bp">False</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>since <code>isinstance()</code> does not check the content of the class or its behaviour, it just consider the class and its ancestors.</p>
+
+<p>The problem, thus, may be summed up with the following question: what is the best way to test that an object exposes a given interface? Here, the word <em>interface</em> is used for its natural meaning, without any reference to other programming solutions, which however address the same problem.</p>
+
+<p>A good way to address the problem could be to write inside an attribute of the object the list of interfaces it promises to implement, and to agree that any time we want to test the behaviour of an object we simply have to check the content of this attribute. This is exactly the path followed by Python, and it is very important to understand that the whole system is just about a promised behaviour.</p>
+
+<p>The solution proposed through PEP 3119 is, in my opinion, very simple and elegant, and it perfectly fits the nature of Python, where things are usually agreed rather than being enforced. Not only, the solution follows the spirit of polymorphism, where information is provided by the object itself and not extracted by the calling code.</p>
+
+<p>In the next sections I am going to try and describe this solution in its main building blocks. The matter is complex so my explanation will lack some details: please refer to the forementioned PEP 3119 for a complete description.</p>
+
+<h4>Who Framed the Metaclasses</h4>
+
+<p>As already described, Python provides two built-ins to inspect objects and classes, which are <code>isinstance()</code> and <code>issubclass()</code> and it would be desirable that a solution to the inspection problem allows the programmer to go on with using those two functions.</p>
+
+<p>This means that we need to find a way to inject the &#8220;behaviour promise&#8221; into both classes and instances. This is the reason why metaclasses come in play. Recall what we said about them in the fifth issue of this series: metaclasses are the classes used to build classes, which means that they are the preferred way to change the structure of a class, and, in consequence, of its instances.</p>
+
+<p>Another way to do the same job would be to leverage the inheritance mechanism, injecting the behaviour through a dedicated parent class. This solution has many downsides, which I&#8217;m am not going to detail. It is enough to say that affecting the class hierarchy may lead to complex situations or subtle bugs. Metaclasses may provide here a different entry point for the introduction of a &#8220;virtual base class&#8221; (as PEP 3119 specifies, this is not the same concept as in C++).</p>
+
+<h4>Overriding Places</h4>
+
+<p>As said, <code>isinstance()</code> and <code>issubclass()</code> are built-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contain a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
+
+<p>A note about naming. Methods must accept the object they belong to as the first argument, so the two special methods shall have the form</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">__instancecheck__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">inst</span><span class="p">):</span>
+</span><span class='line'>   <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">def</span> <span class="nf">__subclasscheck__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">sub</span><span class="p">):</span>
+</span><span class='line'>   <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>where <code>cls</code> is the class where they are injected, that is the one representing the promised behaviour. The two built-ins, however, have a reversed argument order, where the behaviour comes after the tested object: when you write <code>isinstance([], list)</code> you want to check if the <code>[]</code> instance has the <code>list</code> behaviour. This is the reason behind the name choice: just calling the methods <code>__isinstance__()</code> and <code>__issubclass__()</code> and passing arguments in a reversed order would have been confusing.</p>
+
+<h4>This is ABC</h4>
+
+<p>The proposed solution is thus called Abstract Base Classes, as it provides a way to attach to a concrete class a virtual class with the only purpose of signaling a promised behaviour to anyone inspecting it with <code>isinstance()</code> or <code>issubclass()</code>.</p>
+
+<p>To help programmers implement Abstract Base Classes, the standard library has been given an <code>abc</code> module, thet contains the <code>ABCMeta</code> class (and other facilities). This class is the one that implements <code>__instancecheck__()</code> and <code>__subclasscheck__()</code> and shall be used as a metaclass to augment a standard class. This latter will then be able to register other classes as implementation of its behaviour.</p>
+
+<p>Sounds complex? An example may clarify the whole matter. The one from the official documentation is rather simple:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">class</span> <span class="nc">MyABC</span><span class="p">(</span><span class="n">metaclass</span><span class="o">=</span><span class="n">ABCMeta</span><span class="p">):</span>
+</span><span class='line'>    <span class="k">pass</span>
+</span><span class='line'>
+</span><span class='line'><span class="n">MyABC</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
+</span><span class='line'>
+</span><span class='line'><span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">MyABC</span><span class="p">)</span>
+</span><span class='line'><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">((),</span> <span class="n">MyABC</span><span class="p">)</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__isinstancecheck__()</code> and <code>__subclasscheck__()</code> methods inside <code>MyABC</code> so that, when issuing <code>isinstance()</code>, what Python actually ececutes is</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">MyABC</span><span class="p">)</span>
+</span><span class='line'><span class="bp">False</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__instancecheck__</span><span class="p">(</span><span class="n">MyABC</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</span><span class='line'><span class="bp">False</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">((),</span> <span class="n">MyABC</span><span class="p">)</span>
+</span><span class='line'><span class="bp">True</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__instancecheck__</span><span class="p">(</span><span class="n">MyABC</span><span class="p">,</span> <span class="p">())</span>
+</span><span class='line'><span class="bp">True</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>After the definition of <code>MyABC</code> we need a way to signal that a given class is an instance of the Abstract Base Class and this happens through the <code>register()</code> method, provided by the <code>ABCMeta</code> metaclass. Calling <code>MyABC.register(tuple)</code> we record inside <code>MyABC</code> the fact that the <code>tuple</code> class shall be identified as a subclass of <code>MyABC</code> itself. This is analogous to saying that <code>tuple</code> inherits from <code>MyABC</code> but not quite the same. As already said registering a class in an Abstract Base Class with <code>register()</code> does not affect the class hierarchy. Indeed, the whole <code>tuple</code> class is unchanged.</p>
+
+<p>The current implementation of ABCs stores the registered types inside the <code>_abc_registry</code> attribute. Actually it stores there weak references to the registered types (this part is outside the scope of this article, so I&#8217;m not detailing it)</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">_abc_registry</span><span class="o">.</span><span class="n">data</span>
+</span><span class='line'><span class="p">{</span><span class="o">&lt;</span><span class="n">weakref</span> <span class="n">at</span> <span class="mh">0xb682966c</span><span class="p">;</span> <span class="n">to</span> <span class="s">&#39;type&#39;</span> <span class="n">at</span> <span class="mh">0x83dcca0</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">)</span><span class="o">&gt;</span><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<h2>Movie Trivia</h2>
+
+<p>Section titles come from the following movies: <em>The Breakfast Club (1985)</em>, <em>E.T. the Extra-Terrestrial (1982)</em>, <em>Who Framed Roger Rabbit (1988)</em>, <em>Trading Places (1983)</em>, <em>This is Spinal Tap (1984)</em>.</p>
+
+<h2>Sources</h2>
+
+<p>You will find a lot of documentation in <a href="http://www.reddit.com/r/Python/comments/226ahl/some_links_about_python_oop/">this Reddit post</a>. Most of the information contained in this series come from those sources.</p>
+
+<h2>Feedback</h2>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Python 3 OOP Part 5 - Metaclasses]]></title>
@@ -236,6 +480,10 @@
 <h2>Feedback</h2>
 
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+
+<h2>Next post</h2>
+
+<p><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes">Python 3 OOP Part 6 - Abstract Base Classes</a></p>
 ]]></content>
   </entry>
   
@@ -1947,7 +2195,7 @@
 </span><span class='line'>        <span class="k">pass</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;append&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;extend&#39;</span><span class="p">,</span> <span class="s">&#39;index`, &#39;</span><span class="n">insert</span><span class="s">&#39;, ...]:</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;append&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;extend&#39;</span><span class="p">,</span> <span class="s">&#39;index&#39;</span><span class="p">,</span> <span class="s">&#39;insert&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 </span><span class='line'>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fakemethod</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -2036,7 +2284,7 @@
 
 <h4>Overriding Places</h4>
 
-<p>As said, <code>isinstance()</code> and <code>issubclass()</code> are buil-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contains a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
+<p>As said, <code>isinstance()</code> and <code>issubclass()</code> are built-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contain a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
 
 <p>A note about naming. Methods must accept the object they belong to as the first argument, so the two special methods shall have the form</p>
 
@@ -2084,12 +2332,12 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__isinstancecheck__()</code> and <code>__subclasscheck__()</code> methods inside <code>MyABC</code> so that you can use them like</p>
+<p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__instancecheck__()</code> and <code>__subclasscheck__()</code> behaviours inside <code>MyABC</code>. Please note however that those methods are not actually put into the object so that you can use them like</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">__isinstancecheck__</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">__metaclass__</span><span class="o">.</span><span class="n">__instancecheck__</span><span class="p">(</span><span class="n">MyABC</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -2323,7 +2571,7 @@
 
 <h2>Movie Trivia</h2>
 
-<p>Section titles of this issue come from the following movies: <em>The Breakfast Club</em>, <em>E.T. the Extra-Terrestrial</em>, <em>Who Framed Roger Rabbit</em>, <em>Trading Places</em>, <em>This is Spial Tap</em>, <em>Little Shop of Horrors</em>, <em>The Naked Gun</em>, <em>A Fish Called Wanda</em>.</p>
+<p>Section titles of this issue come from the following movies: <em>The Breakfast Club</em>, <em>E.T. the Extra-Terrestrial</em>, <em>Who Framed Roger Rabbit</em>, <em>Trading Places</em>, <em>This is Spinal Tap</em>, <em>Little Shop of Horrors</em>, <em>The Naked Gun</em>, <em>A Fish Called Wanda</em>.</p>
 
 <h2>Sources</h2>
 
@@ -8976,308 +9224,6 @@ Feel free to join me if you are interested; I&#8217;m not a Git guru, neither a 
 <ul>
 <li><a href="http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
 <li><a href="http://lgiordani.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
-</ul>
-
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Python Generators - From Iterators to Cooperative Multitasking - 2]]></title>
-    <link href="http://lgiordani.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/"/>
-    <updated>2013-03-26T14:05:00+01:00</updated>
-    <id>http://lgiordani.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2</id>
-    <content type="html"><![CDATA[<h2>Introduction</h2>
-
-<p>After the recap of the iteration process in Python, in this post we will introduce the concept of generator, which aims to solve some problems that arise from the use of iterators.</p>
-
-<!--more-->
-
-
-<h2>Generators</h2>
-
-<p>The for construct is generally simple to use and such a loop can be found in almost all programming languages. Its implementation, however, can be problematic in some cases. Let’s look at an example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="k">while</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">num</span><span class="p">:</span>
-</span><span class='line'>      <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">s</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
-</span><span class='line'>  <span class="k">print</span> <span class="n">i</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>At  first sight <code>sequence()</code> seems to be a good function without big defects (for the sake of simplicity error checking has been intentionally omitted - it does not work with negative numbers for example - and the code is intentionally non-pythonic).</p>
-
-<p>The problem concealed in such code is that the function does not execute return until the whole list has been built and until the function returns the loop does not start. Thus when the loop begins the function already processed the whole data set.</p>
-
-<p>While you are building normal sequences of numbers this can be considered irrelevant, even for rather long ones. The problem gets worse when the data set becomes very big or when the creation of an element is very demanding process; in the first case the function might fill the memory, whereas in the second one the whole execution can last a very long time. Both conditions happen even before the loop produces the first element.</p>
-
-<p>The solution can be found in the generation concept: generating, in this context, means producing only one element of the sequence at each function call. This way each call will take the minimum amount of memory and CPU time needed to create the element and the loop will start immediately.</p>
-
-<p>To allow the implementation of such a solution without using global variables generators have been introduced in Python. A <strong>generator</strong> is a special type of iterator, its peculiarity being the way it is built. Aside from this, generators behave the same exact way as iterators.</p>
-
-<p>A generator is built from every function that contains the <strong>yield</strong> statement; <code>yield</code>’s behaviour follows that of the <code>return</code> statement, i.e. it terminates the function returning a value to the caller. But whereas return permanently terminates the function, giving up local variables to the garbage collector, <code>yield</code> freezes the function’s code, allowing a later call to resume execution immediately after <code>yield</code>, with all local variables initialized as they were during the previous execution.</p>
-
-<p>Pay attention to the fact that the first call of a function that contains an <code>yield</code> statement returns a generator immediately, without executing a single line of the function’s code. Since a generator is an iterator it automatically exposes a next() method that, when called, will actually continue the execution of the frozen function.</p>
-
-<p>A simple example of generator is the following:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">dec</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">x</span> <span class="o">=</span> <span class="n">num</span>
-</span><span class='line'>  <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
-</span><span class='line'>      <span class="n">x</span> <span class="o">-=</span> <span class="mi">1</span>
-</span><span class='line'>      <span class="k">yield</span> <span class="n">x</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&gt;&gt;&gt; <span class="nv">g</span> <span class="o">=</span> dec<span class="o">(</span>8<span class="o">)</span>
-</span><span class='line'>&gt;&gt;&gt; g
-</span><span class='line'>&lt;generator object dec at 0xb6abbf2c&gt;
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>When executed, the <code>dec()</code> function returns a <strong>generator object</strong> and no lines of code have been executed (i.e. <code>x</code> has not yet been initialized).</p>
-
-<p>As soon as <code>next()</code> is called for the first time <code>x</code> will be initialized with the value passed to the function (8 in the example above) and the infinite loop will start. Inside it the local variable <code>x</code> will be decremented and returned to the caller by <code>yield</code>. This latter will also freeze again the code, holding the internal state, in this case the value of the variable <code>x</code>.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
-</span><span class='line'>7
-</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
-</span><span class='line'>6
-</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
-</span><span class='line'>5
-</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
-</span><span class='line'>4
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>As you can see the generator <code>g</code> remembers its previous state and acts accordingly.</p>
-
-<p>Since generators are iterators they are allowed to raise the <code>StopIteration</code> exception to signal their exhaustion. In the previous example the <code>dec()</code> function never raises it, thus providing an infinite generator (or infinite iterator).</p>
-
-<p>Another caveat: as for return a function is not limited to one statement, but can contain more than one; obviously the peculiarity of yield makes this scenario rather complex, opening at the same time remarkable possibilities such as that of easily build state machines.</p>
-
-<p>What happens if we call the function again, maybe with a different value of the parameter? We simply obtain a new generator object that is completely independent from the first one, although it behaves the same way.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&gt;&gt;&gt; <span class="nv">f</span> <span class="o">=</span> dec<span class="o">(</span>12<span class="o">)</span>
-</span><span class='line'>&gt;&gt;&gt; f
-</span><span class='line'>&lt;generator object dec at 0xb72e1cac&gt;
-</span><span class='line'>&gt;&gt;&gt; f.next<span class="o">()</span>
-</span><span class='line'>11
-</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
-</span><span class='line'>3
-</span><span class='line'>&gt;&gt;&gt; f.next<span class="o">()</span>
-</span><span class='line'>10
-</span><span class='line'>&gt;&gt;&gt; g.next<span class="o">()</span>
-</span><span class='line'>2
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Let’s recap the whole concept. A function containing the <code>yield</code> statement is called generator function and when executed returns a generator object; this is nothing more than a simple iterator, which automatically implements the freeze and resume of the function’s code.</p>
-
-<p>Pay attention to the fact that a generator is an iterator (it exposes <code>next()</code> and <code>__iter__()</code> methods and may raise <code>StopIteration</code>) but the opposite is not always true. A generator is an iterator built by a generator function, i.e. through the use of the <code>yield</code> statement; as explained there are other ways to build iterators.</p>
-
-<p>Back to the <code>sequence()</code> function showed above we can now write it as a generator function and use it to build arbitrarily long sequences and, at the limit, infinite.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">sequence</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
-</span><span class='line'>  <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
-</span><span class='line'>      <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">num</span><span class="p">:</span>
-</span><span class='line'>          <span class="k">raise</span> <span class="ne">StopIteration</span>
-</span><span class='line'>      <span class="k">yield</span> <span class="n">i</span>
-</span><span class='line'>      <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>&gt;&gt;&gt; <span class="nv">s</span> <span class="o">=</span> sequence<span class="o">(</span>3<span class="o">)</span>
-</span><span class='line'>&gt;&gt;&gt; s.next<span class="o">()</span>
-</span><span class='line'>0
-</span><span class='line'>&gt;&gt;&gt; s.next<span class="o">()</span>
-</span><span class='line'>1
-</span><span class='line'>&gt;&gt;&gt; s.next<span class="o">()</span>
-</span><span class='line'>2
-</span><span class='line'>&gt;&gt;&gt; s.next<span class="o">()</span>
-</span><span class='line'>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
-</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 5, in sequence
-</span><span class='line'>StopIteration
-</span><span class='line'>&gt;&gt;&gt;
-</span><span class='line'>&gt;&gt;&gt; <span class="k">for </span>i in sequence<span class="o">(</span>3<span class="o">)</span>:
-</span><span class='line'>...  print i
-</span><span class='line'>...
-</span><span class='line'>0
-</span><span class='line'>1
-</span><span class='line'>2
-</span></code></pre></td></tr></table></div></figure>
-
-
-<h2>Generators and iterators</h2>
-
-<p>A question might arise: if generators are iterators why should we use the <code>yield</code>-based method to create them? After all, generator functions are simple to write but not so simple to manage, due to the radically different behaviour from that of standard functions. Wouldn’t it be enough to create an iterable object that at each call of the <code>next()</code> method creates the correct element of the sequence?</p>
-
-<p>The answer is certainly affirmative: everything you can do with generators can be done with standard iterators. There are two caveats, however.</p>
-
-<p>First consideration is about performances: instancing an object and calling its methods is slower than calling a function. Every time you hear talking about performance problems always think about Web services, administration or scientific tools and in general about big amounts of data. Obviously a script that manages a dozen or so files is not noticeably affected by such problems.</p>
-
-<p>Second consideration is about code complexity, since writing a function is simpler than writing an object. Take into account, however, that an iterable object can be enriched by custom methods that make it more flexible than a generator; for instance a <code>reset()</code> method that can restore the object to its initial state.</p>
-
-<h2>Generator expressions</h2>
-
-<p>The two observations above identify the problems that generators can solve in a simpler way than iterators do; one of those problems concerns the processing of long arrays of data.</p>
-
-<p>Every Python programmer uses and hopefully appreciates the elegance of list comprehension. The following code instances with a single line 100 objects of the <code>MyObject</code> class and puts them in a list</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">object_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">MyObject</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>where the classic code would be</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">object_list</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">object_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">MyObject</span><span class="p">())</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Surely it is not a lot of code, but it is less easy to understand immediately and less elegant; less pythonic, in a word. List comprehension, however, being nothing more than an alternative syntax to express the above for loop, suffers from the same problems, particularly from performance issues we talked about earlier. Bitter enemies of list comprehensions are long lists and objects which creation is expensive.</p>
-
-<p>Could we take advantage of generators in this case? Yes, with <strong>generator expressions</strong>. The syntax of such expressions is identical to that of list comprehension, except for the use of round brackets instead of square ones. While list comprehension returns a list, however, a generator expression return a generator, as the name implies. The previous code could thus be written this way</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">object_generator</span> <span class="o">=</span> <span class="p">(</span><span class="n">MyObject</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">))</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>where <code>object_generator</code> is a generator like one of those returned by a generator function. This latter form of the code would be</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">object_generator_function</span><span class="p">():</span>
-</span><span class='line'>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
-</span><span class='line'>      <span class="k">yield</span> <span class="n">MyObject</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">object_generator</span> <span class="o">=</span> <span class="n">object_generator_function</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>Which is, as happens for list comprehension and for loops, less elegant than its equivalent shortcut syntax. Obviously, returning a generator has all the advantages we described above: after the generator expression has been executed no element has yet been created. That will happen when the generator is consumed by a for loop or a similar construct.</p>
-
-<p>As for list comprehension, generator expressions can encompass a condition in the form</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">generator</span> <span class="o">=</span> <span class="p">(</span><span class="n">expression</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span> <span class="k">if</span> <span class="n">condition</span><span class="p">)</span><span class="o">.</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>and can also be directly used as arguments for single-argument functions, using function call brackets to mark the expression.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">afunction</span><span class="p">(</span><span class="n">expression</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>There is however no real performance improvement using such a syntax, since the generator is exhausted before passing it to the function, but the syntax is very elegant and compact.</p>
-
-<p>A typical example of this use is that of the so-called <strong>dictionary comprehension</strong>; from two lists of the same length, one of keys and one of values, we can obtain a dictionary with</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">z</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">))</span>
-</span></code></pre></td></tr></table></div></figure>
-
-
-<p>since <code>dict()</code> accepts an iterable of <code>(key, value)</code> tuples, which is what the generator with <code>zip()</code> returns.</p>
-
-<h2>Conclusions</h2>
-
-<p>Generators are a very powerful tool, not only because they simplify the creation of iterators, but also for the advantage of delaying the creation of the objects in a list and for the capability of generator functions to interrupt and resume the execution. As we will see in the third post this last feature is the foundation stone of an easy approach to cooperative multitasking.</p>
-
-<h2>Past articles</h2>
-
-<ul>
-<li><a href="http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking">Python Generators - From Iterators to Cooperative Multitasking</a></li>
-</ul>
-
-
-<h2>Next articles</h2>
-
-<ul>
-<li><a href="http://lgiordani.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
 </ul>
 
 ]]></content>

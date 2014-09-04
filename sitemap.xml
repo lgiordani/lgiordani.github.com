@@ -94,7 +94,7 @@
     </url>
     <url>
         <loc>http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/</loc>
-        <lastmod>2014-09-01T15:48:13+02:00</lastmod>
+        <lastmod>2014-09-04T10:06:42+02:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/</loc>
@@ -116,7 +116,11 @@
     </url>
     <url>
         <loc>http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/</loc>
-        <lastmod>2014-09-03T15:31:53+02:00</lastmod>
+        <lastmod>2014-09-04T10:06:42+02:00</lastmod>
+    </url>
+    <url>
+        <loc>http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/</loc>
+        <lastmod>2014-09-04T10:06:42+02:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.com/about/</loc>
@@ -124,11 +128,11 @@
     </url>
     <url>
         <loc>http://lgiordani.com/blog/archives/</loc>
-        <lastmod>2014-09-03T15:31:53+02:00</lastmod>
+        <lastmod>2014-09-04T10:06:42+02:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.com/</loc>
-        <lastmod>2014-09-03T15:31:53+02:00</lastmod>
+        <lastmod>2014-09-04T10:06:42+02:00</lastmod>
     </url>
     <url>
         <loc>http://lgiordani.com/search.html</loc>

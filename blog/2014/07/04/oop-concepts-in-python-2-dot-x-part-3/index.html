@@ -193,7 +193,7 @@
 </span><span class='line'>        <span class="k">pass</span>
 </span><span class='line'>
 </span><span class='line'>    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;append&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;extend&#39;</span><span class="p">,</span> <span class="s">&#39;index`, &#39;</span><span class="n">insert</span><span class="s">&#39;, ...]:</span>
+</span><span class='line'>        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;append&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;extend&#39;</span><span class="p">,</span> <span class="s">&#39;index&#39;</span><span class="p">,</span> <span class="s">&#39;insert&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
 </span><span class='line'>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fakemethod</span>
 </span></code></pre></td></tr></table></div></figure>
 
@@ -282,7 +282,7 @@
 
 <h4>Overriding Places</h4>
 
-<p>As said, <code>isinstance()</code> and <code>issubclass()</code> are buil-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contains a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
+<p>As said, <code>isinstance()</code> and <code>issubclass()</code> are built-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contain a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
 
 <p>A note about naming. Methods must accept the object they belong to as the first argument, so the two special methods shall have the form</p>
 
@@ -330,12 +330,12 @@
 </span></code></pre></td></tr></table></div></figure>
 
 
-<p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__isinstancecheck__()</code> and <code>__subclasscheck__()</code> methods inside <code>MyABC</code> so that you can use them like</p>
+<p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__instancecheck__()</code> and <code>__subclasscheck__()</code> behaviours inside <code>MyABC</code>. Please note however that those methods are not actually put into the object so that you can use them like</p>
 
 <figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">__isinstancecheck__</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">__metaclass__</span><span class="o">.</span><span class="n">__instancecheck__</span><span class="p">(</span><span class="n">MyABC</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
 </span></code></pre></td></tr></table></div></figure>
 
 
@@ -569,7 +569,7 @@
 
 <h2>Movie Trivia</h2>
 
-<p>Section titles of this issue come from the following movies: <em>The Breakfast Club</em>, <em>E.T. the Extra-Terrestrial</em>, <em>Who Framed Roger Rabbit</em>, <em>Trading Places</em>, <em>This is Spial Tap</em>, <em>Little Shop of Horrors</em>, <em>The Naked Gun</em>, <em>A Fish Called Wanda</em>.</p>
+<p>Section titles of this issue come from the following movies: <em>The Breakfast Club</em>, <em>E.T. the Extra-Terrestrial</em>, <em>Who Framed Roger Rabbit</em>, <em>Trading Places</em>, <em>This is Spinal Tap</em>, <em>Little Shop of Horrors</em>, <em>The Naked Gun</em>, <em>A Fish Called Wanda</em>.</p>
 
 <h2>Sources</h2>
 

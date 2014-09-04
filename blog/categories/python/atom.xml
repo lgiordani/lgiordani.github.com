@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | The digital cat]]></title>
   <link href="http://lgiordani.com/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-09-03T15:33:05+02:00</updated>
+  <updated>2014-09-04T10:07:53+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,200 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Python 3 OOP Part 6 - Abstract Base Classes]]></title>
+    <link href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/"/>
+    <updated>2014-09-04T10:00:00+02:00</updated>
+    <id>http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes</id>
+    <content type="html"><![CDATA[<!--more-->
+
+
+<h2>Previous post</h2>
+
+<p><a href="/blog/2014/09/01/python-3-oop-part-5-metaclasses">Python 3 OOP Part 5 - Metaclasses</a></p>
+
+<h2>The Inspection Club</h2>
+
+<p>As you know, Python leverages polymorphism at its maximum by dealing only with generic references to objects. This makes OOP not an addition to the language but part of its structure from the ground up. Moreover, Python pushes the EAFP appoach, which tries to avoid direct inspection of objects as much as possible.</p>
+
+<p>It is however very interesting to read what Guido van Rossum says in <a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a>: <em>Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object's methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [...] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python.</em></p>
+
+<p>The author of Python recognizes that forcing the use of a pure polymorphic approach leads sometimes to solutions that are too complex or even incorrect. In this section I want to show some of the problems that can arise from a pure polymorphic approach and introduce Abstract Base Classes, which aim to solve them. I strongly suggest to read <a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a> (as for any other PEP) since it contains a deeper and better explanation of the whole matter. Indeed I think that this PEP is so well written that any further explanation is hardly needed. I am however used to write explanations to check how much I understood about the topic, so I am going to try it this time too.</p>
+
+<h4>E.A.F.P the Extra Test Trial</h4>
+
+<p>The EAFP coding style requires you to trust the incoming objects to provide the attributes and methods you need, and to manage the possible exceptions, if you know how to do it. Sometimes, however, you need to test if the incoming object matches a complex behaviour. For example, you could be interested in testing if the object <em>acts</em> like a list, but you quickly realize that the amount of methods a <code>list</code> provides is very big and this could lead to odd EAFP code like</p>
+
+<p>``` python
+try:</p>
+
+<pre><code>obj.append
+obj.count
+obj.extend
+obj.index
+obj.insert
+[...]
+</code></pre>
+
+<p>except AttributeError:</p>
+
+<pre><code>[...]
+</code></pre>
+
+<p>```</p>
+
+<p>where the methods of the <code>list</code> type are accessed (not called) just to force the object to raise the <code>AttributeError</code> exception if they are not present. This code, however, is not only ugly but also wrong. If you recall the "Enter the Composition" section of the <a href="/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance">third post</a> of this series, you know that in Python you can always customize the <code>__getattr__()</code> method, which is called whenever the requested attribute is not found in the object. So I could write a class that passes the test but actually does not act like a list</p>
+
+<p>``` python
+class FakeList:</p>
+
+<pre><code>def fakemethod(self):
+    pass
+
+def __getattr__(self, name):
+    if name in ['append', 'count', 'extend', 'index', 'insert', ...]:
+        return self.fakemethod
+</code></pre>
+
+<p>```</p>
+
+<p>This is obviously just an example, and no one will ever write such a class, but this demonstrates that just accessing methods does not guarantee that a class <em>acts</em> like the one we are expecting.</p>
+
+<p>There are many examples that could be done leveraging the highly dynamic nature of Python and its rich object model. I would summarize them by saying that sometimes you'd better to check the type of the incoming object.</p>
+
+<p>In Python you can obtain the type of an object using the <code>type()</code> built-in function, but to check it you'd better use <code>isinstance()</code>, which returns a boolean value. Let us see an example before moving on</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>isinstance([], list)
+True
+isinstance(1, int)
+True
+class Door:
+...  pass
+...
+d = Door()
+isinstance(d, Door)
+True
+class EnhancedDoor(Door):
+...  pass
+...
+ed = EnhancedDoor()
+isinstance(ed, EnhancedDoor)
+True
+isinstance(ed, Door)
+True
+```</p></blockquote></blockquote></blockquote>
+
+<p>As you can see the function can also walk the class hierarchy, so the check is not so trivial like the one you would obtain by directly using <code>type()</code>.</p>
+
+<p>The <code>isinstance()</code> function, however, does not completely solve the problem. If we write a class that actually <em>acts</em> like a <code>list</code> but does not inherit from it, <code>isinstance()</code> does not recognize the fact that the two may be considered the same thing. The following code returns <code>False</code> regardless the content of the <code>MyList</code> class</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>class MyList:
+...  pass
+...
+ml = MyList()
+isinstance(ml, list)
+False
+```</p></blockquote></blockquote></blockquote>
+
+<p>since <code>isinstance()</code> does not check the content of the class or its behaviour, it just consider the class and its ancestors.</p>
+
+<p>The problem, thus, may be summed up with the following question: what is the best way to test that an object exposes a given interface? Here, the word <em>interface</em> is used for its natural meaning, without any reference to other programming solutions, which however address the same problem.</p>
+
+<p>A good way to address the problem could be to write inside an attribute of the object the list of interfaces it promises to implement, and to agree that any time we want to test the behaviour of an object we simply have to check the content of this attribute. This is exactly the path followed by Python, and it is very important to understand that the whole system is just about a promised behaviour.</p>
+
+<p>The solution proposed through PEP 3119 is, in my opinion, very simple and elegant, and it perfectly fits the nature of Python, where things are usually agreed rather than being enforced. Not only, the solution follows the spirit of polymorphism, where information is provided by the object itself and not extracted by the calling code.</p>
+
+<p>In the next sections I am going to try and describe this solution in its main building blocks. The matter is complex so my explanation will lack some details: please refer to the forementioned PEP 3119 for a complete description.</p>
+
+<h4>Who Framed the Metaclasses</h4>
+
+<p>As already described, Python provides two built-ins to inspect objects and classes, which are <code>isinstance()</code> and <code>issubclass()</code> and it would be desirable that a solution to the inspection problem allows the programmer to go on with using those two functions.</p>
+
+<p>This means that we need to find a way to inject the "behaviour promise" into both classes and instances. This is the reason why metaclasses come in play. Recall what we said about them in the fifth issue of this series: metaclasses are the classes used to build classes, which means that they are the preferred way to change the structure of a class, and, in consequence, of its instances.</p>
+
+<p>Another way to do the same job would be to leverage the inheritance mechanism, injecting the behaviour through a dedicated parent class. This solution has many downsides, which I'm am not going to detail. It is enough to say that affecting the class hierarchy may lead to complex situations or subtle bugs. Metaclasses may provide here a different entry point for the introduction of a "virtual base class" (as PEP 3119 specifies, this is not the same concept as in C++).</p>
+
+<h4>Overriding Places</h4>
+
+<p>As said, <code>isinstance()</code> and <code>issubclass()</code> are built-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contain a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
+
+<p>A note about naming. Methods must accept the object they belong to as the first argument, so the two special methods shall have the form</p>
+
+<p>``` python
+def <strong>instancecheck</strong>(cls, inst):
+   [...]</p>
+
+<p>def <strong>subclasscheck</strong>(cls, sub):
+   [...]
+```</p>
+
+<p>where <code>cls</code> is the class where they are injected, that is the one representing the promised behaviour. The two built-ins, however, have a reversed argument order, where the behaviour comes after the tested object: when you write <code>isinstance([], list)</code> you want to check if the <code>[]</code> instance has the <code>list</code> behaviour. This is the reason behind the name choice: just calling the methods <code>__isinstance__()</code> and <code>__issubclass__()</code> and passing arguments in a reversed order would have been confusing.</p>
+
+<h4>This is ABC</h4>
+
+<p>The proposed solution is thus called Abstract Base Classes, as it provides a way to attach to a concrete class a virtual class with the only purpose of signaling a promised behaviour to anyone inspecting it with <code>isinstance()</code> or <code>issubclass()</code>.</p>
+
+<p>To help programmers implement Abstract Base Classes, the standard library has been given an <code>abc</code> module, thet contains the <code>ABCMeta</code> class (and other facilities). This class is the one that implements <code>__instancecheck__()</code> and <code>__subclasscheck__()</code> and shall be used as a metaclass to augment a standard class. This latter will then be able to register other classes as implementation of its behaviour.</p>
+
+<p>Sounds complex? An example may clarify the whole matter. The one from the official documentation is rather simple:</p>
+
+<p>``` python
+from abc import ABCMeta</p>
+
+<p>class MyABC(metaclass=ABCMeta):</p>
+
+<pre><code>pass
+</code></pre>
+
+<p>MyABC.register(tuple)</p>
+
+<p>assert issubclass(tuple, MyABC)
+assert isinstance((), MyABC)
+```</p>
+
+<p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__isinstancecheck__()</code> and <code>__subclasscheck__()</code> methods inside <code>MyABC</code> so that, when issuing <code>isinstance()</code>, what Python actually ececutes is</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>d = {'a': 1}
+isinstance(d, MyABC)
+False
+MyABC.<strong>class</strong>.<strong>instancecheck</strong>(MyABC, d)
+False
+isinstance((), MyABC)
+True
+MyABC.<strong>class</strong>.<strong>instancecheck</strong>(MyABC, ())
+True
+```</p></blockquote></blockquote></blockquote>
+
+<p>After the definition of <code>MyABC</code> we need a way to signal that a given class is an instance of the Abstract Base Class and this happens through the <code>register()</code> method, provided by the <code>ABCMeta</code> metaclass. Calling <code>MyABC.register(tuple)</code> we record inside <code>MyABC</code> the fact that the <code>tuple</code> class shall be identified as a subclass of <code>MyABC</code> itself. This is analogous to saying that <code>tuple</code> inherits from <code>MyABC</code> but not quite the same. As already said registering a class in an Abstract Base Class with <code>register()</code> does not affect the class hierarchy. Indeed, the whole <code>tuple</code> class is unchanged.</p>
+
+<p>The current implementation of ABCs stores the registered types inside the <code>_abc_registry</code> attribute. Actually it stores there weak references to the registered types (this part is outside the scope of this article, so I'm not detailing it)</p>
+
+<p>``` python</p>
+
+<blockquote><blockquote><blockquote><p>MyABC._abc_registry.data
+{<weakref at 0xb682966c; to 'type' at 0x83dcca0 (tuple)>}
+```</p></blockquote></blockquote></blockquote>
+
+<h2>Movie Trivia</h2>
+
+<p>Section titles come from the following movies: <em>The Breakfast Club (1985)</em>, <em>E.T. the Extra-Terrestrial (1982)</em>, <em>Who Framed Roger Rabbit (1988)</em>, <em>Trading Places (1983)</em>, <em>This is Spinal Tap (1984)</em>.</p>
+
+<h2>Sources</h2>
+
+<p>You will find a lot of documentation in <a href="http://www.reddit.com/r/Python/comments/226ahl/some_links_about_python_oop/">this Reddit post</a>. Most of the information contained in this series come from those sources.</p>
+
+<h2>Feedback</h2>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Python 3 OOP Part 5 - Metaclasses]]></title>
@@ -190,6 +384,10 @@ class MyClass():</p>
 <h2>Feedback</h2>
 
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+
+<h2>Next post</h2>
+
+<p><a href="/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes">Python 3 OOP Part 6 - Abstract Base Classes</a></p>
 ]]></content>
   </entry>
   
@@ -1225,255 +1423,6 @@ door2.colour
 <h2>Next post</h2>
 
 <p><a href="/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance">Python 3 OOP Part 3 - Delegation: composition and inheritance</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Python 3 OOP Part 1 - Objects and types]]></title>
-    <link href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/"/>
-    <updated>2014-08-20T13:00:00+02:00</updated>
-    <id>http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<h2>About this series</h2>
-
-<p>Object-oriented programming (OOP) has been the leading programming paradigm for several decades now, starting from the initial attempts back in the 60s to some of the most important languages used nowadays. Being a set of programming concepts and design methodologies, OOP can never be said to be "correctly" or "fully" implemented by a language: indeed there are as many implementations as languages.</p>
-
-<p>So one of the most interesting aspects of OOP languages is to understand how they implement those concepts. In this post I am going to try and start analyzing the OOP implementation of the Python language. Due to the richness of the topic, however, I consider this attempt just like a set of thoughts for Python beginners trying to find their way into this beautiful (and sometimes peculiar) language.</p>
-
-<p>This series of posts wants to introduce the reader to the Python 3 implementation of Object Oriented Programming concepts. The content of this and the following posts will not be completely different from that of the previous "OOP Concepts in Python 2.x" series, however. The reason is that while some of the internal structures change a lot, the global philosophy doesn't, being Python 3 an <em>evolution</em> of Python 2 and not a new language.</p>
-
-<p>So I chose to split the previous series and to adapt the content to Python 3 instead of posting a mere list of corrections. I find this way to be more useful for new readers, that otherwise sould be forced to read the previous series.</p>
-
-<h3>Print</h3>
-
-<p>One of the most noticeable changes introduced by Python 3 is the transformation of the <code>print</code> keyword into the <code>print()</code> function. This is indeed a very small change, compared to other modifications made to the internal structures, but is the most visual-striking one, and will be the source of 80% of your syntax errors when you will start writing Python 3 code.</p>
-
-<p>Remember that print is now a function so write <code>print(a)</code> and not <code>print a</code>.d</p>
-
-<h2>Back to the Object</h2>
-
-<p>Computer science deals with data and with procedures to manipulate that data. Everything, from the earliest Fortran programs to the latest mobile apps is about data and their manipulation.</p>
-
-<p>So if data are the ingredients and procedures are the recipes, it seems (and can be) reasonable to keep them separate.</p>
-
-<p>Let's do some procedural programming in Python</p>
-
-<p>``` python</p>
-
-<h1>This is some data</h1>
-
-<p>data = (13, 63, 5, 378, 58, 40)</p>
-
-<h1>This is a procedure that computes the average</h1>
-
-<p>def avg(d):</p>
-
-<pre><code>return sum(d)/len(d)
-</code></pre>
-
-<p>print(avg(data))
-```</p>
-
-<p>As you can see the code is quite good and general: the procedure (function) operates on a sequence of data, and it returns the average of the sequence items. So far, so good: computing the average of some numbers leaves the numbers untouched and creates new data.</p>
-
-<p>The observation of the everyday world, however, shows that <em>complex data mutate</em>: an electrical device is on or off, a door is open or closed, the content of a bookshelf in your room changes as you buy new books.</p>
-
-<p>You can still manage it keeping data and procedures separate, for example</p>
-
-<p>``` python</p>
-
-<h1>These are two numbered doors, initially closed</h1>
-
-<p>door1 = [1, 'closed']
-door2 = [2, 'closed']</p>
-
-<h1>This procedure opens a door</h1>
-
-<p>def open_door(door):</p>
-
-<pre><code>door[1] = 'open'
-</code></pre>
-
-<p>open_door(door1)
-print(door1)
-```</p>
-
-<p>I described a door as a structure containing a number and the status of the door (as you would do in languages like LISP, for example). The procedure knows how this structure is made and may alter it.</p>
-
-<p>This also works like a charm. Some problems arise, however, when we start building specialized types of data. What happens, for example, when I introduce a "lockable door" data type, which can be opened only when it is not locked? Let's see</p>
-
-<p>``` python</p>
-
-<h1>These are two standard doors, initially closed</h1>
-
-<p>door1 = [1, 'closed']
-door2 = [2, 'closed']</p>
-
-<h1>This is a lockable door, initially closed and unlocked</h1>
-
-<p>ldoor1 = [1, 'closed', 'unlocked']</p>
-
-<h1>This procedure opens a standard door</h1>
-
-<p>def open_door(door):</p>
-
-<pre><code>door[1] = 'open'
-</code></pre>
-
-<h1>This procedure opens a lockable door</h1>
-
-<p>def open_ldoor(door):</p>
-
-<pre><code>if door[2] == 'unlocked':
-    door[1] = 'open'
-</code></pre>
-
-<p>open_door(door1)
-print(door1)</p>
-
-<p>open_ldoor(ldoor1)
-print(ldoor1)
-```</p>
-
-<p>Everything still works, no surprises in this code. However, as you can see, I had to find a different name for the procedure that opens a locked door since its implementation differs from the procedure that opens a standard door. But, wait... I'm still opening a door, the action is the same, and it just changes the status of the door itself. So why shall I remember that a locked door shall be opened with <code>open_ldoor()</code> instead of <code>open_door()</code> if the verb is the same?</p>
-
-<p>Chances are that this separation between data and procedures doesn't perfectly fit some situations. The key problem is that the "open" action is not actually <em>using</em> the door; rather it is <em>changing its state</em>. So, just like the volume control buttons of your phone, which are <em>on</em> your phone, the "open" procedure should stick to the "door" data.</p>
-
-<p>This is exactly what leads to the concept of <em>object</em>: an object, in the OOP context, is a structure holding data <em>and</em> procedures operating on them.</p>
-
-<h2>What About Type?</h2>
-
-<p>When you talk about data you immediately need to introduce the concept of <em>type</em>. This concept may have two meanings that are worth being mentioned in computer science: the <em>behavioural</em> and the <em>structural</em> one.</p>
-
-<p>The behavioural meaning represents the fact that you know what something is by describing how it acts. This is the foundation of the so-called "duck typing" (here "typing" means "to give a type" and not "to type on a keyboard"): if it <del>types</del> acts like a duck, it <em>is</em> a duck.</p>
-
-<p>The structural meaning identifies the type of something by looking at its internal structure. So two things that act in the same way but are internally different are of different type.</p>
-
-<p>Both points of view can be valid, and different languages may implement and emphasize one meaning of type or the other, and even both.</p>
-
-<h2>Class Games</h2>
-
-<p>Objects in Python may be built describing their structure through a <em>class</em>. A class is the programming representation of a generic object, such as "a book", "a car", "a door": when I talk about "a door" everyone can understand what I'm saying, without the need of referring to a specific door in the room.</p>
-
-<p>In Python, the type of an object is represented by the class used to build the object: that is, in Python the word <em>type</em> has the same meaning of the word <em>class</em>.</p>
-
-<p>For example, one of the built-in classes of Python is <code>int</code>, which represents an integer number</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>a = 6
-print(a)
-6
-print(type(a))
-<class 'int'>
-print(a.<strong>class</strong>)
-<class 'int'>
-```</p></blockquote></blockquote></blockquote>
-
-<p>As you can see, the built-in function <code>type()</code> returns the content of the <em>magic attribute</em> <code>__class__</code> (magic here means that its value is managed by Python itself offstage). The type of the variable <code>a</code>, or its class, is <code>int</code>. (This is a very inaccurate description of this rather complex topic, so remember that at the moment we are just scratching the surface).</p>
-
-<p>Once you have a class you can <em>instantiate</em> it to get a concrete object (an <em>instance</em>) of that type, i.e. an object built according to the structure of that class. The Python syntax to instantiate a class is the same of a function call</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>b = int()
-type(b)
-<class 'int'>
-```</p></blockquote></blockquote></blockquote>
-
-<p>When you create an instance, you can pass some values, according to the class definition, to <em>initialize</em> it.</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>b = int()
-print(b)
-0
-c = int(7)
-print(c)
-7
-```</p></blockquote></blockquote></blockquote>
-
-<p>In this example, the <code>int</code> class creates an integer with value 0 when called without arguments, otherwise it uses the given argument to initialize the newly created object.</p>
-
-<p>Let us write a class that represents a door to match the procedural examples done in the first section</p>
-
-<p>``` python
-class Door:</p>
-
-<pre><code>def __init__(self, number, status):
-    self.number = number
-    self.status = status
-
-def open(self):
-    self.status = 'open'
-
-def close(self):
-    self.status = 'closed'
-</code></pre>
-
-<p>```</p>
-
-<p>The <code>class</code> keyword defines a new class named <code>Door</code>; everything indented under <code>class</code> is part of the class. The functions you write inside the object are called <em>methods</em> and don't differ at all from standard functions; the nomenclature changes only to highlight the fact that those functions now are part of an object.</p>
-
-<p>Methods of a class must accept as first argument a special value called <code>self</code> (the name is a convention but please never break it).</p>
-
-<p>The class can be given a special method called <code>__init__()</code> which is run when the class is instantiated, receiving the arguments passed when calling the class; the general name of such a method, in the OOP context, is <em>constructor</em>, even if the <code>__init__()</code> method is not the only part of this mechanism in Python.</p>
-
-<p>The <code>self.number</code> and <code>self.status</code> variables are called <em>attributes</em> of the object. In Python, methods and attributes are both <em>members</em> of the object and are accessible with the dotted syntax; the difference between attributes and methods is that the latter can be called (in Python lingo you say that a method is a <em>callable</em>).</p>
-
-<p>As you can see the <code>__init__()</code> method shall create and initialize the attributes since they are not declared elsewhere. This is very important in Python and is strictly linked with the way the language handles the type of variables. I will detail those concepts when dealing with polymorphism in a later post.</p>
-
-<p>The class can be used to create a concrete object</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1 = Door(1, 'closed')
-type(door1)
-<class '__main__.Door'>
-print(door1.number)
-1
-print(door1.status)
-closed
-```</p></blockquote></blockquote></blockquote>
-
-<p>Now <code>door1</code> is an instance of the <code>Door</code> class; <code>type()</code> returns the class as <code>__main__.Door</code> since the class was defined directly in the interactive shell, that is in the current main module.</p>
-
-<p>To call a method of an object, that is to run one of its internal functions, you just access it as an attribute with the dotted syntax and call it like a standard function.</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.open()
-print(door1.number)
-1
-print(door1.status)
-open
-```</p></blockquote></blockquote></blockquote>
-
-<p>In this case, the <code>open()</code> method of the <code>door1</code> instance has been called. No arguments have been passed to the <code>open()</code> method, but if you review the class declaration, you see that it was declared to accept an argument (<code>self</code>). When you call a method of an instance, Python automatically passes the instance itself to the method as the first argument.</p>
-
-<p>You can create as many instances as needed and they are completely unrelated each other. That is, the changes you make on one instance do not reflect on another instance of the same class.</p>
-
-<h2>Recap</h2>
-
-<p>Objects are described by a <em>class</em>, which can generate one or more <em>instances</em>, unrelated each other. A class contains <em>methods</em>, which are functions, and they accept at least one argument called <code>self</code>, which is the actual instance on which the method has been called. A special method, <code>__init__()</code> deals with the initialization of the object, setting the initial value of the <em>attributes</em>.</p>
-
-<h2>Movie Trivia</h2>
-
-<p>Section titles come from the following movies: <em>Back to the Future (1985)</em> , <em>What About Bob? (1991)</em>, <em>Wargames (1983)</em>.</p>
-
-<h2>Sources</h2>
-
-<p>You will find a lot of documentation in <a href="http://www.reddit.com/r/Python/comments/226ahl/some_links_about_python_oop/">this Reddit post</a>. Most of the information contained in this series come from those sources.</p>
-
-<h2>Feedback</h2>
-
-<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
-
-<h2>Next post</h2>
-
-<p><a href="/blog/2014/08/20/python-3-oop-part-2-classes-and-members">Python 3 OOP Part 2 - Classes and members</a></p>
 ]]></content>
   </entry>
   

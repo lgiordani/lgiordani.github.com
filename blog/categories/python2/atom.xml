@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python2 | The digital cat]]></title>
   <link href="http://lgiordani.com/blog/categories/python2/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-09-03T15:33:05+02:00</updated>
+  <updated>2014-09-04T10:07:53+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -68,7 +68,7 @@ class FakeList(object):</p>
     pass
 
 def __getattr__(self, name):
-    if name in ['append', 'count', 'extend', 'index`, 'insert', ...]:
+    if name in ['append', 'count', 'extend', 'index', 'insert', ...]:
         return self.fakemethod
 </code></pre>
 
@@ -136,7 +136,7 @@ False
 
 <h4>Overriding Places</h4>
 
-<p>As said, <code>isinstance()</code> and <code>issubclass()</code> are buil-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contains a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
+<p>As said, <code>isinstance()</code> and <code>issubclass()</code> are built-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contain a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
 
 <p>A note about naming. Methods must accept the object they belong to as the first argument, so the two special methods shall have the form</p>
 
@@ -172,12 +172,12 @@ from abc import ABCMeta</p>
 assert isinstance((), MyABC)
 ```</p>
 
-<p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__isinstancecheck__()</code> and <code>__subclasscheck__()</code> methods inside <code>MyABC</code> so that you can use them like</p>
+<p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__instancecheck__()</code> and <code>__subclasscheck__()</code> behaviours inside <code>MyABC</code>. Please note however that those methods are not actually put into the object so that you can use them like</p>
 
 <p>``` python</p>
 
 <blockquote><blockquote><blockquote><p>d = {'a': 1}
-MyABC.<strong>isinstancecheck</strong>(d)
+MyABC.<strong>metaclass</strong>.<strong>instancecheck</strong>(MyABC, d)
 ```</p></blockquote></blockquote></blockquote>
 
 <p>that returns <code>True</code> if the dictionary <code>d</code> is an instance of the Abstract Base Class <code>MyABC</code>. In other words if the dictionary <code>d</code> implements the behaviour promised by the <code>MyABC</code> class.</p>
@@ -357,7 +357,7 @@ TypeError: 'int' object is not callable
 
 <h2>Movie Trivia</h2>
 
-<p>Section titles of this issue come from the following movies: <em>The Breakfast Club</em>, <em>E.T. the Extra-Terrestrial</em>, <em>Who Framed Roger Rabbit</em>, <em>Trading Places</em>, <em>This is Spial Tap</em>, <em>Little Shop of Horrors</em>, <em>The Naked Gun</em>, <em>A Fish Called Wanda</em>.</p>
+<p>Section titles of this issue come from the following movies: <em>The Breakfast Club</em>, <em>E.T. the Extra-Terrestrial</em>, <em>Who Framed Roger Rabbit</em>, <em>Trading Places</em>, <em>This is Spinal Tap</em>, <em>Little Shop of Horrors</em>, <em>The Naked Gun</em>, <em>A Fish Called Wanda</em>.</p>
 
 <h2>Sources</h2>
 
