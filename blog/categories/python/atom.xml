@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python | The digital cat]]></title>
   <link href="http://lgiordani.com/blog/categories/python/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-09-09T10:17:02+02:00</updated>
+  <updated>2014-10-15T15:44:25+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -12,6 +12,232 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Advanced use of Python decorators and metaclasses]]></title>
+    <link href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/"/>
+    <updated>2014-10-14T09:43:08+02:00</updated>
+    <id>http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses</id>
+    <content type="html"><![CDATA[<h2>Abstract</h2>
+
+<p>While introducing people to Python metaclasses I realized that sometimes the big problem of the most powerful Python features is that programmers do not perceive how they may simplify their usual tasks. Therefore, features like metaclasses are considered a fancy but rather unuseful addition to a standard OOP language, instead of a real game changer.</p>
+
+<p>This post wants to show how to use metaclasses and decorators to create a powerful class that can be inherited and customized by easily adding decorated methods.</p>
+
+<!--more-->
+
+
+<h2>Metaclasses and decorators: a match made in space</h2>
+
+<p>Metaclasses are a complex topic, and most of the times even advanced programmers do not see a wide range of practical uses for them. Chances are that this is the part of Python (or other languages that support metaclasses, like Smalltalk and Ruby) that fits the least the "standard" object-oriented patterns or solutions found in C++ and Java, just to mention two big players.</p>
+
+<p>Indeed metaclasess usually come in play when programming advanced libraries or frameworks, where a lot of automation must be provided. For example, Django Forms system heavily relies on metaclasses to provide all its magic.</p>
+
+<p>We also have to note, however, that we usually call "magic" or "tricks" all those techniques we are not familiar with, and as a result in Python many things are called this way, being its implementation often peculiar compared to other languages.</p>
+
+<p>Time to bring some spice into your programming: let's practice some Python wizardry and exploit the power of the language!</p>
+
+<p>In this post I want to show you an interesting joint use of decorators and metaclasses. I will show you how to use decorators to mark methods so that they can be automatically used by the class when performing a given operation.</p>
+
+<p>More in detail, I will implement a class that can be called on a string to "process" it, and show you how to implement different "filters" through simple decorated methods. What I want to obtain is something like this:</p>
+
+<p>```python
+class MyStringProcessor(StringProcessor):</p>
+
+<pre><code>@stringfilter
+def capitalize(self, str):
+    [...]
+
+@stringfilter
+def remove_double_spaces(self, str):
+    [...]
+</code></pre>
+
+<p>msp = MyStringProcessor()
+"A test string" == msp("a test  string")
+```</p>
+
+<p>The module defines a <code>StringProcessor</code> class that I can inherit and customize adding methods that have a standard signature <code>(self, str)</code> and are decorated with <code>@stringfilter</code>. This class can later be instatiated and the instance used to directly process a string and return the result. Internally the class automatically executes all the decorated methods in succession. I also would like the class to obey the order I defined the filters: first defined, first executed.</p>
+
+<h2>The Hitchhiker's Guide To Metaclasses</h2>
+
+<p>How can metaclasses help to reach this target?</p>
+
+<p>Simply put, metaclasses are classes that are instantiated to get classes. That means that whenever I use a class, for example to instantiate it, first Python <em>builds</em> that class using the metaclass and the class definition we wrote. For example, you know that you can find the class members in the <code>__dict__</code> attribute: this attribute is created by the standard metaclass, which is <code>type</code>.</p>
+
+<p>Given that, a metaclass is a good starting point for us to insert some code to identify a subset of functions inside the definition of the class. In other words, we want the output of the metaclass (that is, the class) be built exactly as happens in the standard case, but with an addition: a separate list of all the methods decorated with <code>@stringfilter</code>.</p>
+
+<p>You know that a class has a <em>namespace</em>, that is a dictionary of what was defined inside the class. So, when the standard <code>type</code> metaclass is used to create a class, the class body is parsed and a <code>dict()</code> object is used to collect the namespace.</p>
+
+<p>We are however interested in preserving the order of definition and a Python dictionary is an unordered structure, so we take advantage of the <code>__prepare__</code> hook introduced in the class creation process with Python 3. This function, if present in the metaclass, is used to preprocess the class and to return the structure used to host the namespace. So, following the example found in the official documentation, we start defining a metaclass like</p>
+
+<p>```python
+class FilterClass(type):</p>
+
+<pre><code>@classmethod
+def __prepare__(metacls, name, bases, **kwds):
+    return collections.OrderedDict()
+</code></pre>
+
+<p>```</p>
+
+<p>This way, when the class will be created, an <code>OrderedDict</code> will be used to host the namespace, allowing us to keep the definition order. Please note that the signature <code>__prepare__(metacls, name, bases, **kwds)</code> and the <code>@classmethod</code> decorator are enforced by the language.</p>
+
+<p>The second function we want to define in our metaclass is <code>__new__</code>. Just like happens for the instantiation of classes, this method is invoked by Python to get a new instance of the metaclass, and is run before <code>__init__</code>. Its signature has to be <code>__new__(cls, name, bases, namespace, **kwds)</code> and the result shall be an instance of the metaclass. As for its normal class counterpart (after all a metaclass is a class), <code>__new__()</code> usually wraps the same method of the parent class, <code>type</code> in this case, adding its own customizations.</p>
+
+<p>The customization we need is the creation of a list of methods that are marked in some way (the decorated filters). Say for simplicity's sake that the decorated methods have an attribute <code>_filter</code>.</p>
+
+<p>The full metaclass is then</p>
+
+<p>```python
+class FilterClass(type):</p>
+
+<pre><code>@classmethod
+def __prepare__(metacls, name, bases, **kwds):
+    return collections.OrderedDict()
+
+def __new__(cls, name, bases, namespace, **kwds):
+    result = type.__new__(cls, name, bases, dict(namespace))
+    result._filters = [
+        value for value in namespace.values() if hasattr(value, '_filter')]
+    return result
+</code></pre>
+
+<p>```</p>
+
+<p>Now we have to find a way to mark all filter methods with a <code>_filter</code> attribute.</p>
+
+<h2>The Anatomy of Purple Decorators</h2>
+
+<p><strong>decorate</strong>: <em>to add something to an object or place, especially in order to make it more attractive</em> (Cambridge Dictionary)</p>
+
+<p>Decorators are, as the name suggests, the best way to augment functions or methods. Remember that a decorator is basically a callable that accepts another callable, processes it, and returns it.</p>
+
+<p>Used in conjunction with metaclasses, decorators are a very powerful and expressive way to implement advanced behaviours in our code. In this case we may easily use them to add an attribute to decorated methods, one of the most basic tasks for a decorator.</p>
+
+<p>I decided to implement the <code>@stringfilter</code> decorator as a function, even if I usually prefer implementing them as classes. The reason is that decorator classes behave differently when used to implement decorators without arguments rather than decorators with arguments. In this case this difference would force to write some complex code and an explanation of that would be overkill now. In a future post on dectorators you will find all the gory details, but in the meantime you may check the three Bruce Eckel posts listed in the references section.</p>
+
+<p>The decorator is very simple:</p>
+
+<p>```python
+def stringfilter(func):</p>
+
+<pre><code>func._filter = True
+return func
+</code></pre>
+
+<p>```</p>
+
+<p>As you can see the decorator just creates an attribute called <code>_filter</code> into the function (remember that functions are objects). The actual value of this attribute is not important in this case, since we are just interested in telling apart class members that contain it.</p>
+
+<h2>The Dynamics of a Callable Object</h2>
+
+<p>We are used to think about functions as special language components that may be "called" or executed. In Python functions are objects, just like everything else, and the feature that allows them to be executed comes from the presence of the <code>__call__()</code> method. Python is polymorphic by design and based on delegation, so (almost) everything that happens in the code relies on some features of the target object.</p>
+
+<p>The result of this generalization is that every object that contains the <code>__call__()</code> method may be executed like a function, and gains the name of <em>callable object</em>.</p>
+
+<p>The <code>StringProcessor</code> class shall thus contain this method and perform there the string processing with all the contained filters. The code is</p>
+
+<p>```python
+class StringProcessor(metaclass=FilterClass):</p>
+
+<pre><code>def __call__(self, string):
+    _string = string
+    for _filter in self._filters:
+        _string = _filter(self, _string)
+
+    return _string
+</code></pre>
+
+<p>```</p>
+
+<p>A quick review of this simple function shows that it accepts the string as an argument, stores it in a local variable and loops over the filters, executing each of them on the local string, that is on the result of the previous filter.</p>
+
+<p>The filter functions are extracted from the <code>self._filters</code> list, that is compiled by the <code>FilterClass</code> metaclass we already discussed.</p>
+
+<p>What we need to do now is to inherit from <code>StringProcessor</code> to get the metaclass machinery and the <code>__call__()</code> method, and to define as many methods as needed, decorating them with the <code>@stringfilter</code> decorator.</p>
+
+<p>Note that, thanks to the decorator and the metaclass, you may have other methods in your class that do not interfere with the string processing as long as they are not decorated with the decorator under consideration.</p>
+
+<p>An example derived class may be the following</p>
+
+<p>```python
+class MyStringProcessor(StringProcessor):</p>
+
+<pre><code>@stringfilter
+def capitalize(self, string):
+    return string.capitalize()
+
+@stringfilter
+def remove_double_spaces(self, string):
+    return string.replace('  ', ' ')
+</code></pre>
+
+<p>```</p>
+
+<p>The two <code>capitalize()</code> and <code>remove_double_spaces()</code> methods have been decorated, so they will be applied in order to any string passed when calling the class. A quick example of this last class is</p>
+
+<p>```pycon</p>
+
+<blockquote><blockquote><blockquote><p>import strproc
+msp = strproc.MyStringProcessor()
+input_string = "a test  string"
+output_string = msp(input_string)
+print("INPUT STRING:", input_string)
+INPUT STRING: a test  string
+print("OUTPUT STRING:", output_string)
+OUTPUT STRING: A test string</p>
+
+<p>```</p></blockquote></blockquote></blockquote>
+
+<p>That's it!</p>
+
+<h2>Final words</h2>
+
+<p>There are onviously other ways to accomplish the same task, and this post wanted just to give a practical example of what metaclasses are good for, and why I think that they should be part of any Python programmer's arsenal.</p>
+
+<h2>Book Trivia</h2>
+
+<p>Section titles come from the following books: <em>A Match Made in Space - George McFly</em>, <em>The Hitchhiker's Guide To the Galaxy - Various Authors</em>, <em>The Anatomy of Purple Dragons - Unknown</em>, <em>The Dynamics of an Asteroid - James Moriarty</em>.</p>
+
+<h2>Source code</h2>
+
+<p>The <a href="/downloads/code/metaclasses/strproc.py">strproc.py</a> file contains the full source code used in this post.</p>
+
+<h2>Online resources</h2>
+
+<p>The following resources may be useful.</p>
+
+<h4>Metaclasses</h4>
+
+<ul>
+<li>Python 3 official documentation: <a href="https://docs.python.org/3.4/reference/datamodel.html#customizing-class-creation">customizing class creation</a>.</li>
+<li>Python 3 OOP Part 5 - Metaclasses <a href="/blog/2014/09/01/python-3-oop-part-5-metaclasses">on this blog</a>.</li>
+<li><a href="http://python-3-patterns-idioms-test.readthedocs.org/en/latest/Metaprogramming.html">Metaprogramming examples and patterns</a> (still using some Python 2 code but useful).</li>
+</ul>
+
+
+<h4>Decorators</h4>
+
+<ul>
+<li><a href="http://www.artima.com/weblogs/viewpost.jsp?thread=240808">Bruce Eckel</a> on decorators (series of three posts, 6 years old but still valid).</li>
+<li><a href="http://simeonfranklin.com/blog/2012/jul/1/python-decorators-in-12-steps/">A different approach</a> on explaining decorators.</li>
+<li><a href="http://www.jeffknupp.com/blog/2013/11/29/improve-your-python-decorators-explained/">Jeff Knupp</a> goes deep inside the concept of function.</li>
+</ul>
+
+
+<h4>Callable objects</h4>
+
+<ul>
+<li><a href="http://www.rafekettler.com/magicmethods.html#callable">Rafe Kettler</a> provides a very detaild guide on Python "magic" methods.</li>
+</ul>
+
+
+<h2>Feedback</h2>
+
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Python 3 OOP Part 6 - Abstract Base Classes]]></title>
@@ -473,7 +699,7 @@ echo('five')
 
 <p>The first approach is to cover all cases, and this is a typical approach of procedural languages. If you need to sum two numbers that can be integers, float or complex, you just need to write three <code>sum()</code> functions, one bound to the integer type, the second bound to the float type and the third bound to the complex type, and to have some language feature that takes charge of choosing the correct implementation depending on the input type. This logic can be implemented by a compiler (if the language is statically typed) or by a runtime environment (if the language is dynamically typed) and is the approach chosen by C++. The disadvantage of this solution is that it requires the programmer to forecast all the possible situations: what if I need to sum an integer with a float? What if I need to sum two lists? (Please note that C++ is not so poorly designed, and the operator overloading technique allows to manage such cases, but the base polymorphism strategy of that language is the one exposed here).</p>
 
-<p>The second strategy, the one implemented by Python, is simply to require the input objects to solve the problem for you. In other words you <em>ask the data itself to perform the operation</em>, reversing the problem. Instead of writing a bunch on functions that sum all the possible types in every possible combination you just write one function that requires the input data to sum, trusting that they know how to do it. Does it sound complex? It is not.</p>
+<p>The second strategy, the one implemented by Python, is simply to require the input objects to solve the problem for you. In other words you <em>ask the data itself to perform the operation</em>, reversing the problem. Instead of writing a bunch of functions that sum all the possible types in every possible combination you just write one function that requires the input data to sum, trusting that they know how to do it. Does it sound complex? It is not.</p>
 
 <p>Let's look at the Python implementation of the <code>+</code> operator. When we write <code>c = a + b</code>, Python actually executes <code>c = a.__add__(b)</code>. As you can see the sum operation is delegated to the first input variable. So if we write</p>
 
@@ -995,434 +1221,6 @@ def __getattr__(self, attr):
 <h2>Next post</h2>
 
 <p><a href="/blog/2014/08/21/python-3-oop-part-4-polymorphism">Python 3 OOP Part 4 - Polymorphism</a></p>
-]]></content>
-  </entry>
-  
-  <entry>
-    <title type="html"><![CDATA[Python 3 OOP Part 2 - Classes and members]]></title>
-    <link href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-2-classes-and-members/"/>
-    <updated>2014-08-20T14:00:00+02:00</updated>
-    <id>http://lgiordani.com/blog/2014/08/20/python-3-oop-part-2-classes-and-members</id>
-    <content type="html"><![CDATA[<!--more-->
-
-
-<h2>Previous post</h2>
-
-<p><a href="/blog/2014/08/20/python-3-oop-part-1-objects-and-types">Python 3 OOP Part 1 - Objects and types</a></p>
-
-<h2>Python Classes Strike Again</h2>
-
-<p>The Python implementation of classes has some peculiarities. The bare truth is that in Python the class of an object is an object itself. You can check this by issuing <code>type()</code> on the class</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>a = 1
-type(a)
-<class 'int'>
-type(int)
-<class 'type'>
-```</p></blockquote></blockquote></blockquote>
-
-<p>This shows that the <code>int</code> class is an object, an instance of the <code>type</code> class.</p>
-
-<p>This concept is not so difficult to grasp as it can seem at first sight: in the real world we deal with <em>concepts</em> using them like <em>things</em>: for example we can talk about the concept of "door", telling people how a door looks like and how it works. In this case the concept of door is the topic of our discussion, so in our everyday experience the <em>type</em> of an object is an object itself. In Python this can be expressed by saying that <em>everything is an object</em>.</p>
-
-<p>If the class of an object is itself an instance it is a concrete object and is stored somewhere in memory. Let us leverage the <em>inspection</em> capabilities of Python and its <code>id()</code> function to check the status of our objects. The <code>id()</code> built-in function returns the memory position of an object.</p>
-
-<p>In the first post we defined this class</p>
-
-<p>``` python
-class Door:</p>
-
-<pre><code>def __init__(self, number, status):
-    self.number = number
-    self.status = status
-
-def open(self):
-    self.status = 'open'
-
-def close(self):
-    self.status = 'closed'
-</code></pre>
-
-<p>```</p>
-
-<p>First of all, let's create two instances of the <code>Door</code> class and check that the two objects are stored at different addresses</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1 = Door(1, 'closed')
-door2 = Door(1, 'closed')
-hex(id(door1))
-'0xb67e148c'
-hex(id(door2))
-'0xb67e144c'
-```</p></blockquote></blockquote></blockquote>
-
-<p>This confirms that the two instances are separate and unrelated.
-<strong>Please note that your values are very likely to be different from the ones I got. Being memory addresses they change at every execution.</strong> The second instance was given the same attributes of the first instance to show that the two are different objects regardless of the value of the attributes.</p>
-
-<p>However if we use <code>id()</code> on the class of the two instances we discover that the class is <em>exactly</em> the same</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>hex(id(door1.<strong>class</strong>))
-'0xb685f56c'
-hex(id(door2.<strong>class</strong>))
-'0xb685f56c'
-```</p></blockquote></blockquote></blockquote>
-
-<p>Well this is very important. In Python, a class is not just the schema used to build an object. Rather, the class is a shared living object, which code is accessed at run time.</p>
-
-<p>As we already tested, however, attributes are not stored in the class but in every instance, due to the fact that <code>__init__()</code> works on <code>self</code> when creating them. Classes, however, can be given attributes like any other object; with a terrific effort of imagination, let's call them <em>class attributes</em>.</p>
-
-<p>As you can expect, class attributes are shared among the class instances just like their container</p>
-
-<p>``` python
-class Door:</p>
-
-<pre><code>colour = 'brown'
-
-def __init__(self, number, status):
-    self.number = number
-    self.status = status
-
-def open(self):
-    self.status = 'open'
-
-def close(self):
-    self.status = 'closed'
-</code></pre>
-
-<p>```</p>
-
-<p>Pay attention: the <code>colour</code> attribute here is not created using <code>self</code>, so it is contained in the class and shared among instances</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1 = Door(1, 'closed')
-door2 = Door(2, 'closed')
-Door.colour
-'brown'
-door1.colour
-'brown'
-door2.colour
-'brown'
-```</p></blockquote></blockquote></blockquote>
-
-<p>Until here things are not different from the previous case. Let's see if changes of the shared value reflect on all instances</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>Door.colour = 'white'
-Door.colour
-'white'
-door1.colour
-'white'
-door2.colour
-'white'
-hex(id(Door.colour))
-'0xb67e1500'
-hex(id(door1.colour))
-'0xb67e1500'
-hex(id(door2.colour))
-'0xb67e1500'
-```</p></blockquote></blockquote></blockquote>
-
-<h2>Raiders of the Lost Attribute</h2>
-
-<p>Any Python object is automatically given a <code>__dict__</code> attribute, which contains its list of attributes. Let's investigate what this dictionary contains for our example objects:</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>Door.<strong>dict</strong>
-mappingproxy({'open': <function Door.open at 0xb68604ac>,</p>
-
-<pre><code>'colour': 'brown',
-'__dict__': &lt;attribute '__dict__' of 'Door' objects&gt;,
-'__weakref__': &lt;attribute '__weakref__' of 'Door' objects&gt;,
-'__init__': &lt;function Door.__init__ at 0xb7062854&gt;,
-'__module__': '__main__',
-'__doc__': None,
-'close': &lt;function Door.close at 0xb686041c&gt;})
-</code></pre>
-
-<p>door1.<strong>dict</strong>
-{'number': 1, 'status': 'closed'}
-```</p></blockquote></blockquote></blockquote>
-
-<p>Leaving aside the difference between a dictionary and a <code>mappingproxy</code> object, you can see that the <code>colour</code> attribute is listed among the <code>Door</code> class attributes, while <code>status</code> and <code>number</code> are listed for the instance.</p>
-
-<p>How comes that we can call <code>door1.colour</code>, if that attribute is not listed for that instance? This is a job performed by the magic <code>__getattribute__()</code> method; in Python the dotted syntax automatically invokes this method so when we write <code>door1.colour</code>, Python executes <code>door1.__getattribute__('colour')</code>. That method performs the  <em>attribute  lookup</em> action, i.e. finds the value of the attribute by looking in different places.</p>
-
-<p>The standard implementation of <code>__getattribute__()</code> searches first the internal dictionary (<code>__dict__</code>) of an object, then the type of the object itself; in this case <code>door1.__getattribute__('colour')</code> executes first <code>door1.__dict__['colour']</code> and then, since the latter raises a <code>KeyError</code> exception, <code>door1.__class__.__dict__['colour']</code></p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.<strong>dict</strong>['colour']
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-KeyError: 'colour'
-door1.<strong>class</strong>.<strong>dict</strong>['colour']
-'brown'
-```</p></blockquote></blockquote></blockquote>
-
-<p>Indeed, if we compare the objects' equality through the <code>is</code> operator we can confirm that both <code>door1.colour</code> and <code>Door.colour</code> are exactly the same object</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.colour is Door.colour
-True
-```</p></blockquote></blockquote></blockquote>
-
-<p>When we try to assign a value to a class attribute directly on an instance, we just put in the <code>__dict__</code> of the instance a value with that name, and this value masks the class attribute since it is found first by <code>__getattribute__()</code>. As you can see from the examples of the previous section, this is different from changing the value of the attribute on the class itself.</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.colour = 'white'
-door1.<strong>dict</strong>['colour']
-'white'
-door1.<strong>class</strong>.<strong>dict</strong>['colour']
-'brown'
-Door.colour = 'red'
-door1.<strong>dict</strong>['colour']
-'white'
-door1.<strong>class</strong>.<strong>dict</strong>['colour']
-'red'
-```</p></blockquote></blockquote></blockquote>
-
-<h2>Revenge of the Methods</h2>
-
-<p>Let's play the same game with methods. First of all you can see that, just like class attributes, methods are listed only in the class <code>__dict__</code>. Chances are that they behave the same as attributes when we get them</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.open is Door.open
-False
-```</p></blockquote></blockquote></blockquote>
-
-<p>Whoops. Let us further investigate the matter</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>Door.<strong>dict</strong>['open']
-<function Door.open at 0xb68604ac>
-Door.open
-<function Door.open at 0xb68604ac>
-door1.open
-<bound method Door.open of <__main__.Door object at 0xb67e162c>>
-```</p></blockquote></blockquote></blockquote>
-
-<p>So, the class method is listed in the members dictionary as <em>function</em>. So far, so good. The same happens when taking it directly from the class; here Python 2 needed to introduce <em>unbound methods</em>, which are not present in Python 3. Taking it from the instance returns a <em>bound method</em>.</p>
-
-<p>Well, a <em>function</em> is a procedure you named and defined with the <code>def</code> statement. When you refer to a function as part of a class in Python 3 you get a plain function, without any difference from a function defined outside a class.</p>
-
-<p>When you get the function from an instance, however, it becomes a bound method. The name <em>method</em> simply means "a function inside an object", according to the usual OOP definitions, while <em>bound</em> signals that the method is linked to that instance. Why does Python bother with methods being bound or not? And how does Python transform a function into a bound method?</p>
-
-<p>First of all, if you try to call a class function you get an error</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>Door.open()
-Traceback (most recent call last):
-  File "<stdin>", line 1, in <module>
-TypeError: open() missing 1 required positional argument: 'self'
-```</p></blockquote></blockquote></blockquote>
-
-<p>Yes. Indeed the function was defined to require an argument called 'self', and calling it without an argument raises an exception. This perhaps means that we can give it one instance of the class and make it work</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>Door.open(door1)
-door1.status
-'open'
-```</p></blockquote></blockquote></blockquote>
-
-<p>Python does not complain here, and the method works as expected. So <code>Door.open(door1)</code> is the same as <code>door1.open()</code>, and this is the difference between a plain function coming from a class an a bound method: the bound method automatically passes the instance as an argument to the function.</p>
-
-<p>Again, under the hood, <code>__getattribute__()</code> is working to make everything work and when we call <code>door1.open()</code>, Python actually calls <code>door1.__class__.open(door1)</code>. However, <code>door1.__class__.open</code> is a plain function, so there is something more that converts it into a bound method that Python can safely call.</p>
-
-<p>When you access a member of an object, Python calls <code>__getattribute__()</code> to satisfy the request. This magic method, however, conforms to a procedure known as <em>descriptor protocol</em>. For the read access <code>__getattribute__()</code> checks if the object has a <code>__get__()</code> method and calls this latter. So the converstion of a function into a bound method happens through such a mechanism. Let us review it by means of an example.</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.<strong>class</strong>.<strong>dict</strong>['open']
-<function Door.open at 0xb68604ac>
-```</p></blockquote></blockquote></blockquote>
-
-<p>This syntax retrieves the function defined in the class; the function knows nothing about objects, but it <em>is</em> an object (remember "everything is an object"). So we can look inside it with the <code>dir()</code> built-in function</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>dir(door1.<strong>class</strong>.<strong>dict</strong>['open'])
-['<strong>annotations</strong>', '<strong>call</strong>', '<strong>class</strong>', '<strong>closure</strong>', '<strong>code</strong>',
- '<strong>defaults</strong>', '<strong>delattr</strong>', '<strong>dict</strong>', '<strong>dir</strong>', '<strong>doc</strong>', '<strong>eq</strong>',
- '<strong>format</strong>', '<strong>ge</strong>', '<strong>get</strong>', '<strong>getattribute</strong>', '<strong>globals</strong>',
- '<strong>gt</strong>', '<strong>hash</strong>', '<strong>init</strong>', '<strong>kwdefaults</strong>', '<strong>le</strong>', '<strong>lt</strong>',
- '<strong>module</strong>', '<strong>name</strong>', '<strong>ne</strong>', '<strong>new</strong>', '<strong>qualname</strong>', '<strong>reduce</strong>',
- '<strong>reduce_ex</strong>', '<strong>repr</strong>', '<strong>setattr</strong>', '<strong>sizeof</strong>', '<strong>str</strong>',
- '<strong>subclasshook</strong>']
-door1.<strong>class</strong>.<strong>dict</strong>['open'].<strong>get</strong>
-&lt;method-wrapper '<strong>get</strong>' of function object at 0xb68604ac>
-```</p></blockquote></blockquote></blockquote>
-
-<p>As you can see, a <code>__get__</code> method is listed among the members of the function, and Python recognizes it as a <em>method-wrapper</em>. This method shall connect the <code>open</code> function to the <code>door1</code> instance, so we can call it passing the instance alone</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.<strong>class</strong>.<strong>dict</strong>['open'].<strong>get</strong>(door1)
-<bound method Door.open of <__main__.Door object at 0xb67e162c>>
-```</p></blockquote></blockquote></blockquote>
-
-<p>and we get exactly what we were looking for. This complex syntax is what happens behind the scenes when we call a method of an instance.</p>
-
-<h2>When Methods met Classes</h2>
-
-<p>Using <code>type()</code> on functions defined inside classes reveals some other details on their internal representation</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>Door.open
-<function Door.open at 0xb687e074>
-door1.open
-<bound method Door.open of <__main__.Door object at 0xb6f9834c>>
-type(Door.open)
-<class 'function'>
-type(door1.open)
-<class 'method'>
-```</p></blockquote></blockquote></blockquote>
-
-<p>As you can see, Python tells the two apart recognizing the first as a <em>function</em> and the second as a <em>method</em>, where the second is a function bound to an instance.</p>
-
-<p>What if we want to define a function that operates on the class instead of operating on the instance? As we may define class attributes, we may also define <em>class methods</em> in Python, through the <code>classmethod</code> decorator. Class methods are functions that are bound to the class and not to an instance.</p>
-
-<p>``` python
-class Door:</p>
-
-<pre><code>colour = 'brown'
-
-def __init__(self, number, status):
-    self.number = number
-    self.status = status
-
-@classmethod
-def knock(cls):
-    print("Knock!")
-
-def open(self):
-    self.status = 'open'
-
-def close(self):
-    self.status = 'closed'
-</code></pre>
-
-<p>```</p>
-
-<p>Such a definition makes the method callable on both the instance and the class</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.knock()
-Knock!
-Door.knock()
-Knock!
-```</p></blockquote></blockquote></blockquote>
-
-<p>and Python identifies both as (bound) methods</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.<strong>class</strong>.<strong>dict</strong>['knock']
-<classmethod object at 0xb67ff6ac>
-door1.knock
-<bound method type.knock of <class '__main__.Door'>>
-Door.knock
-<bound method type.knock of <class '__main__.Door'>>
-type(Door.knock)
-<class 'method'>
-type(door1.knock)
-<class 'method'>
-```</p></blockquote></blockquote></blockquote>
-
-<p>As you can see the <code>knock()</code> function accepts one argument, which is called <code>cls</code> just to remember that it is not an instance but the class itself. This means that inside the function we can operate on the class, and the class is shared among instances.</p>
-
-<p>``` python
-class Door:</p>
-
-<pre><code>colour = 'brown'
-
-def __init__(self, number, status):
-    self.number = number
-    self.status = status
-
-@classmethod
-def knock(cls):
-    print("Knock!")
-
-@classmethod
-def paint(cls, colour):
-    cls.colour = colour
-
-def open(self):
-    self.status = 'open'
-
-def close(self):
-    self.status = 'closed'
-</code></pre>
-
-<p>```</p>
-
-<p>The <code>paint()</code> classmethod now changes the class attribute <code>colour</code> which is shared among instances. Let's check how it works</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1 = Door(1, 'closed')
-door2 = Door(2, 'closed')
-Door.colour
-'brown'
-door1.colour
-'brown'
-door2.colour
-'brown'
-Door.paint('white')
-Door.colour
-'white'
-door1.colour
-'white'
-door2.colour
-'white'
-```</p></blockquote></blockquote></blockquote>
-
-<p>The class method can be called on the class, but this affects both the class and the instances, since the <code>colour</code> attribute of instances is taken at runtime from the shared class.</p>
-
-<p>``` python</p>
-
-<blockquote><blockquote><blockquote><p>door1.paint('yellow')
-Door.colour
-'yellow'
-door1.colour
-'yellow'
-door2.colour
-'yellow'
-```</p></blockquote></blockquote></blockquote>
-
-<p>Class methods can be called on instances too, however, and their effect is the same as before. The class method is bound to the class, so it works on this latter regardless of the actual object that calls it (class or instance).</p>
-
-<h2>Movie Trivia</h2>
-
-<p>Section titles come from the following movies: <em>The Empire Strikes Back (1980)</em>, <em>Raiders of the Lost Ark (1981)</em>, <em>Revenge of the Nerds (1984)</em>, <em>When Harry Met Sally (1989)</em>.</p>
-
-<h2>Sources</h2>
-
-<p>You will find a lot of documentation in <a href="http://www.reddit.com/r/Python/comments/226ahl/some_links_about_python_oop/">this Reddit post</a>. Most of the information contained in this series come from those sources.</p>
-
-<h2>Feedback</h2>
-
-<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
-
-<h2>Next post</h2>
-
-<p><a href="/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance">Python 3 OOP Part 3 - Delegation: composition and inheritance</a></p>
 ]]></content>
   </entry>
   
