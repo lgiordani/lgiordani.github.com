@@ -4,7 +4,7 @@
   <title><![CDATA[Category: python3 | The digital cat]]></title>
   <link href="http://lgiordani.com/blog/categories/python3/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-10-17T10:00:24+02:00</updated>
+  <updated>2014-10-17T10:06:01+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -195,7 +195,7 @@ OUTPUT STRING: A test string</p>
 
 <p>There are obviously other ways to accomplish the same task, and this post wanted just to give a practical example of what metaclasses are good for, and why I think that they should be part of any Python programmer's arsenal.</p>
 
-<p>[Update] Some developers (on Reddit)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/] and Linkedin raised objections to the content of the post mainly about the fact that the example may be perfectly implemented without metaclasses and about the dangerous nature of metaclasses. Since I try to learn from everyone, I thank them for their suggestions.</p>
+<p>[Update] Some developers <a href="http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/">on Reddit</a> and Linkedin raised objections to the content of the post mainly about the fact that the example may be perfectly implemented without metaclasses and about the dangerous nature of metaclasses. Since I try to learn from everyone, I thank them for their suggestions.</p>
 
 <p>It is especially interesting to know that some developers consider the use of metaclasses a risky business, because they hide a lot of the structure of the class and the underlying machinery. This is true, so (as you should do for other technologies), think carefully about the reasons that drive you to use metaclasses, and be sure you know them well.</p>
 
@@ -238,9 +238,9 @@ OUTPUT STRING: A test string</p>
 
 <h2>Updates</h2>
 
-<p>2014-10-17: (Matthew Dillon)[https://github.com/thermokarst] and (Damon McDougall)[https://github.com/dmcdougall] spotted two typos. Thank you!</p>
+<p>2014-10-17: <a href="https://github.com/thermokarst">Matthew Dillon</a> and <a href="https://github.com/dmcdougall">Damon McDougall</a> spotted two typos. Thank you!</p>
 
-<p>2014-10-17: (ionelmc)[http://www.reddit.com/user/ionelmc] suggested two corrections (here)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla696y] and (here)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla6o77]. Both are correct so I implemented them. The second one is more about style, but fits well the introductory purpose of the post. Thanks!</p>
+<p>2014-10-17: <a href="http://www.reddit.com/user/ionelmc">ionelmc</a> suggested two corrections <a href="http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla696y">here</a> and <a href="http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla6o77">here</a>. Both are correct so I implemented them. The second one is more about style, but fits well the introductory purpose of the post. Thanks!</p>
 
 <h2>Feedback</h2>
 
