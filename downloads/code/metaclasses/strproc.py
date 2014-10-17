@@ -13,18 +13,17 @@ class FilterClass(type):
     the _filters attribute of the class.
     """
 
-    @classmethod
-    def __prepare__(metacls, name, bases, **kwds):
+    def __prepare__(name, bases, **kwds):
         # This returns an OrderedDict to host the namespace of the created
         # class
         return collections.OrderedDict()
 
-    def __new__(cls, name, bases, namespace, **kwds):
+    def __new__(metacls, name, bases, namespace, **kwds):
         # This method returns an instance of the metaclass
         # aka the created class.
 
         # Just call the standard creation method
-        result = type.__new__(cls, name, bases, dict(namespace))
+        result = type.__new__(metacls, name, bases, dict(namespace))
 
         # Process all namespace items and extract the marked ones
         result._filters = [

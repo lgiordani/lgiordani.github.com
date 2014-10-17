@@ -4,7 +4,7 @@
   <title><![CDATA[Category: metaclasses | The digital cat]]></title>
   <link href="http://lgiordani.com/blog/categories/metaclasses/atom.xml" rel="self"/>
   <link href="http://lgiordani.com/"/>
-  <updated>2014-10-15T15:44:25+02:00</updated>
+  <updated>2014-10-17T10:00:24+02:00</updated>
   <id>http://lgiordani.com/</id>
   <author>
     <name><![CDATA[Leonardo Giordani]]></name>
@@ -57,7 +57,7 @@ def remove_double_spaces(self, str):
 "A test string" == msp("a test  string")
 ```</p>
 
-<p>The module defines a <code>StringProcessor</code> class that I can inherit and customize adding methods that have a standard signature <code>(self, str)</code> and are decorated with <code>@stringfilter</code>. This class can later be instatiated and the instance used to directly process a string and return the result. Internally the class automatically executes all the decorated methods in succession. I also would like the class to obey the order I defined the filters: first defined, first executed.</p>
+<p>The module defines a <code>StringProcessor</code> class that I can inherit and customize adding methods that have a standard signature <code>(self, str)</code> and are decorated with <code>@stringfilter</code>. This class can later be instantiated and the instance used to directly process a string and return the result. Internally the class automatically executes all the decorated methods in succession. I also would like the class to obey the order I defined the filters: first defined, first executed.</p>
 
 <h2>The Hitchhiker's Guide To Metaclasses</h2>
 
@@ -74,16 +74,15 @@ def remove_double_spaces(self, str):
 <p>```python
 class FilterClass(type):</p>
 
-<pre><code>@classmethod
-def __prepare__(metacls, name, bases, **kwds):
+<pre><code>def __prepare__(name, bases, **kwds):
     return collections.OrderedDict()
 </code></pre>
 
 <p>```</p>
 
-<p>This way, when the class will be created, an <code>OrderedDict</code> will be used to host the namespace, allowing us to keep the definition order. Please note that the signature <code>__prepare__(metacls, name, bases, **kwds)</code> and the <code>@classmethod</code> decorator are enforced by the language.</p>
+<p>This way, when the class will be created, an <code>OrderedDict</code> will be used to host the namespace, allowing us to keep the definition order. Please note that the signature <code>__prepare__(name, bases, **kwds)</code> is enforced by the language. If you want the method to get the metaclass as a first argument (because the code of the method needs it) you have to change the signature to <code>__prepare__(metacls, name, bases, **kwds)</code> and decorate it with <code>@classmethod</code>.</p>
 
-<p>The second function we want to define in our metaclass is <code>__new__</code>. Just like happens for the instantiation of classes, this method is invoked by Python to get a new instance of the metaclass, and is run before <code>__init__</code>. Its signature has to be <code>__new__(cls, name, bases, namespace, **kwds)</code> and the result shall be an instance of the metaclass. As for its normal class counterpart (after all a metaclass is a class), <code>__new__()</code> usually wraps the same method of the parent class, <code>type</code> in this case, adding its own customizations.</p>
+<p>The second function we want to define in our metaclass is <code>__new__</code>. Just like happens for the instantiation of classes, this method is invoked by Python to get a new instance of the metaclass, and is run before <code>__init__</code>. Its signature has to be <code>__new__(metacls, name, bases, namespace, **kwds)</code> and the result shall be an instance of the metaclass. As for its normal class counterpart (after all a metaclass is a class), <code>__new__()</code> usually wraps the same method of the parent class, <code>type</code> in this case, adding its own customizations.</p>
 
 <p>The customization we need is the creation of a list of methods that are marked in some way (the decorated filters). Say for simplicity's sake that the decorated methods have an attribute <code>_filter</code>.</p>
 
@@ -93,11 +92,11 @@ def __prepare__(metacls, name, bases, **kwds):
 class FilterClass(type):</p>
 
 <pre><code>@classmethod
-def __prepare__(metacls, name, bases, **kwds):
+def __prepare__(name, bases, **kwds):
     return collections.OrderedDict()
 
-def __new__(cls, name, bases, namespace, **kwds):
-    result = type.__new__(cls, name, bases, dict(namespace))
+def __new__(metacls, name, bases, namespace, **kwds):
+    result = type.__new__(metacls, name, bases, dict(namespace))
     result._filters = [
         value for value in namespace.values() if hasattr(value, '_filter')]
     return result
@@ -194,7 +193,11 @@ OUTPUT STRING: A test string</p>
 
 <h2>Final words</h2>
 
-<p>There are onviously other ways to accomplish the same task, and this post wanted just to give a practical example of what metaclasses are good for, and why I think that they should be part of any Python programmer's arsenal.</p>
+<p>There are obviously other ways to accomplish the same task, and this post wanted just to give a practical example of what metaclasses are good for, and why I think that they should be part of any Python programmer's arsenal.</p>
+
+<p>[Update] Some developers (on Reddit)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/] and Linkedin raised objections to the content of the post mainly about the fact that the example may be perfectly implemented without metaclasses and about the dangerous nature of metaclasses. Since I try to learn from everyone, I thank them for their suggestions.</p>
+
+<p>It is especially interesting to know that some developers consider the use of metaclasses a risky business, because they hide a lot of the structure of the class and the underlying machinery. This is true, so (as you should do for other technologies), think carefully about the reasons that drive you to use metaclasses, and be sure you know them well.</p>
 
 <h2>Book Trivia</h2>
 
@@ -232,6 +235,12 @@ OUTPUT STRING: A test string</p>
 <li><a href="http://www.rafekettler.com/magicmethods.html#callable">Rafe Kettler</a> provides a very detaild guide on Python "magic" methods.</li>
 </ul>
 
+
+<h2>Updates</h2>
+
+<p>2014-10-17: (Matthew Dillon)[https://github.com/thermokarst] and (Damon McDougall)[https://github.com/dmcdougall] spotted two typos. Thank you!</p>
+
+<p>2014-10-17: (ionelmc)[http://www.reddit.com/user/ionelmc] suggested two corrections (here)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla696y] and (here)[http://www.reddit.com/r/Python/comments/2jbi2f/advanced_use_of_python_decorators_and_metaclasses/cla6o77]. Both are correct so I implemented them. The second one is more about style, but fits well the introductory purpose of the post. Thanks!</p>
 
 <h2>Feedback</h2>
 
