@@ -191,31 +191,31 @@
 <p>Objects in Python may be built describing their structure through a <em>class</em>. A class is the programming representation of a generic object, such as "a book", "a car", "a door": when I talk about "a door" everyone can understand what I'm saying, without the need of referring to a specific door in the room.</p>
 <p>In Python, the type of an object is represented by the class used to build the object: that is, in Python the word <em>type</em> has the same meaning of the word <em>class</em>.</p>
 <p>For example, one of the built-in classes of Python is <code>int</code>, which represents an integer number</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">a</span>
-<span class="mi">6</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">a</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">&lt;type &#39;int&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span>
+<span class="go">&lt;type &#39;int&#39;&gt;</span>
 </pre></div>
 
 
 <p>As you can see, the built-in function <code>type()</code> returns the content of the <em>magic attribute</em> <code>__class__</code> (magic here means that its value is managed by Python itself offstage). The type of the variable <code>a</code>, or its class, is <code>int</code>. (This is a very inaccurate description of this rather complex topic, so remember that we are just scratching the surface).</p>
 <p>Once you have a class you can <em>instantiate</em> it to get a concrete object (an <em>instance</em>) of that type, i.e. an object built according to the structure of that class. The Python syntax to instantiate a class is the same of a function call</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="go">&lt;type &#39;int&#39;&gt;</span>
 </pre></div>
 
 
 <p>When you create an instance, you can pass some values, according to the class definition, to <em>initialize</em> it.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">b</span>
-<span class="mi">0</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">c</span>
-<span class="mi">7</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">b</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">c</span>
+<span class="go">7</span>
 </pre></div>
 
 
@@ -240,22 +240,22 @@
 <p>The <code>self.number</code> and <code>self.status</code> variables are called <em>attributes</em> of the object. In Python, methods and attributes are both <em>members</em> of the object and are accessible with the dotted syntax; the difference between attributes and methods is that the latter can be called (in Python lingo you say that a method is a <em>callable</em>).</p>
 <p>As you can see the <code>__init__()</code> method shall create and initialize the attributes since they are not declared elsewhere.</p>
 <p>The class can be used to create a concrete object</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">number</span>
-<span class="mi">1</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
-<span class="n">closed</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="go">&lt;class &#39;__main__.Door&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">number</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
+<span class="go">closed</span>
 </pre></div>
 
 
 <p>Now <code>door1</code> is an instance of the <code>Door</code> class; <code>type()</code> returns the class as <code>__main__.Door</code> since the class was defined directly in the interactive shell, that is in the current main module. To call a method of an object, that is to run one of its internal functions, you just access it as an attribute with the dotted syntax and call it like a standard function.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">number</span>
-<span class="mi">1</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
-<span class="nb">open</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">number</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
+<span class="go">open</span>
 </pre></div>
 
 
@@ -265,10 +265,10 @@
 <p>Objects are described by a <em>class</em>, which can generate one or more <em>instances</em>, unrelated each other. A class contains <em>methods</em>, which are functions, and they accept at least one argument called <code>self</code>, which is the actual instance on which the method has been called. A special method, <code>__init__()</code> deals with the initialization of the object, setting the initial value of the <em>attributes</em>.</p>
 <h2>Python Classes Strike Again</h2>
 <p>The Python implementation of classes has some peculiarities. The bare truth is that in Python the class of an object is an object itself. You can check this by issuing <code>type()</code> on the class</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">Door</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="go">&lt;class &#39;__main__.Door&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">Door</span><span class="p">)</span>
+<span class="go">&lt;type &#39;type&#39;&gt;</span>
 </pre></div>
 
 
@@ -276,20 +276,20 @@
 <p>This concept is not so difficult to grasp as it can seem at first sight: in the real world we deal with concepts using them like <em>things</em>: for example we can talk about the concept of "door", telling people how a door looks like and how it works. So in our everyday experience the <em>type</em> of an object is an object itself. In Python this can be expressed by saying that <em>everything is an object</em>.</p>
 <p>If the class is an instance it is a concrete object and is stored somewhere in memory. Let us leverage the <em>inspection</em> capabilities of Python and its <code>id()</code> function to check the status of our objects. The <code>id()</code> built-in function returns the memory position of an object.</p>
 <p>First of all, let's check that the two objects are stored at different addresses</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="p">))</span>
-<span class="s">&#39;0x7fa4c818bad0&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="p">))</span>
-<span class="s">&#39;0x7fa4c818b890&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="p">))</span>
+<span class="go">&#39;0x7fa4c818bad0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="p">))</span>
+<span class="go">&#39;0x7fa4c818b890&#39;</span>
 </pre></div>
 
 
 <p>This confirms that the two instances are separate and unrelated.
 <strong>Please note that your values are very likely to be different from the ones I got.</strong></p>
 <p>However if we use <code>id()</code> on the class of the two instances we discover that the class is <em>exactly</em> the same</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
-<span class="s">&#39;0x766800&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
-<span class="s">&#39;0x766800&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+<span class="go">&#39;0x766800&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+<span class="go">&#39;0x766800&#39;</span>
 </pre></div>
 
 
@@ -312,152 +312,158 @@
 
 
 <p>The <code>colour</code> attribute here is not created using <code>self</code>, and any change of its value reflects on all instances</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-<span class="s">&#39;brown&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
-<span class="s">&#39;brown&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
-<span class="s">&#39;brown&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-<span class="s">&#39;white&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
-<span class="s">&#39;white&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
-<span class="s">&#39;white&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
-<span class="s">&#39;0xb74c5420L&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
-<span class="s">&#39;0xb74c5420L&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
-<span class="s">&#39;0xb74c5420L&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door2</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">&#39;brown&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">&#39;brown&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">&#39;brown&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">&#39;white&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">&#39;white&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">&#39;white&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+<span class="go">&#39;0xb74c5420L&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+<span class="go">&#39;0xb74c5420L&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+<span class="go">&#39;0xb74c5420L&#39;</span>
 </pre></div>
 
 
 <h2>Raiders of the Lost Attribute</h2>
 <p>Any Python object is automatically given a <code>__dict__</code> attribute, which contains its list of attributes. Let's investigate what this dictionary contains for our example objects:</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
-    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span>
-    <span class="s">&#39;__weakref__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__weakref__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__dict__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__dict__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;close&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">close</span> <span class="n">at</span> <span class="mh">0xb6a8a56c</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6a8a534</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-    <span class="s">&#39;__init__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">__init__</span> <span class="n">at</span> <span class="mh">0xb6a8a48c</span><span class="o">&gt;</span><span class="p">})</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;closed&#39;</span><span class="p">,</span> <span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">dict_proxy({&#39;__module__&#39;: &#39;__main__&#39;,</span>
+<span class="go">    &#39;colour&#39;: &#39;brown&#39;,</span>
+<span class="go">    &#39;__weakref__&#39;: &lt;attribute &#39;__weakref__&#39; of &#39;Door&#39; objects&gt;,</span>
+<span class="go">    &#39;__dict__&#39;: &lt;attribute &#39;__dict__&#39; of &#39;Door&#39; objects&gt;,</span>
+<span class="go">    &#39;close&#39;: &lt;function close at 0xb6a8a56c&gt;,</span>
+<span class="go">    &#39;open&#39;: &lt;function open at 0xb6a8a534&gt;,</span>
+<span class="go">    &#39;__doc__&#39;: None,</span>
+<span class="go">    &#39;__init__&#39;: &lt;function __init__ at 0xb6a8a48c&gt;})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">{&#39;status&#39;: &#39;closed&#39;, &#39;number&#39;: 1}</span>
 </pre></div>
 
 
 <p>Leaving aside the difference between a dictionary and a <code>dict_proxy</code> object, you can see that the <code>colour</code> attribute is listed among the <code>Door</code> class attributes, while <code>status</code> and <code>number</code> are listed for the instance.</p>
 <p>How comes that we can call <code>door1.colour</code>, if that attribute is not listed for that instance? This is a job performed by the magic <code>__getattribute__()</code> method; in Python the dotted syntax automatically invokes this method so when we write <code>door1.colour</code>, Python executes <code>door1.__getattribute__('colour')</code>. That method performs the  <em>attribute  lookup</em> action, i.e. finds the value of the attribute by looking in different places.</p>
 <p>The standard implementation of <code>__getattribute__()</code> searches first the internal dictionary (<code>__dict__</code>) of an object, then the type of the object itself; in this case <code>door1.__getattribute__('colour')</code> executes first <code>door1.__dict__['colour']</code> and then <code>door1.__class__.__dict__['colour']</code></p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">KeyError</span><span class="p">:</span> <span class="s">&#39;colour&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-<span class="s">&#39;brown&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">KeyError</span>: <span class="n">&#39;colour&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="go">&#39;brown&#39;</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">KeyError</span>: <span class="n">&#39;colour&#39;</span>
 </pre></div>
 
 
 <p>Indeed, if we check the objects equality through the <code>is</code> operator we can confirm that both <code>door1.colour</code> and <code>Door.colour</code> are exactly the same object</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-<span class="bp">True</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">True</span>
 </pre></div>
 
 
 <p>When we try to assign a value to a class attribute directly on an instance, we just put in the <code>__dict__</code> of the instance a value with that name, and this value masks the class attribute since it is found first by <code>__getattribute__()</code>. As you can see from the examples of the previous section, this is different from changing the value of the attribute on the class itself.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-<span class="s">&#39;white&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-<span class="s">&#39;brown&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;red&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-<span class="s">&#39;white&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-<span class="s">&#39;red&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="go">&#39;white&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="go">&#39;brown&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;red&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="go">&#39;white&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="go">&#39;red&#39;</span>
 </pre></div>
 
 
 <h2>Revenge of the Methods</h2>
 <p>Let's play the same game with methods. First of all you can see that, just like class attributes, methods are listed only in the class <code>__dict__</code>. Chances are that they behave the same as attributes when we get them</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
-<span class="bp">False</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">open</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
+<span class="go">False</span>
 </pre></div>
 
 
 <p>Whoops. Let us further investigate the matter</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
-<span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
-<span class="o">&lt;</span><span class="n">unbound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
+<span class="go">&lt;function open at 0xb73ee10c&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">open</span>
+<span class="go">&lt;unbound method Door.open&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">open</span>
+<span class="go">&lt;bound method Door.open of &lt;__main__.Door object at 0xb73f956c&gt;&gt;</span>
 </pre></div>
 
 
 <p>So, the class method is listed in the members dictionary as <em>function</em>. So far, so good. The same method, taken directly from the class is returned as <em>unbound method</em>, while taking it from the instance it changes to <em>bound method</em>. Well, a <em>function</em> is a procedure you named and defined with the <code>def</code> statement. When you refer to a function as part of a class you get an unbound method. The name <em>method</em> simply means "a function inside a class", according to the usual OOP definitions, while <em>unbound</em> signals that the method is not bound to any instance. As you can see, as soon as you access the method from an instance, the method becomes <em>bound</em>.</p>
 <p>Why does Python bother with methods being bound or unbound? And how does Python transform an unbound method into a bound one?</p>
 <p>First of all, if you try to call an unbound method you get an error</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">TypeError</span><span class="p">:</span> <span class="n">unbound</span> <span class="n">method</span> <span class="nb">open</span><span class="p">()</span> <span class="n">must</span> <span class="n">be</span> <span class="n">called</span> <span class="k">with</span>
-    <span class="n">Door</span> <span class="n">instance</span> <span class="k">as</span> <span class="n">first</span> <span class="n">argument</span> <span class="p">(</span><span class="n">got</span> <span class="n">nothing</span> <span class="n">instead</span><span class="p">)</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">TypeError</span>: <span class="n">unbound method open() must be called with</span>
+<span class="go">    Door instance as first argument (got nothing instead)</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">TypeError</span>: <span class="n">unbound method open() must be called with</span>
 </pre></div>
 
 
 <p>so by default Python considers methods as functions that shall operate on instances, and calling them from the class leaves the interpreter puzzled. Let us try to pass the instance as suggested by the exception message</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
-<span class="s">&#39;open&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;open&#39;</span>
 </pre></div>
 
 
 <p>Python does not complain here, and the method works as expected. So <code>Door.open(door1)</code> is the same as <code>door1.open()</code>. Again, under the hood, <code>__getattribute__()</code> is working to make everything work and when we call <code>door1.open()</code>, Python actually calls <code>door1.__class__.open(door1)</code>. However, <code>door1.__class__.open</code> is an unbound method, so there is something more that converts it into a bound method that Python can safely call.</p>
 <p>When you access a member of an object, Python calls <code>__getattribute__()</code> to satisfy the request. This magic method, however, conforms to a procedure known as <em>descriptor protocol</em>. For the read access <code>__getattribute__()</code> checks if the object has a <code>__get__()</code> method and calls this latter. So for function the conversion from an unbound into a bound method is made by such a mechanism. Let us review it by means of an example.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
-<span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
+<span class="go">&lt;function open at 0xb73ee10c&gt;</span>
 </pre></div>
 
 
 <p>This syntax retrieves the function defined in the class; the function knows nothing about objects, but it <em>is</em> an object (remember "everything is an object"). So we can look inside it with the <code>dir()</code> built-in function</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">dir</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">])</span>
-<span class="p">[</span><span class="s">&#39;__call__&#39;</span><span class="p">,</span> <span class="s">&#39;__class__&#39;</span><span class="p">,</span> <span class="s">&#39;__closure__&#39;</span><span class="p">,</span> <span class="s">&#39;__code__&#39;</span><span class="p">,</span> <span class="s">&#39;__defaults__&#39;</span><span class="p">,</span>
- <span class="s">&#39;__delattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__dict__&#39;</span><span class="p">,</span> <span class="s">&#39;__doc__&#39;</span><span class="p">,</span> <span class="s">&#39;__format__&#39;</span><span class="p">,</span> <span class="s">&#39;__get__&#39;</span><span class="p">,</span>
- <span class="s">&#39;__getattribute__&#39;</span><span class="p">,</span> <span class="s">&#39;__globals__&#39;</span><span class="p">,</span> <span class="s">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s">&#39;__init__&#39;</span><span class="p">,</span>
- <span class="s">&#39;__module__&#39;</span><span class="p">,</span> <span class="s">&#39;__name__&#39;</span><span class="p">,</span> <span class="s">&#39;__new__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce_ex__&#39;</span><span class="p">,</span>
- <span class="s">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s">&#39;__setattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s">&#39;__str__&#39;</span><span class="p">,</span> <span class="s">&#39;__subclasshook__&#39;</span><span class="p">,</span>
- <span class="s">&#39;func_closure&#39;</span><span class="p">,</span> <span class="s">&#39;func_code&#39;</span><span class="p">,</span> <span class="s">&#39;func_defaults&#39;</span><span class="p">,</span> <span class="s">&#39;func_dict&#39;</span><span class="p">,</span> <span class="s">&#39;func_doc&#39;</span><span class="p">,</span>
- <span class="s">&#39;func_globals&#39;</span><span class="p">,</span> <span class="s">&#39;func_name&#39;</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span>
-<span class="o">&lt;</span><span class="n">method</span><span class="o">-</span><span class="n">wrapper</span> <span class="s">&#39;__get__&#39;</span> <span class="n">of</span> <span class="n">function</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">dir</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">])</span>
+<span class="go">[&#39;__call__&#39;, &#39;__class__&#39;, &#39;__closure__&#39;, &#39;__code__&#39;, &#39;__defaults__&#39;,</span>
+<span class="go"> &#39;__delattr__&#39;, &#39;__dict__&#39;, &#39;__doc__&#39;, &#39;__format__&#39;, &#39;__get__&#39;,</span>
+<span class="go"> &#39;__getattribute__&#39;, &#39;__globals__&#39;, &#39;__hash__&#39;, &#39;__init__&#39;,</span>
+<span class="go"> &#39;__module__&#39;, &#39;__name__&#39;, &#39;__new__&#39;, &#39;__reduce__&#39;, &#39;__reduce_ex__&#39;,</span>
+<span class="go"> &#39;__repr__&#39;, &#39;__setattr__&#39;, &#39;__sizeof__&#39;, &#39;__str__&#39;, &#39;__subclasshook__&#39;,</span>
+<span class="go"> &#39;func_closure&#39;, &#39;func_code&#39;, &#39;func_defaults&#39;, &#39;func_dict&#39;, &#39;func_doc&#39;,</span>
+<span class="go"> &#39;func_globals&#39;, &#39;func_name&#39;]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span>
+<span class="go">&lt;method-wrapper &#39;__get__&#39; of function object at 0xb73ee10c&gt;</span>
 </pre></div>
 
 
 <p>As you can see, a <code>__get__</code> method is listed among the members of the function, and Python recognizes it as a <em>method-wrapper</em>. This method shall connect the <code>open</code> function to the <code>door1</code> instance, so we can call it passing the instance alone</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="err">?</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="go">&lt;bound method ?.open of &lt;__main__.Door object at 0xb73f956c&gt;&gt;</span>
 </pre></div>
 
 
 <p>Ok, something is missing. Indeed <code>__get__()</code> in this case also accepts the <em>owner</em> class, i.e. the class we are trying to get the attribute from. So the correct form is</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
+<span class="go">&lt;bound method Door.open of &lt;__main__.Door object at 0xb73f956c&gt;&gt;</span>
 </pre></div>
 
 
 <h2>When methods met classes</h2>
 <p>If we use <code>type()</code> on an unbound method, we get an interesting result</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
-<span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6aa548c</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">open</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
+<span class="go">&lt;function open at 0xb6aa548c&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">open</span><span class="p">)</span>
+<span class="go">&lt;type &#39;instancemethod&#39;&gt;</span>
 </pre></div>
 
 
@@ -482,31 +488,31 @@
 
 
 <p>Such a definition makes the method callable on both the instance and the class</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
-<span class="n">Knock</span><span class="err">!</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
-<span class="n">Knock</span><span class="err">!</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">knock</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">knock</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
+<span class="go">Knock!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
+<span class="go">Knock!</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">knock</span>
+<span class="go">&lt;bound method type.knock of &lt;class &#39;__main__.Door&#39;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">knock</span>
+<span class="go">&lt;bound method type.knock of &lt;class &#39;__main__.Door&#39;&gt;&gt;</span>
 </pre></div>
 
 
 <p>And this is possible since, as you can see, both the class method and the instance method are bound. The class method is bound to the class itself, while the instance method is bound to the instance of the class. What about the type of the method?</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span>
-<span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb6a8db6c</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">knock</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span>
+<span class="go">&lt;classmethod object at 0xb6a8db6c&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">knock</span><span class="p">)</span>
+<span class="go">&lt;type &#39;instancemethod&#39;&gt;</span>
 </pre></div>
 
 
 <p>Puzzled? Don't be confused! When you look in the <code>__dict__</code> you are not going through the <code>__getattribute__()</code> and <code>__get__()</code> machinery, so you get the plain unprocessed attribute. With standard methods you find <code>function</code> objects in the members dictionary, while for class methods you find <code>classmethod</code> objects.</p>
 <p>On the other side, when you check the type of <code>door1.__class__.knock</code> you implicitly invoke <code>__get__()</code>, which binds the method to the class.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">,</span> <span class="n">Door</span><span class="p">))</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">])</span>
-<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;classmethod&#39;</span><span class="o">&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">,</span> <span class="n">Door</span><span class="p">))</span>
+<span class="go">&lt;type &#39;instancemethod&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">])</span>
+<span class="go">&lt;type &#39;classmethod&#39;&gt;</span>
 </pre></div>
 
 
@@ -533,48 +539,48 @@
 
 
 <p>where we declare a new class <code>SecurityDoor</code> that, at the moment, is a perfect copy of the <code>Door</code> class. Let us investigate what happens when we access attributes and methods. First we instance the class</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span> <span class="o">=</span> <span class="n">SecurityDoor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span> <span class="o">=</span> <span class="n">SecurityDoor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
 </pre></div>
 
 
 <p>The first check we can do is that class attributes are still global and shared</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-<span class="bp">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-<span class="bp">True</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SecurityDoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">True</span>
 </pre></div>
 
 
 <p>This shows us that Python tries to resolve instance members not only looking into the class the instance comes from, but also investigating the parent classes. In this case <code>sdoor.colour</code> becomes <code>SecurityDoor.colour</code>, that in turn becomes <code>Door.colour</code>. <code>SecurityDoor</code> <em>is</em> a <code>Door</code>.</p>
 <p>If we investigate the content of <code>__dict__</code> we can catch a glimpse of the inheritance mechanism in action</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;closed&#39;</span><span class="p">,</span> <span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span> <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;knock&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb6a8db6c</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
-    <span class="s">&#39;__weakref__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__weakref__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__dict__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__dict__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;close&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">close</span> <span class="n">at</span> <span class="mh">0xb6aa5454</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span>
-    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6aa53e4</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-    <span class="s">&#39;__init__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">__init__</span> <span class="n">at</span> <span class="mh">0xb6aa51ec</span><span class="o">&gt;</span><span class="p">})</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">{&#39;status&#39;: &#39;closed&#39;, &#39;number&#39;: 1}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">dict_proxy({&#39;__module__&#39;: &#39;__main__&#39;, &#39;__doc__&#39;: None})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">dict_proxy({&#39;knock&#39;: &lt;classmethod object at 0xb6a8db6c&gt;,</span>
+<span class="go">    &#39;__module__&#39;: &#39;__main__&#39;,</span>
+<span class="go">    &#39;__weakref__&#39;: &lt;attribute &#39;__weakref__&#39; of &#39;Door&#39; objects&gt;,</span>
+<span class="go">    &#39;__dict__&#39;: &lt;attribute &#39;__dict__&#39; of &#39;Door&#39; objects&gt;,</span>
+<span class="go">    &#39;close&#39;: &lt;function close at 0xb6aa5454&gt;,</span>
+<span class="go">    &#39;colour&#39;: &#39;brown&#39;,</span>
+<span class="go">    &#39;open&#39;: &lt;function open at 0xb6aa53e4&gt;,</span>
+<span class="go">    &#39;__doc__&#39;: None,</span>
+<span class="go">    &#39;__init__&#39;: &lt;function __init__ at 0xb6aa51ec&gt;})</span>
 </pre></div>
 
 
 <p>As you can see the content of <code>__dict__</code> for <code>SecurityDoor</code> is very narrow compared to that of <code>Door</code>. The inheritance mechanism takes care of the missing elements by climbing up the classes tree. Where does Python get the parent classes? A class always contains a <code>__bases__</code> tuple that lists them</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__bases__</span>
-<span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;,)</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__bases__</span>
+<span class="go">(&lt;class &#39;__main__.Door&#39;&gt;,)</span>
 </pre></div>
 
 
 <p>So an example of what Python does to resolve a class method call through the inheritance tree is</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">sdoor</span><span class="p">,</span> <span class="n">SecurityDoor</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">SecurityDoor</span><span class="s">&#39;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">knock</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">SecurityDoor</span><span class="s">&#39;&gt;&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">sdoor</span><span class="p">,</span> <span class="n">SecurityDoor</span><span class="p">)</span>
+<span class="go">&lt;bound method type.knock of &lt;class &#39;__main__.SecurityDoor&#39;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">knock</span>
+<span class="go">&lt;bound method type.knock of &lt;class &#39;__main__.SecurityDoor&#39;&gt;&gt;</span>
 </pre></div>
 
 
@@ -591,12 +597,12 @@
 
 
 <p>As you can forecast, the overridden members now are present in the <code>__dict__</code> of the <code>SecurityDoor</code> class</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;locked&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
-    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
-    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73d8844</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;gray&#39;</span><span class="p">,</span>
-    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">dict_proxy({&#39;locked&#39;: True,</span>
+<span class="go">    &#39;__module__&#39;: &#39;__main__&#39;,</span>
+<span class="go">    &#39;open&#39;: &lt;function open at 0xb73d8844&gt;,</span>
+<span class="go">    &#39;colour&#39;: &#39;gray&#39;,</span>
+<span class="go">    &#39;__doc__&#39;: None})</span>
 </pre></div>
 
 
@@ -710,11 +716,11 @@
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/">"Method overriding in Python"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/">"OOP concepts in Python 2.x - Part 2"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/">"OOP concepts in Python 2.x - Part 3"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">"Python 3 OOP Part 3 - Delegation: composition and inheritance"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">"Python 3 OOP Part 5 - Metaclasses"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
     </ul>
 </section>
         </article>

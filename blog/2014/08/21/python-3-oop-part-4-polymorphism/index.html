@@ -118,20 +118,20 @@
 <p>Polymorphism has two major applications in an OOP language. The first is that an object may provide different implementations of one of its methods depending on the type of the input parameters. The second is that code written for a given type of data may be used on data with a derived type, i.e. methods understand the class hierarchy of a type.</p>
 <p>In Python polymorphism is one of the key concepts, and we can say that it is a built-in feature. Let us deal with it step by step.</p>
 <p>First of all, you know that in Python the type of a variable is not explicitly declared. Beware that this does not mean that Python variables are <em>untyped</em>. On the contrary, everything in Python has a type, it just happens that the type is implicitly assigned. If you remember the last paragraph of the previous post, I stated that in Python variables are just pointers (using a C-like nomenclature), in other words they just tell the language <em>where</em> in memory a variable has been stored. What is stored at that address is not a business of the variable.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
-<span class="mi">5</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">int</span><span class="s">&#39;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-<span class="s">&#39;0x83fe540&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="s">&#39;five&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
-<span class="s">&#39;five&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">str</span><span class="s">&#39;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-<span class="s">&#39;0xb70d6560&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">&lt;class &#39;int&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="go">&#39;0x83fe540&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="s">&#39;five&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">&#39;five&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">&lt;class &#39;str&#39;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="go">&#39;0xb70d6560&#39;</span>
 </pre></div>
 
 
@@ -149,10 +149,10 @@
 
 
 <p>The function works as expected, just echoes the given parameter</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">echo</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="mi">5</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">echo</span><span class="p">(</span><span class="s">&#39;five&#39;</span><span class="p">)</span>
-<span class="s">&#39;five&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">echo</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">echo</span><span class="p">(</span><span class="s">&#39;five&#39;</span><span class="p">)</span>
+<span class="go">&#39;five&#39;</span>
 </pre></div>
 
 
@@ -170,39 +170,45 @@
 
 <p>there is no need to specify the type of the two input variables. The object <code>a</code> (the object contained in the variable <code>a</code>) shall be able to sum with the object <code>b</code>. This is a very beautiful and simple implementation of the polymorphism concept. Python functions are polymorphic simply because they accept everything and trust the input data to be able to perform some actions.</p>
 <p>Let us consider another simple example before moving on. The built-in <code>len()</code> function returns the length of the input object. For example</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
-<span class="mi">3</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;Just a sentence&quot;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-<span class="mi">15</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="s">&quot;Just a sentence&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">15</span>
 </pre></div>
 
 
 <p>As you can see it is perfectly polymorphic: you can feed both a list or a string to it and it just computes its length. Does it work with any type? let's check</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-<span class="mi">2</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">TypeError</span><span class="p">:</span> <span class="nb">object</span> <span class="n">of</span> <span class="nb">type</span> <span class="s">&#39;int&#39;</span> <span class="n">has</span> <span class="n">no</span> <span class="nb">len</span><span class="p">()</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">TypeError</span>: <span class="n">object of type &#39;int&#39; has no len()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">TypeError</span>: <span class="n">object of type &#39;int&#39; has no len()</span>
 </pre></div>
 
 
 <p>Ouch! Seems that the <code>len()</code> function is smart enough to deal with dictionaries, but not with integers. Well, after all, the length of an integer is not defined.</p>
 <p>Indeed this is exactly the point of Python polymorphism: <em>the integer type does not define a length operation</em>. While you blame the <code>len()</code> function, the <code>int</code> type is at fault. The <code>len()</code> function just calls the <code>__len__()</code> method of the input object, as you can see from this code</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
-<span class="mi">3</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
-<span class="mi">15</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
-<span class="mi">2</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">i</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
-<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-<span class="ne">AttributeError</span><span class="p">:</span> <span class="s">&#39;int&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s">&#39;__len__&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+<span class="go">15</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">d</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">i</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">AttributeError</span>: <span class="n">&#39;int&#39; object has no attribute &#39;__len__&#39;</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">AttributeError</span>: <span class="n">&#39;int&#39; object has no attribute &#39;__len__&#39;</span>
 </pre></div>
 
 
@@ -262,24 +268,24 @@
 
 
 <p>Both represent a door that can be open or closed, and they implement the concept in two different ways: the first class relies on strings, while the second leverages booleans. Despite <em>being</em> two different types, both <em>act</em> the same way, so both can be used to build a <code>Room</code> object.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_door</span> <span class="o">=</span> <span class="n">BooleanDoor</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">(</span><span class="n">door</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">(</span><span class="n">bool_door</span><span class="p">)</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bool_door</span> <span class="o">=</span> <span class="n">BooleanDoor</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">(</span><span class="n">door</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bool_room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">(</span><span class="n">bool_door</span><span class="p">)</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">room</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-<span class="bp">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">room</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-<span class="bp">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">room</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">room</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+<span class="go">False</span>
 
-<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-<span class="bp">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-<span class="bp">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bool_room</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bool_room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bool_room</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bool_room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+<span class="go">False</span>
 </pre></div>
 
 
@@ -333,11 +339,11 @@
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">"Advanced use of Python decorators and metaclasses"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-2-classes-and-members/">"Python 3 OOP Part 2 - Classes and members"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">"Python 3 OOP Part 3 - Delegation: composition and inheritance"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">"Python 3 OOP Part 5 - Metaclasses"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
     </ul>
 </section>
         </article>

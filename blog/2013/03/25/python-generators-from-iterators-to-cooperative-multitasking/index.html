@@ -159,26 +159,30 @@
 
 
 <p>This object is an iterator since it exposes <code>__iter__()</code>. Its <code>next()</code> method returns the decreasing sequence of integer numbers starting from a given number. Testing it we obtain</p>
-<div class="highlight"><pre>&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
-&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-3
-&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-2
-&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-1
-&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
-  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 7, in next
-StopIteration
-&gt;&gt;&gt;
-&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
-&gt;&gt;&gt; <span class="k">for</span> i in iterator:
-...     print i
-...
-3
-2
-1
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">AnIterator</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">iterator</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">7</span>, in <span class="n">next</span>
+<span class="gr">StopIteration</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">iterator</span> <span class="o">=</span> <span class="n">AnIterator</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterator</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="k">print</span> <span class="n">i</span>
+<span class="gp">...</span>
+<span class="go">3</span>
+<span class="go">2</span>
+<span class="go">1</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">7</span>, in <span class="n">next</span>
+<span class="gr">StopIteration</span>
 </pre></div>
 
 
@@ -218,9 +222,9 @@ StopIteration
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/">"Digging up Django class-based views - 2"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/">"OOP concepts in Python 2.x - Part 3"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">"Python 3 OOP Part 3 - Delegation: composition and inheritance"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">"OOP concepts in Python 2.x - Part 1"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
         <li><a href="http://lgiordani.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/">"Python Generators - From Iterators to Cooperative Multitasking - 2"</a></li>
         <li><a href="http://lgiordani.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/">"Python Generators - From Iterators to Cooperative Multitasking - 3"</a></li>
     </ul>

@@ -142,22 +142,22 @@
 </pre></div>
 
 
-<div class="highlight"><pre>&gt;&gt;&gt; <span class="nv">g</span> <span class="o">=</span> dec<span class="o">(</span>8<span class="o">)</span>
-&gt;&gt;&gt; g
-&lt;generator object dec at 0xb6abbf2c&gt;
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span>
+<span class="go">&lt;generator object dec at 0xb6abbf2c&gt;</span>
 </pre></div>
 
 
 <p>When executed, the <code>dec()</code> function returns a <strong>generator object</strong> and no lines of code have been executed (i.e. <code>x</code> has not yet been initialized).</p>
 <p>As soon as <code>next()</code> is called for the first time <code>x</code> will be initialized with the value passed to the function (8 in the example above) and the infinite loop will start. Inside it the local variable <code>x</code> will be decremented and returned to the caller by <code>yield</code>. This latter will also freeze again the code, holding the internal state, in this case the value of the variable <code>x</code>.</p>
-<div class="highlight"><pre>&gt;&gt;&gt; g.next<span class="o">()</span>
-7
-&gt;&gt;&gt; g.next<span class="o">()</span>
-6
-&gt;&gt;&gt; g.next<span class="o">()</span>
-5
-&gt;&gt;&gt; g.next<span class="o">()</span>
-4
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">4</span>
 </pre></div>
 
 
@@ -165,17 +165,17 @@
 <p>Since generators are iterators they are allowed to raise the <code>StopIteration</code> exception to signal their exhaustion. In the previous example the <code>dec()</code> function never raises it, thus providing an infinite generator (or infinite iterator).</p>
 <p>Another caveat: as for return a function is not limited to one statement, but can contain more than one; obviously the peculiarity of yield makes this scenario rather complex, opening at the same time remarkable possibilities such as that of easily build state machines.</p>
 <p>What happens if we call the function again, maybe with a different value of the parameter? We simply obtain a new generator object that is completely independent from the first one, although it behaves the same way.</p>
-<div class="highlight"><pre>&gt;&gt;&gt; <span class="nv">f</span> <span class="o">=</span> dec<span class="o">(</span>12<span class="o">)</span>
-&gt;&gt;&gt; f
-&lt;generator object dec at 0xb72e1cac&gt;
-&gt;&gt;&gt; f.next<span class="o">()</span>
-11
-&gt;&gt;&gt; g.next<span class="o">()</span>
-3
-&gt;&gt;&gt; f.next<span class="o">()</span>
-10
-&gt;&gt;&gt; g.next<span class="o">()</span>
-2
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">f</span> <span class="o">=</span> <span class="n">dec</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span>
+<span class="go">&lt;generator object dec at 0xb72e1cac&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">11</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">f</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">10</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">2</span>
 </pre></div>
 
 
@@ -192,25 +192,29 @@
 </pre></div>
 
 
-<div class="highlight"><pre>&gt;&gt;&gt; <span class="nv">s</span> <span class="o">=</span> sequence<span class="o">(</span>3<span class="o">)</span>
-&gt;&gt;&gt; s.next<span class="o">()</span>
-0
-&gt;&gt;&gt; s.next<span class="o">()</span>
-1
-&gt;&gt;&gt; s.next<span class="o">()</span>
-2
-&gt;&gt;&gt; s.next<span class="o">()</span>
-Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
-  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 5, in sequence
-StopIteration
-&gt;&gt;&gt;
-&gt;&gt;&gt; <span class="k">for</span> i in sequence<span class="o">(</span>3<span class="o">)</span>:
-...  print i
-...
-0
-1
-2
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">sequence</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">0</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="go">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">5</span>, in <span class="n">sequence</span>
+<span class="gr">StopIteration</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sequence</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+<span class="gp">... </span> <span class="k">print</span> <span class="n">i</span>
+<span class="gp">...</span>
+<span class="go">0</span>
+<span class="go">1</span>
+<span class="go">2</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">5</span>, in <span class="n">sequence</span>
+<span class="gr">StopIteration</span>
 </pre></div>
 
 
@@ -281,9 +285,9 @@ StopIteration
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/">"Digging up Django class-based views - 2"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/">"OOP concepts in Python 2.x - Part 3"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">"Python 3 OOP Part 3 - Delegation: composition and inheritance"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">"OOP concepts in Python 2.x - Part 1"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
         <li><a href="http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/">"Python generators - from iterators to cooperative multitasking"</a></li>
         <li><a href="http://lgiordani.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/">"Python Generators - From Iterators to Cooperative Multitasking - 3"</a></li>
     </ul>

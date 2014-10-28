@@ -135,49 +135,49 @@
 
 
 <p>where we declare a new class <code>SecurityDoor</code> that, at the moment, is a perfect copy of the <code>Door</code> class. Let us investigate what happens when we access attributes and methods. First we instance the class</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span> <span class="o">=</span> <span class="n">SecurityDoor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span> <span class="o">=</span> <span class="n">SecurityDoor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
 </pre></div>
 
 
 <p>The first check we can do is that class attributes are still global and shared</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-<span class="bp">True</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-<span class="bp">True</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SecurityDoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="go">True</span>
 </pre></div>
 
 
 <p>This shows us that Python tries to resolve instance members not only looking into the class the instance comes from, but also investigating the parent classes. In this case <code>sdoor.colour</code> becomes <code>SecurityDoor.colour</code>, that in turn becomes <code>Door.colour</code>. <code>SecurityDoor</code> <em>is</em> a <code>Door</code>.</p>
 <p>If we investigate the content of <code>__dict__</code> we can catch a glimpse of the inheritance mechanism in action</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="p">{</span><span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;closed&#39;</span><span class="p">}</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="n">mappingproxy</span><span class="p">({</span><span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">})</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="n">mappingproxy</span><span class="p">({</span><span class="s">&#39;__dict__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__dict__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;yellow&#39;</span><span class="p">,</span>
-    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">at</span> <span class="mh">0xb687e224</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__init__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">__init__</span> <span class="n">at</span> <span class="mh">0xb687e14c</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-    <span class="s">&#39;close&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">Door</span><span class="o">.</span><span class="n">close</span> <span class="n">at</span> <span class="mh">0xb687e1dc</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;knock&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb67ff6ac</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__weakref__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__weakref__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
-    <span class="s">&#39;paint&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb67ff6ec</span><span class="o">&gt;</span><span class="p">})</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">{&#39;number&#39;: 1, &#39;status&#39;: &#39;closed&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">mappingproxy({&#39;__doc__&#39;: None, &#39;__module__&#39;: &#39;__main__&#39;})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">mappingproxy({&#39;__dict__&#39;: &lt;attribute &#39;__dict__&#39; of &#39;Door&#39; objects&gt;,</span>
+<span class="go">    &#39;colour&#39;: &#39;yellow&#39;,</span>
+<span class="go">    &#39;open&#39;: &lt;function Door.open at 0xb687e224&gt;,</span>
+<span class="go">    &#39;__init__&#39;: &lt;function Door.__init__ at 0xb687e14c&gt;,</span>
+<span class="go">    &#39;__doc__&#39;: None,</span>
+<span class="go">    &#39;close&#39;: &lt;function Door.close at 0xb687e1dc&gt;,</span>
+<span class="go">    &#39;knock&#39;: &lt;classmethod object at 0xb67ff6ac&gt;,</span>
+<span class="go">    &#39;__weakref__&#39;: &lt;attribute &#39;__weakref__&#39; of &#39;Door&#39; objects&gt;,</span>
+<span class="go">    &#39;__module__&#39;: &#39;__main__&#39;,</span>
+<span class="go">    &#39;paint&#39;: &lt;classmethod object at 0xb67ff6ec&gt;})</span>
 </pre></div>
 
 
 <p>As you can see the content of <code>__dict__</code> for <code>SecurityDoor</code> is very narrow compared to that of <code>Door</code>. The inheritance mechanism takes care of the missing elements by climbing up the classes tree. Where does Python get the parent classes? A class always contains a <code>__bases__</code> tuple that lists them</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__bases__</span>
-<span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;,)</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__bases__</span>
+<span class="go">(&lt;class &#39;__main__.Door&#39;&gt;,)</span>
 </pre></div>
 
 
 <p>So an example of what Python does to resolve a class method call through the inheritance tree is</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">sdoor</span><span class="p">)</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">SecurityDoor</span><span class="s">&#39;&gt;&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">knock</span>
-<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">SecurityDoor</span><span class="s">&#39;&gt;&gt;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">sdoor</span><span class="p">)</span>
+<span class="go">&lt;bound method type.knock of &lt;class &#39;__main__.SecurityDoor&#39;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">knock</span>
+<span class="go">&lt;bound method type.knock of &lt;class &#39;__main__.SecurityDoor&#39;&gt;&gt;</span>
 </pre></div>
 
 
@@ -194,12 +194,12 @@
 
 
 <p>As you can forecast, the overridden members now are present in the <code>__dict__</code> of the <code>SecurityDoor</code> class</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__dict__</span>
-<span class="n">mappingproxy</span><span class="p">({</span><span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
-    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">open</span> <span class="n">at</span> <span class="mh">0xb6fcf89c</span><span class="o">&gt;</span><span class="p">,</span>
-    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;gray&#39;</span><span class="p">,</span>
-    <span class="s">&#39;locked&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">})</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="go">mappingproxy({&#39;__doc__&#39;: None,</span>
+<span class="go">    &#39;__module__&#39;: &#39;__main__&#39;,</span>
+<span class="go">    &#39;open&#39;: &lt;function SecurityDoor.open at 0xb6fcf89c&gt;,</span>
+<span class="go">    &#39;colour&#39;: &#39;gray&#39;,</span>
+<span class="go">    &#39;locked&#39;: True})</span>
 </pre></div>
 
 
@@ -217,16 +217,16 @@
 
 
 <p>You can easily test that this implementation is working correctly.</p>
-<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span> <span class="o">=</span> <span class="n">SecurityDoor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">status</span>
-<span class="s">&#39;closed&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">status</span>
-<span class="s">&#39;closed&#39;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">locked</span> <span class="o">=</span> <span class="bp">False</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">status</span>
-<span class="s">&#39;open&#39;</span>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span> <span class="o">=</span> <span class="n">SecurityDoor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;closed&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;closed&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">locked</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sdoor</span><span class="o">.</span><span class="n">status</span>
+<span class="go">&#39;open&#39;</span>
 </pre></div>
 
 
@@ -311,11 +311,11 @@
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">"Advanced use of Python decorators and metaclasses"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-2-classes-and-members/">"Python 3 OOP Part 2 - Classes and members"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">"Python 3 OOP Part 4 - Polymorphism"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">"Python 3 OOP Part 5 - Metaclasses"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
     </ul>
 </section>
         </article>
