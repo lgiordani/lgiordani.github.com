@@ -120,7 +120,7 @@
 &lt;h2&gt;Book Trivia&lt;/h2&gt;
 &lt;p&gt;Section titles come from the following books: &lt;em&gt;A Match Made in Space - George McFly&lt;/em&gt;, &lt;em&gt;The Hitchhiker's Guide To the Galaxy - Various Authors&lt;/em&gt;, &lt;em&gt;The Anatomy of Purple Dragons - Unknown&lt;/em&gt;, &lt;em&gt;The Dynamics of an Asteroid - James Moriarty&lt;/em&gt;.&lt;/p&gt;
 &lt;h2&gt;Source code&lt;/h2&gt;
-&lt;p&gt;The &lt;a href="/downloads/code/metaclasses/strproc.py"&gt;strproc.py&lt;/a&gt; file contains the full source code used in this post.&lt;/p&gt;
+&lt;p&gt;The &lt;a href="/code/metaclasses/strproc.py"&gt;strproc.py&lt;/a&gt; file contains the full source code used in this post.&lt;/p&gt;
 &lt;h2&gt;Online resources&lt;/h2&gt;
 &lt;p&gt;The following resources may be useful.&lt;/p&gt;
 &lt;h4&gt;Metaclasses&lt;/h4&gt;
