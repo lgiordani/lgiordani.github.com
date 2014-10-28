@@ -1,327 +1,212 @@
-
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en"
+>
 <head>
-	<meta charset="utf-8">
-	<title>Digging up Django class-based views - 2 - The digital cat</title>
-    <meta name="author" content="Leonardo Giordani">
-    
-	<meta name="description" content="Published on: Dec 11th, 2013 Tags: django, python Posted by Leonardo Giordani Abstract This post refers to Django 1.5. Please be warned that some of &hellip;">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>"Digging up Django class-based views - 2" - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.ico" rel="shortcut icon">
-    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
 
-    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<link rel="canonical" href="http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/">
 
-    <!-- remove or comment it to disable ajaxification -->   
-    <script src="/javascripts/ajaxify.js"></script>
-   
-    
-    
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="python,django" />
 
-  ga('create', 'UA-38715090-1', 'auto');
-  ga('send', 'pageview');
+    <!-- Enable latex plugin -->
 
-</script>
 
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/categories/Programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
 
 </head>
-
-
 <body>
-    <div id="wrapper">
-    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
-<h1 class="animated pulse">
-    <div id="headerbg">
-        The digital cat
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-</h1>
-<br>
+</div> <!-- /.navbar -->
 
-<ul id="social-links" style="text-align:center">
-  
-  <!-- GitHub -->
-  <li>
-  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
-  </li>
-  
-  
-  <!-- Google Plus -->
-  <li>
-  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
-  </li>
-  
-  
-  
-  <!-- Twitter -->
-  <li>
-  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
-  </li>
-  
-  
-  
-  
-  
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/"
+                       rel="bookmark"
+                       title="Permalink to "Digging up Django class-based views - 2"">
+                        "Digging up Django class-based views - 2"
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-12-11T09:00:00+02:00"> mer 11 dicembre 2013</time>
+    </span>
 
 
-<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
-<ul id="nav">
-	<li id="ajax"><a href="/index.html">Home</a></li>
-	<li id="ajax"><a href="/about">About me</a></li>
-	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
-    <li><a href="/atom.xml">RSS</a></li>
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/blog/categories/python/">python</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/django/">django</a>
     
-    <li>
-    <div id="dark">
-        <form method="get" action="/search.html" id="search">
-            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
-        </form>
-    </div>
-    </li>
-        
-</ul>
-
-
-
-
-</header>
-
-<div id="toload">
-<!-- begin toload --> 
-    <div id="content" class="inner">
-        <article class="post">
-	<h2 class="title">Digging Up Django Class-based Views - 2</h2>
-	<div class="entry-content">
-          <div class="meta">
-            <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-12-11T09:00:00+01:00" pubdate data-updated="true">Dec 11<span>th</span>, 2013</time></div>
-            <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/django/'>django</a>, <a class='category' href='/blog/categories/python/'>python</a>
-
-
-</div>
-          </div>
-          
-  
-
-<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
-
-          <h2>Abstract</h2>
-
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <h2>Abstract</h2>
 <p><em>This post refers to Django 1.5. Please be warned that some of the matters discussed here, some solutions or the given code can be outdated by more recent Django versions</em></p>
-
 <p>In the first installment of this short series, I introduced the theory behind Django class-based views and the reason why in this context classes are more powerful than pure functions. I also introduced one of the generic views Django provides out-of-the-box, which is <code>ListView</code>.</p>
-
-<p>In this second post I want to talk about the second most used generic view, <code>DetailView</code>, and about custom querysets and arguments. Last, I&#8217;m going to introduce unspecialized class-based views that allow you to build more complex Web pages. To fully understand <code>DetailView</code>, however, you need to grasp two essential concepts, namely <strong>querysets</strong> and <strong>view parameters</strong>. So I&#8217;m sorry for the learn-by-doing readers, but this time too I&#8217;m going to start with some pure programming topics.</p>
-
-<!--more-->
-
-
+<p>In this second post I want to talk about the second most used generic view, <code>DetailView</code>, and about custom querysets and arguments. Last, I'm going to introduce unspecialized class-based views that allow you to build more complex Web pages. To fully understand <code>DetailView</code>, however, you need to grasp two essential concepts, namely <strong>querysets</strong> and <strong>view parameters</strong>. So I'm sorry for the learn-by-doing readers, but this time too I'm going to start with some pure programming topics.</p>
 <h2>QuerySets or the art of extracting information</h2>
-
 <p>One of the most important parts of Django is the ORM (Object Relational Mapper), which allows you to access the underlying database just like a collection of Python objects. As you know, Django provides you tools to simplify the construction of DB queries; they are <strong>managers</strong> (the <code>.objects</code> attribute of any models, for example) and <strong>query methods</strong> (<code>get()</code>, <code>filter()</code>, and friends). Pay attention because things here are slightly more magical than you can think at a first glance.</p>
-
 <p>When you use one of the methods of a manager you get as a result a <code>QuerySet</code>, which most of the time is used as a list, but is more than this. You can find <a href="https://docs.djangoproject.com/en/1.5/topics/db/queries/">here</a> and <a href="https://docs.djangoproject.com/en/1.5/ref/models/querysets/">here</a> the official documentation about queries and QuerySets, a very recommended reading.</p>
-
 <p>What I want to stress here is that QuesySets are not evaluated until you perform an action that access the content like slicing or iterating on it. This means that we can build QuerySets, pass them to functions, store them, and even build them programmatically or metaprogramming them without the DB being hit. If you think at QuerySets as recipes you are not far from the truth: they are objects that store how you want to retrieve the data of your interest. Actually retriving them is another part of the game. This separation between the definition of something and its execution is called <strong>lazy evaluation</strong>.</p>
-
 <p>Let me give you a very trivial example to show why the lazy evaluation of QuerySets is important.</p>
+<div class="highlight"><pre><span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">get_oldest_three</span><span class="p">(</span><span class="n">queryset</span><span class="p">):</span>
-</span><span class='line'>  <span class="k">return</span> <span class="n">queryset</span><span class="o">.</span><span class="n">order_by</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">old_books</span> <span class="o">=</span> <span class="n">get_oldest_three</span><span class="p">(</span><span class="n">Book</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
-</span><span class='line'><span class="n">old_hardcover_books</span> <span class="o">=</span> \
-</span><span class='line'>    <span class="n">get_oldest_three</span><span class="p">(</span><span class="n">Book</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;type=Book.HARDCOVER&#39;</span><span class="p">))</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="k">def</span> <span class="nf">get_oldest_three</span><span class="p">(</span><span class="n">queryset</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">queryset</span><span class="o">.</span><span class="n">order_by</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+
+<span class="n">old_books</span> <span class="o">=</span> <span class="n">get_oldest_three</span><span class="p">(</span><span class="n">Book</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+<span class="n">old_hardcover_books</span> <span class="o">=</span> \
+    <span class="n">get_oldest_three</span><span class="p">(</span><span class="n">Book</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="s">&#39;type=Book.HARDCOVER&#39;</span><span class="p">))</span>
+</pre></div>
 
 
-<p>As you can see the <code>get_oldest_three()</code> method is just filtering an incoming QuerySet (which can be of any type); it simply orders the objects and gets the first three inserted in the DB. The important thing here is that we are using QuerySets like pure &#8216;algorithms&#8217;, or descriptions of a procedure. When creating the <code>old_books</code> variable we are just telling the <code>get_oldest_three()</code> method &#8220;Hey, this is the way I extract the data I&#8217;m interested in. May you please refine it and return the actual data?&#8221;</p>
-
+<p>As you can see the <code>get_oldest_three()</code> method is just filtering an incoming QuerySet (which can be of any type); it simply orders the objects and gets the first three inserted in the DB. The important thing here is that we are using QuerySets like pure 'algorithms', or descriptions of a procedure. When creating the <code>old_books</code> variable we are just telling the <code>get_oldest_three()</code> method "Hey, this is the way I extract the data I'm interested in. May you please refine it and return the actual data?"</p>
 <p>Being such flexible objects, QuerySets are an important part of generic views, so keep them warm for the upcoming banquet.</p>
-
 <h2>Being flexible: parametric views</h2>
-
-<p>URLs are the API of our Web site or service. This can be more or less evident for the user that browses through the pages, but from the programmer&#8217;s point of view URLs are the entry points of a computer system. As such, they are not very different from the API of a library: here, static pages are just like constants, or functions that always return that same value (such as a configuration parameter), while dynamic pages are like functions that process incoming data (parameters) and return a result.</p>
-
-<p>So Web URLs can accept parameters, and our underlying view shall do the same. You basically have three methods to convey parameters from the user&#8217;s browser to your server using HTTP. The first method is named <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> and lists parameters directly in the URL through a universal syntax. The second method is storing parameters in the HTTP request body, which is what POST requests do. We will discuss this method in a later post about forms.</p>
-
+<p>URLs are the API of our Web site or service. This can be more or less evident for the user that browses through the pages, but from the programmer's point of view URLs are the entry points of a computer system. As such, they are not very different from the API of a library: here, static pages are just like constants, or functions that always return that same value (such as a configuration parameter), while dynamic pages are like functions that process incoming data (parameters) and return a result.</p>
+<p>So Web URLs can accept parameters, and our underlying view shall do the same. You basically have three methods to convey parameters from the user's browser to your server using HTTP. The first method is named <a href="http://en.wikipedia.org/wiki/Query_string">query string</a> and lists parameters directly in the URL through a universal syntax. The second method is storing parameters in the HTTP request body, which is what POST requests do. We will discuss this method in a later post about forms.</p>
 <p>The first method has one big drawback: most of the time URLs are long (and sometimes <em>too</em> long), and difficult to use as a real API. To soften this effect the concept of <a href="http://en.wikipedia.org/wiki/Clean_URL">clean URL</a> arose, and this is the way Django follows natively (though, if you want, you can also stick to the query string method).</p>
-
 <p>Now, <a href="https://docs.djangoproject.com/en/1.5/topics/http/urls/">you know</a> that you can collect parameters contained in the URL parsing it with a regular expression; what we need to discover is how class-based views receive and process them.</p>
-
 <p>In the previous post we already discussed the <code>as_view()</code> method that shall instance the class and return the result of <code>dispatch()</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L46">views/generic/base.py#L46</a>).</p>
+<div class="highlight"><pre>    <span class="nd">@classonlymethod</span>
+    <span class="k">def</span> <span class="nf">as_view</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">initkwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Main entry point for a request-response process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># sanitize keyword arguments</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">initkwargs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">http_method_names</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;You tried to pass in the </span><span class="si">%s</span><span class="s"> method name as a &quot;</span>
+                                <span class="s">&quot;keyword argument to </span><span class="si">%s</span><span class="s">(). Don&#39;t do that.&quot;</span>
+                                <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">() received an invalid keyword </span><span class="si">%r</span><span class="s">. as_view &quot;</span>
+                                <span class="s">&quot;only accepts arguments that are already &quot;</span>
+                                <span class="s">&quot;attributes of the class.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="nd">@classonlymethod</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">as_view</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">initkwargs</span><span class="p">):</span>
-</span><span class='line'>    <span class="sd">&quot;&quot;&quot;</span>
-</span><span class='line'><span class="sd">    Main entry point for a request-response process.</span>
-</span><span class='line'><span class="sd">    &quot;&quot;&quot;</span>
-</span><span class='line'>    <span class="c"># sanitize keyword arguments</span>
-</span><span class='line'>    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">initkwargs</span><span class="p">:</span>
-</span><span class='line'>        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">http_method_names</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;You tried to pass in the </span><span class="si">%s</span><span class="s"> method name as a &quot;</span>
-</span><span class='line'>                            <span class="s">&quot;keyword argument to </span><span class="si">%s</span><span class="s">(). Don&#39;t do that.&quot;</span>
-</span><span class='line'>                            <span class="o">%</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">))</span>
-</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-</span><span class='line'>            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">() received an invalid keyword </span><span class="si">%r</span><span class="s">. as_view &quot;</span>
-</span><span class='line'>                            <span class="s">&quot;only accepts arguments that are already &quot;</span>
-</span><span class='line'>                            <span class="s">&quot;attributes of the class.&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="o">**</span><span class="n">initkwargs</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;get&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;head&#39;</span><span class="p">):</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
-</span><span class='line'>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># take name and docstring from class</span>
-</span><span class='line'>    <span class="n">update_wrapper</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">cls</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="p">())</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="c"># and possible attributes set by decorators</span>
-</span><span class='line'>    <span class="c"># like csrf_exempt from dispatch</span>
-</span><span class='line'>    <span class="n">update_wrapper</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">dispatch</span><span class="p">,</span> <span class="n">assigned</span><span class="o">=</span><span class="p">())</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">view</span>
-</span></code></pre></td></tr></table></div></figure>
+        <span class="k">def</span> <span class="nf">view</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="bp">self</span> <span class="o">=</span> <span class="n">cls</span><span class="p">(</span><span class="o">**</span><span class="n">initkwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;get&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;head&#39;</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">request</span> <span class="o">=</span> <span class="n">request</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c"># take name and docstring from class</span>
+        <span class="n">update_wrapper</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">cls</span><span class="p">,</span> <span class="n">updated</span><span class="o">=</span><span class="p">())</span>
+
+        <span class="c"># and possible attributes set by decorators</span>
+        <span class="c"># like csrf_exempt from dispatch</span>
+        <span class="n">update_wrapper</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">dispatch</span><span class="p">,</span> <span class="n">assigned</span><span class="o">=</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">view</span>
+</pre></div>
 
 
 <p>Now look at what the <code>view()</code> wrapper function actually does with the instanced class (here line 21, <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L65">views/generic/base.py#L65</a>); not surprisingly it takes the <code>request</code>, <code>args</code> and <code>kwargs</code> passed by the URLconf passes and converts them into as many class attributes with the same names.</p>
-
 <p>This means that <em>everywhere in our CBVs</em> we can access the original call parameters simply reading <code>self.request</code>, <code>self.args</code> and <code>self.kwargs</code>, where <code>*args</code> and <code>**kwargs</code> are the unnamed and named values extracted by the URLconf regular expression.</p>
-
 <h2>Details</h2>
-
 <p>Just after listing things, one of the most useful things a Web site does is giving details about objects. Obviously any e-commerce site is made for the most part by pages that list products and show product details, but also a blog is made of one or more pages with a list of posts and a page for each of them. So building a detailed view of the content of our database is worth learning.</p>
-
-<p>To help us in this task Django provides <code>DetailView</code>, which indeed deals, as the name suggests, with the details of what we get from the DB. While <code>ListView</code>&#8217;s basic behaviour is to extract the list of all objects with a given model, <code>DetailView</code> extracts a single object. How does it know what object shall be extracted?</p>
-
-<p>When <code>dispatch()</code> is called on an incoming HTTP request the only thing it does is to look at the <code>method</code> attribute, which for <code>HttpRequest</code> objects contains the name of the HTTP verb used (e.g. <code>'GET'</code>); then <code>dispatch()</code> looks for a method of the class with the lowercase name of the verb (e.g. <code>'GET'</code> &#8211;> <code>get()</code>) (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L78">views/generic/base.py#L78</a>). This handler is then called with the same parameters of <code>dispatch()</code>, namely the <code>request</code> itself, <code>*args</code> and <code>**kwargs</code>.</p>
-
+<p>To help us in this task Django provides <code>DetailView</code>, which indeed deals, as the name suggests, with the details of what we get from the DB. While <code>ListView</code>'s basic behaviour is to extract the list of all objects with a given model, <code>DetailView</code> extracts a single object. How does it know what object shall be extracted?</p>
+<p>When <code>dispatch()</code> is called on an incoming HTTP request the only thing it does is to look at the <code>method</code> attribute, which for <code>HttpRequest</code> objects contains the name of the HTTP verb used (e.g. <code>'GET'</code>); then <code>dispatch()</code> looks for a method of the class with the lowercase name of the verb (e.g. <code>'GET'</code> --&gt; <code>get()</code>) (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L78">views/generic/base.py#L78</a>). This handler is then called with the same parameters of <code>dispatch()</code>, namely the <code>request</code> itself, <code>*args</code> and <code>**kwargs</code>.</p>
 <p><code>DetailView</code> has no body and inherits everything from two classes; the second one, <code>BaseDetailView</code>, implements the <code>get()</code> method (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L107">views/generic/detail.py#L107</a>).</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span class='line'>    <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
-</span><span class='line'>    <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">object</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_object</span><span class="p">()</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="nb">object</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">render_to_response</span><span class="p">(</span><span class="n">context</span><span class="p">)</span>
+</pre></div>
 
 
-<p>As you can see this method extracts the single object it shall represent calling <code>self.get_object()</code>, then calls <code>self.get_context_data()</code> (that we met in the previous post) and last the familiar <code>self.render_to_response()</code> that is the class equivalent of the well know Django function. The method <code>self.get_object()</code> is provided by <code>BaseDetailView</code>&#8217;s ancestor <code>SingleObjectMixin</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L10">generic/detail.py#L10</a>): the most important parts of its code, for the sake of our present topic are</p>
+<p>As you can see this method extracts the single object it shall represent calling <code>self.get_object()</code>, then calls <code>self.get_context_data()</code> (that we met in the previous post) and last the familiar <code>self.render_to_response()</code> that is the class equivalent of the well know Django function. The method <code>self.get_object()</code> is provided by <code>BaseDetailView</code>'s ancestor <code>SingleObjectMixin</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/detail.py#L10">generic/detail.py#L10</a>): the most important parts of its code, for the sake of our present topic are</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">queryset</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">()</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queryset</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">queryset</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-</span><span class='line'>        <span class="n">queryset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_queryset</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk_url_kwarg</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">pk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-</span><span class='line'>        <span class="n">queryset</span> <span class="o">=</span> <span class="n">queryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">obj</span> <span class="o">=</span> <span class="n">queryset</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">return</span> <span class="n">obj</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="n">pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pk_url_kwarg</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">queryset</span> <span class="o">=</span> <span class="n">queryset</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">pk</span><span class="o">=</span><span class="n">pk</span><span class="p">)</span>
+
+    <span class="n">obj</span> <span class="o">=</span> <span class="n">queryset</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">obj</span>
+</pre></div>
 
 
 <p><strong>Warning</strong>: I removed many lines from the previous function to improve readability; please check the original source code for the complete implementation.</p>
-
 <p>The code shows where <code>DetailView</code> gets the queryset from; the <code>get_queryset()</code> method is provided by <code>SingleObjectMixin</code> itself and basically returns <code>self.queryset</code> if present, otherwise returns all objects of the given model (acting just like <code>ListView</code> does). This <code>queryset</code> is then refined by a <code>filter()</code> and last by a <code>get()</code>. Here <code>get()</code> is not used directly (I think) to manage the different error cases and raise the correct exceptions.</p>
-
 <p>The parameter <code>pk</code> used in <code>filter()</code> comes directly from <code>self.kwargs</code>, so it is taken directly from the URL. Since this is a core concept of views in general I want to look at this part carefully.</p>
-
 <p>Our <code>DetailView</code> is called by an URLconf that provides a regular expression to parse the URL, for example <code>url(r'^(?P&lt;pk&gt;\d+)/$',</code>. This regex extracts a parameter and gives it the name <code>pk</code>, so <code>kwargs</code> of the view will contain <code>pk</code> as key and the actual number in the URL as value. For example the URL <code>123/</code> will result in <code>{'pk': 123}</code>. The default behaviour of <code>DetailView</code> is to look for a <code>pk</code> key and use it to perform the filtering of the queryset, since <code>self.pk_url_kwarg</code> is <code>'pk'</code>.</p>
-
 <p>So if we want to change the name of the parameter we can simply define the <code>pk_url_kwarg</code> of our class and provide a regex that extract the primary key with the new name. For example <code>url(r'^(?P&lt;key&gt;\d+)/$',</code> extracts it with the name <code>key</code>, so we will define <code>pk_url_kwarg = 'key'</code> in our class.</p>
-
 <p>From this quick exploration we learned that a class inheriting from <code>DetailView</code>:</p>
-
 <ul>
 <li>provides a context with the <code>object</code> key initialized to a single object</li>
 <li><strong>must</strong> be configured with a <code>model</code> class attribute, to know what objects to extract</li>
@@ -329,158 +214,256 @@
 <li><strong>must</strong> be called from a URL that includes a regexp that extracts the primary key of the searched object as <code>pk</code></li>
 <li><strong>can</strong> be configured to use a different name for the primary key through the <code>pk_url_kwarg</code> class attribute</li>
 </ul>
-
-
 <p>The basic use of <code>DetailView</code> is thus exemplified by the following code.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">BookDetail</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Book</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">BookDetail</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">model</span> <span class="o">=</span> <span class="n">Book</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^(?P&lt;pk&gt;\d+)/$&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="n">BookDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span>
-</span><span class='line'>        <span class="n">name</span><span class="o">=</span><span class="s">&#39;detail&#39;</span><span class="p">),</span>
-</span><span class='line'>    <span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^(?P&lt;pk&gt;\d+)/$&#39;</span><span class="p">,</span>
+        <span class="n">BookDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&#39;detail&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
 
 
 <p>The view extracts a single object with the <code>Book</code> model; the regex is configured with the standard <code>pk</code> name.</p>
-
 <p>As shown for <code>ListView</code> in the previous post, any CBV uses <code>get_context_data()</code> to return the context dictionary to the rendering engine. So views that inherit from <code>DetailView</code> can add data to the context following the same pattern</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">BookDetail</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Book</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">BookDetail</span><span class="p">(</span><span class="n">DetailView</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">model</span> <span class="o">=</span> <span class="n">Book</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-</span><span class='line'>      <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">BookDetail</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</span><span class='line'>      <span class="n">context</span><span class="p">[</span><span class="s">&#39;similar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_similar_books</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">context</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^(?P&lt;pk&gt;\d+)/$&#39;</span><span class="p">,</span>
-</span><span class='line'>        <span class="n">BookDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span>
-</span><span class='line'>        <span class="n">name</span><span class="o">=</span><span class="s">&#39;detail&#39;</span><span class="p">),</span>
-</span><span class='line'>    <span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">get_context_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">BookDetail</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">get_context_data</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">context</span><span class="p">[</span><span class="s">&#39;similar&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_similar_books</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">object</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">context</span>
+
+<span class="n">urlpatterns</span> <span class="o">=</span> <span class="n">patterns</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span>
+    <span class="n">url</span><span class="p">(</span><span class="s">r&#39;^(?P&lt;pk&gt;\d+)/$&#39;</span><span class="p">,</span>
+        <span class="n">BookDetail</span><span class="o">.</span><span class="n">as_view</span><span class="p">(),</span>
+        <span class="n">name</span><span class="o">=</span><span class="s">&#39;detail&#39;</span><span class="p">),</span>
+    <span class="p">)</span>
+</pre></div>
 
 
 <p>As explained before, you can access the object being shown through <code>self.object</code>, which in the above example is passed to a service function we implemented somewhere in our code.</p>
-
 <h2>Using the base views</h2>
-
 <p>Sometimes, when dealing with complex pages, the generic display CBVs that Django provides are not the right choice. This usually becomes evident when you start overriding method to prevent the view to perform its standard behaviour. As an instance say that you want to show detailed information of more than one object: probably DetailView will soon show its limits, being built to show only one object.</p>
-
 <p>In all those cases that cannot be easily solved by one of the generic display CBVs, your way goes through other classes: <code>RedirectView</code>, <code>TemplateView</code>, and <code>View</code>. The documentation for these base views is <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/base/">here</a>, while the source code is in <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py">views/generic/base.py</a>.</p>
-
-<p>I&#8217;m not going to fully describe those views; I want however to briefly point out some peculiarities.</p>
-
+<p>I'm not going to fully describe those views; I want however to briefly point out some peculiarities.</p>
 <p><code>View</code> is by now an old friend of us; we met it when we discussed the <code>as_view()</code> and <code>dispatch()</code> method. It is the most generic view class and can be leveraged to perform very specialized tasks such as rendering pages without templates (for example when returning JSON data in AJAX techniques).</p>
-
 <p><code>TemplateView</code> is the best choice to render pages from a template keeping in the meanwhile freedom as regards the context content. Chances are that this is going to be the view you will use the most after <code>ListView</code> and <code>DetailView</code>. Basically you just need to inherit from it and define the <code>get_context_data()</code> method. As you can see from the <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L147">source code</a> <code>TemplateView</code> answers to GET requests only.</p>
-
-<p><code>RedirectView</code>, as the name implies, is used to redirect a request. The redirection mechanism is very simple: its <code>get()</code> method returns a <code>HttpResponseRedirect</code> to the URL defined by the <code>url</code> class attribute. The class exhibits a very interesting behaviour (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L195">views/generic/base.py#L195</a>) when called through HTTP methods other than GET (namely HEAD, POST, OPTIONS, DELETE, and PUT): it &#8220;converts&#8221; the method to GET simply calling <code>get()</code> from the respective method (<code>head()</code>, <code>post()</code>, and so on). In the next post I&#8217;ll show how to leverage this simple technique to show the user a prefilled form.</p>
-
+<p><code>RedirectView</code>, as the name implies, is used to redirect a request. The redirection mechanism is very simple: its <code>get()</code> method returns a <code>HttpResponseRedirect</code> to the URL defined by the <code>url</code> class attribute. The class exhibits a very interesting behaviour (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/base.py#L195">views/generic/base.py#L195</a>) when called through HTTP methods other than GET (namely HEAD, POST, OPTIONS, DELETE, and PUT): it "converts" the method to GET simply calling <code>get()</code> from the respective method (<code>head()</code>, <code>post()</code>, and so on). In the next post I'll show how to leverage this simple technique to show the user a prefilled form.</p>
 <h2>Date-based views</h2>
-
 <p>Django provides other class-based views that simplify dealing with objects extracted or ordered by date. As a programmer, you know that dealing with dates is sometimes at least awkward; the views in <a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/dates.py">views/generic/dates.py</a> aims to help you to tame your date-based objects; any object that contains a date (e.g. post date for articles, birth date for people, log date for messages, etc) can be processed by these views. You can find the official documentation <a href="https://docs.djangoproject.com/en/1.5/ref/class-based-views/generic-date-based/">here</a>.</p>
-
 <p>Remember that date-based views are CBVs, so they are based on <code>View</code>, just like <code>ListView</code> or <code>TemplateView</code>. So, apart from their specialization on date processing, they behave the same (<code>get_context_data()</code>, <code>get()</code>, <code>dispatch()</code>, and so on).</p>
-
 <h2>Conclusion</h2>
-
 <p>In this post we covered <code>DetailView</code> in deep and, more quickly, all the remaining base and data-based views. In the next post we will step into the rich (and strange) world of forms.</p>
-
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post or to ask for an in-depth analysis of some topic. <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> is the best place to submit corrections.</p>
-
 <h2>Previous articles</h2>
-
 <ul>
 <li><a href="/blog/2013/10/28/digging-up-django-class-based-views-1">Digging Up Django Class-based Views - 1</a></li>
 </ul>
-
-
 <h2>Next articles</h2>
-
 <ul>
 <li><a href="/blog/2014/02/14/digging-up-django-class-based-views-3">Digging Up Django Class-based Views - 3</a></li>
 </ul>
-
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2014/02/14/digging-up-django-class-based-views-3/">"Digging up Django class-based views - 3"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/10/28/digging-up-django-class-based-views-1/">"Digging up Django class-based views - 1"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">"OOP concepts in Python 2.x - Part 1"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/">"Postage - a RabbitMQ-based component Python library"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/">"OOP concepts in Python 2.x - Part 3"</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
 
         </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
 
-<div class="meta">
-	
-</div>
-</article>
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
 
-	<div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
-</div>
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                "Advanced use of Python decorators and metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                "Python 3 OOP Part 6 - Abstract Base Classes"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                "Python 3 OOP Part 5 - Metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">
+                                "Python 3 OOP Part 4 - Polymorphism"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">
+                                "Python 3 OOP Part 3 - Delegation: composition and inheritance"
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/amqp/">
+                                amqp
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/c/">
+                                c++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/c-language/">
+                                C-language
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/django/">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/erlang/">
+                                erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/git/">
+                                git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/pika/">
+                                pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/postage/">
+                                postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python/">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/python2/">
+                                python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python3/">
+                                python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/qt/">
+                                qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/rabbitmq/">
+                                rabbitmq
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
 
+        </ul>
+    </section>
+
+</aside>        </div>
     </div>
-    <footer id="footer">
-    <div style="display:inline">
-	<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">The Digital Cat</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://lgiordani.com/about/" property="cc:attributionName" rel="cc:attributionURL">Leonardo Giordani</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-	<br />
-    Powered by <a href="http://octopress.org">Octopress</a> | Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
 </div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
 
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
 
-    </footer>
-    <script src="/javascripts/fabric.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
 
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-
-
-
-<!-- end toload --> 
-</div>
-</div>
-<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
-<script type="text/javascript">
-/*<![CDATA[*/
-;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
-/*]]>*/
-</script><!-- remove it to remove the scroll to top button -->
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
 </body>
 </html>

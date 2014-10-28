@@ -1,654 +1,574 @@
-
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en"
+>
 <head>
-	<meta charset="utf-8">
-	<title>OOP concepts in Python 2.x - Part 3 - The digital cat</title>
-    <meta name="author" content="Leonardo Giordani">
-    
-	<meta name="description" content="Published on: Jul 4th, 2014 Tags: oop, python, python2 Posted by Leonardo Giordani Abstract Welcome to the third installment of this little series &hellip;">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>"OOP concepts in Python 2.x - Part 3" - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.ico" rel="shortcut icon">
-    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
 
-    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<link rel="canonical" href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/">
 
-    <!-- remove or comment it to disable ajaxification -->   
-    <script src="/javascripts/ajaxify.js"></script>
-   
-    
-    
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="python2,python,OOP" />
 
-  ga('create', 'UA-38715090-1', 'auto');
-  ga('send', 'pageview');
+    <!-- Enable latex plugin -->
 
-</script>
 
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/categories/Programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
 
 </head>
-
-
 <body>
-    <div id="wrapper">
-    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
-<h1 class="animated pulse">
-    <div id="headerbg">
-        The digital cat
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-</h1>
-<br>
+</div> <!-- /.navbar -->
 
-<ul id="social-links" style="text-align:center">
-  
-  <!-- GitHub -->
-  <li>
-  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
-  </li>
-  
-  
-  <!-- Google Plus -->
-  <li>
-  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
-  </li>
-  
-  
-  
-  <!-- Twitter -->
-  <li>
-  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
-  </li>
-  
-  
-  
-  
-  
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/"
+                       rel="bookmark"
+                       title="Permalink to "OOP concepts in Python 2.x - Part 3"">
+                        "OOP concepts in Python 2.x - Part 3"
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-07-04T13:00:00+02:00"> ven 04 luglio 2014</time>
+    </span>
 
 
-<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
-<ul id="nav">
-	<li id="ajax"><a href="/index.html">Home</a></li>
-	<li id="ajax"><a href="/about">About me</a></li>
-	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
-    <li><a href="/atom.xml">RSS</a></li>
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/blog/categories/python2/">python2</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/python/">python</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/oop/">OOP</a>
     
-    <li>
-    <div id="dark">
-        <form method="get" action="/search.html" id="search">
-            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
-        </form>
-    </div>
-    </li>
-        
-</ul>
-
-
-
-
-</header>
-
-<div id="toload">
-<!-- begin toload --> 
-    <div id="content" class="inner">
-        <article class="post">
-	<h2 class="title">OOP Concepts in Python 2.x - Part 3</h2>
-	<div class="entry-content">
-          <div class="meta">
-            <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-07-04T13:00:00+02:00" pubdate data-updated="true">Jul 4<span>th</span>, 2014</time></div>
-            <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/oop/'>oop</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/python2/'>python2</a>
-
-
-</div>
-          </div>
-          
-  
-
-<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
-
-          <h2>Abstract</h2>
-
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <h2>Abstract</h2>
 <p>Welcome to the third installment of this little series of posts about Python 2.x OOP implementation. The <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">first</a> and <a href="/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2">second</a> issues introduced the most important concepts at the basis of Python as an object-oriented language.</p>
-
 <p>This post will continue the discussion about metaclasses, introducing Abstract Base Classes, and give some insights on callable objects.</p>
-
 <p>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the <strong>updated version</strong> <a href="/blog/categories/python3/">here</a>.</p>
-
-<!--more-->
-
-
 <h2>The Inspection Club</h2>
-
 <p>As you know, Python leverages polymorphism at its maximum by dealing only with generic references to objects. This makes OOP not an addition to the language but part of its structure from the ground up. Moreover, Python pushes the EAFP appoach, which tries to avoid direct inspection of objects as much as possible.</p>
-
-<p>It is however very interesting to read what Guido van Rossum says in <a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a>: <em>Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object&#8217;s methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [&#8230;] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python.</em></p>
-
+<p>It is however very interesting to read what Guido van Rossum says in <a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a>: <em>Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object's methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [...] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python.</em></p>
 <p>The author of Python recognizes that forcing the use of a pure polymorphic approach leads sometimes to solutions that are too complex or even incorrect. In this section I want to show some of the problems that can arise from a pure polymorphic approach and introduce Abstract Base Classes, which aim to solve them. I strongly suggest to read <a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a> (as for any other PEP) since it contains a deeper and better explanation of the whole matter. Indeed I think that this PEP is so well written that any further explanation is hardly needed. I am however used to write explanations to check how much I understood about the topic, so I am going to try it this time too.</p>
-
 <h4>E.A.F.P the Extra Test Trial</h4>
-
 <p>The EAFP coding style requires you to trust the incoming objects to provide the attributes and methods you need, and to manage the possible exceptions, if you know how to do it. Sometimes, however, you need to test if the incoming object matches a complex behaviour. For example, you could be interested in testing if the object <em>acts</em> like a list, but you quickly realize that the amount of methods a <code>list</code> provides is very big and this could lead to odd EAFP code like</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">try</span><span class="p">:</span>
-</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">append</span>
-</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">count</span>
-</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">extend</span>
-</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
-</span><span class='line'>    <span class="n">obj</span><span class="o">.</span><span class="n">insert</span>
-</span><span class='line'>    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span><span class='line'><span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-</span><span class='line'>    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">append</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">count</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">extend</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">insert</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
 
 
-<p>where the methods of the <code>list</code> type are accessed (not called) just to force the object to raise the <code>AttributeError</code> exception if they are not present. This code, however, is not only ugly but also wrong. If you recall the &#8220;Enter the Composition&#8221; section of the <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">first post</a>, you know that in Python you can always customize the <code>__getattr__()</code> method, which is called whenever the requested attribute is not found in the object. So I could write a class that passes the test but actually does not act like a list</p>
+<p>where the methods of the <code>list</code> type are accessed (not called) just to force the object to raise the <code>AttributeError</code> exception if they are not present. This code, however, is not only ugly but also wrong. If you recall the "Enter the Composition" section of the <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">first post</a>, you know that in Python you can always customize the <code>__getattr__()</code> method, which is called whenever the requested attribute is not found in the object. So I could write a class that passes the test but actually does not act like a list</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">FakeList</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">fakemethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">FakeList</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">fakemethod</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">pass</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;append&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;extend&#39;</span><span class="p">,</span> <span class="s">&#39;index&#39;</span><span class="p">,</span> <span class="s">&#39;insert&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
-</span><span class='line'>            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fakemethod</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;append&#39;</span><span class="p">,</span> <span class="s">&#39;count&#39;</span><span class="p">,</span> <span class="s">&#39;extend&#39;</span><span class="p">,</span> <span class="s">&#39;index&#39;</span><span class="p">,</span> <span class="s">&#39;insert&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">fakemethod</span>
+</pre></div>
 
 
 <p>This is obviously just an example, and no one will ever write such a class, but this demonstrates that just accessing methods does not guarantee that a class <em>acts</em> like the one we are expecting.</p>
-
-<p>There are many examples that could be done leveraging the highly dynamic nature of Python and its rich object model. I would summarize them by saying that sometimes you&#8217;d better to check the type of the incoming object.</p>
-
-<p>In Python you can obtain the type of an object using the <code>type()</code> built-in function, but to check it you&#8217;d better use <code>isinstance()</code>, which returns a boolean value. Let us see an example before moving on</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">([],</span> <span class="nb">list</span><span class="p">)</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Door</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">EnhancedDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">ed</span> <span class="o">=</span> <span class="n">EnhancedDoor</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ed</span><span class="p">,</span> <span class="n">EnhancedDoor</span><span class="p">)</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ed</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
-</span><span class='line'><span class="bp">True</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>There are many examples that could be done leveraging the highly dynamic nature of Python and its rich object model. I would summarize them by saying that sometimes you'd better to check the type of the incoming object.</p>
+<p>In Python you can obtain the type of an object using the <code>type()</code> built-in function, but to check it you'd better use <code>isinstance()</code>, which returns a boolean value. Let us see an example before moving on</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">([],</span> <span class="nb">list</span><span class="p">)</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>  <span class="k">pass</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="n">Door</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">EnhancedDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
+<span class="o">...</span>  <span class="k">pass</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ed</span> <span class="o">=</span> <span class="n">EnhancedDoor</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ed</span><span class="p">,</span> <span class="n">EnhancedDoor</span><span class="p">)</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ed</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
+<span class="bp">True</span>
+</pre></div>
 
 
 <p>As you can see the function can also walk the class hierarchy, so the check is not so trivial like the one you would obtain by directly using <code>type()</code>.</p>
-
 <p>The <code>isinstance()</code> function, however, does not completely solve the problem. If we write a class that actually <em>acts</em> like a <code>list</code> but does not inherit from it, <code>isinstance()</code> does not recognize the fact that the two may be considered the same thing. The following code returns <code>False</code> regardless the content of the <code>MyList</code> class</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyList</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">ml</span> <span class="o">=</span> <span class="n">MyList</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
-</span><span class='line'><span class="bp">False</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyList</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>  <span class="k">pass</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">ml</span> <span class="o">=</span> <span class="n">MyList</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ml</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+<span class="bp">False</span>
+</pre></div>
 
 
 <p>since <code>isinstance()</code> does not check the content of the class or its behaviour, it just consider the class and its ancestors.</p>
-
 <p>The problem, thus, may be summed up with the following question: what is the best way to test that an object exposes a given interface? Here, the word <em>interface</em> is used for its natural meaning, without any reference to other programming solutions, which however address the same problem.</p>
-
 <p>A good way to address the problem could be to write inside an attribute of the object the list of interfaces it promises to implement, and to agree that any time we want to test the behaviour of an object we simply have to check the content of this attribute. This is exactly the path followed by Python, and it is very important to understand that the whole system is just about a promised behaviour.</p>
-
 <p>The solution proposed through PEP 3119 is, in my opinion, very simple and elegant, and it perfectly fits the nature of Python, where things are usually agreed rather than being enforced. Not only, the solution follows the spirit of polymorphism, where information is provided by the object itself and not extracted by the calling code.</p>
-
 <p>In the next sections I am going to try and describe this solution in its main building blocks. The matter is complex so my explanation will lack some details: please refer to the forementioned PEP 3119 for a complete description.</p>
-
 <h4>Who Framed the Metaclasses</h4>
-
 <p>As already described, Python provides two built-ins to inspect objects and classes, which are <code>isinstance()</code> and <code>issubclass()</code> and it would be desirable that a solution to the inspection problem allows the programmer to go on with using those two functions.</p>
-
-<p>This means that we need to find a way to inject the &#8220;behaviour promise&#8221; into both classes and instances. This is the reason why metaclasses come in play. If you recall what we said about them in the second issue of this series, metaclasses are the classes used to build classes, which means that they are the preferred way to change the structure of a class, and, in consequence, of its instances.</p>
-
-<p>Another way to do the same job would be to leverage the inheritance mechanism, injecting the behaviour through a dedicated parent class. This solution has many downsides, which I&#8217;m am not going to detail. It is enough to say that affecting the class hierarchy may lead to complex situations or subtle bugs. Metaclasses may provide here a different entry point for the introduction of a &#8220;virtual base class&#8221; (as PEP 3119 specifies, this is not the same concept as in C++).</p>
-
+<p>This means that we need to find a way to inject the "behaviour promise" into both classes and instances. This is the reason why metaclasses come in play. If you recall what we said about them in the second issue of this series, metaclasses are the classes used to build classes, which means that they are the preferred way to change the structure of a class, and, in consequence, of its instances.</p>
+<p>Another way to do the same job would be to leverage the inheritance mechanism, injecting the behaviour through a dedicated parent class. This solution has many downsides, which I'm am not going to detail. It is enough to say that affecting the class hierarchy may lead to complex situations or subtle bugs. Metaclasses may provide here a different entry point for the introduction of a "virtual base class" (as PEP 3119 specifies, this is not the same concept as in C++).</p>
 <h4>Overriding Places</h4>
-
 <p>As said, <code>isinstance()</code> and <code>issubclass()</code> are built-in functions, not object methods, so we cannot simply override them providing a different implementation in a given class. So the first part of the solution is to change the behaviour of those two functions to first check if the class or the instance contain a special method, which is <code>__instancecheck__()</code> for <code>isinstance()</code> and <code>__subclasscheck__()</code> for <code>issubclass()</code>. So both built-ins try to run the respective special method, reverting to the standard algorithm if it is not present.</p>
-
 <p>A note about naming. Methods must accept the object they belong to as the first argument, so the two special methods shall have the form</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">__instancecheck__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">inst</span><span class="p">):</span>
+   <span class="p">[</span><span class="o">...</span><span class="p">]</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">__instancecheck__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">inst</span><span class="p">):</span>
-</span><span class='line'>   <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">def</span> <span class="nf">__subclasscheck__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">sub</span><span class="p">):</span>
-</span><span class='line'>   <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="k">def</span> <span class="nf">__subclasscheck__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">sub</span><span class="p">):</span>
+   <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
 
 
 <p>where <code>cls</code> is the class where they are injected, that is the one representing the promised behaviour. The two built-ins, however, have a reversed argument order, where the behaviour comes after the tested object: when you write <code>isinstance([], list)</code> you want to check if the <code>[]</code> instance has the <code>list</code> behaviour. This is the reason behind the name choice: just calling the methods <code>__isinstance__()</code> and <code>__issubclass__()</code> and passing arguments in a reversed order would have been confusing.</p>
-
 <h4>This is ABC</h4>
-
 <p>The proposed solution is thus called Abstract Base Classes, as it provides a way to attach to a concrete class a virtual class with the only purpose of signaling a promised behaviour to anyone inspecting it with <code>isinstance()</code> or <code>issubclass()</code>.</p>
-
 <p>To help programmers implement Abstract Base Classes, the standard library has been given an <code>abc</code> module, thet contains the <code>ABCMeta</code> class (and other facilities). This class is the one that implements <code>__instancecheck__()</code> and <code>__subclasscheck__()</code> and shall be used as a metaclass to augment a standard class. This latter will then be able to register other classes as implementation of its behaviour.</p>
-
 <p>Sounds complex? An example may clarify the whole matter. The one from the official documentation is rather simple:</p>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABCMeta</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">MyABC</span><span class="p">:</span>
-</span><span class='line'>    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">MyABC</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">MyABC</span><span class="p">)</span>
-</span><span class='line'><span class="k">assert</span> <span class="nb">isinstance</span><span class="p">((),</span> <span class="n">MyABC</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="k">class</span> <span class="nc">MyABC</span><span class="p">:</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">ABCMeta</span>
+
+<span class="n">MyABC</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="nb">tuple</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="nb">issubclass</span><span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="n">MyABC</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">isinstance</span><span class="p">((),</span> <span class="n">MyABC</span><span class="p">)</span>
+</pre></div>
 
 
 <p>Here, the <code>MyABC</code> class is provided the <code>ABCMeta</code> metaclass. This puts the two <code>__instancecheck__()</code> and <code>__subclasscheck__()</code> behaviours inside <code>MyABC</code>. Please note however that those methods are not actually put into the object so that you can use them like</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">__metaclass__</span><span class="o">.</span><span class="n">__instancecheck__</span><span class="p">(</span><span class="n">MyABC</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">MyABC</span><span class="o">.</span><span class="n">__metaclass__</span><span class="o">.</span><span class="n">__instancecheck__</span><span class="p">(</span><span class="n">MyABC</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+</pre></div>
 
 
 <p>that returns <code>True</code> if the dictionary <code>d</code> is an instance of the Abstract Base Class <code>MyABC</code>. In other words if the dictionary <code>d</code> implements the behaviour promised by the <code>MyABC</code> class.</p>
-
 <p>After the definition of <code>MyABC</code> we need a way to signal that a given class is an instance of the Abstract Base Class and this happens through the <code>register()</code> method, provided by the <code>ABCMeta</code> metaclass. Calling <code>MyABC.register(tuple)</code> we record inside <code>MyABC</code> the fact that the <code>tuple</code> class shall be identified as a subclass of <code>MyABC</code> itself. This is analogous to saying that <code>tuple</code> inherits from <code>MyABC</code> but not quite the same. As already said registering a class in an Abstract Base Class with <code>register()</code> does not affect the class hierarchy. Indeed, the whole <code>tuple</code> class is unchanged.</p>
-
 <h2>Little Shop of Collections</h2>
-
 <p>In addition to the <code>abc</code> module, the standard library now provides a <code>collections</code> module that, besides some interesting container datatypes like <code>namedtuple</code> and <code>OrderedDict</code>, supplies a remarkable number of ABCs that represent container behaviours. An example is <code>collections.Sized</code> that pledges that the registered class will contain the <code>__len__()</code> method, enabling the code to pass it to the <code>len()</code> builtin. Let us exemplify that:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Snake</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meters</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>     <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="n">meters</span>
-</span><span class='line'><span class="o">...</span>   <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">Snake</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-</span><span class='line'><span class="mi">5</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">collections</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sized</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Snake</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">Snake</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sized</span><span class="p">)</span>
-</span><span class='line'><span class="bp">True</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Snake</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meters</span><span class="p">):</span>
+<span class="o">...</span>     <span class="bp">self</span><span class="o">.</span><span class="n">len</span> <span class="o">=</span> <span class="n">meters</span>
+<span class="o">...</span>   <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">len</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="n">Snake</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">collections</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sized</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">Snake</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">Snake</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sized</span><span class="p">)</span>
+<span class="bp">True</span>
+</pre></div>
 
 
 <p>If not stressed enough, ABCs assure that a given behaviour will be implemented but there is no actual check of this. For example:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">FakeSnake</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meters</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>     <span class="k">pass</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sized</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">FakeSnake</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">FakeSnake</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sized</span><span class="p">)</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">FakeSnake</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="nb">object</span> <span class="n">of</span> <span class="nb">type</span> <span class="s">&#39;FakeSnake&#39;</span> <span class="n">has</span> <span class="n">no</span> <span class="nb">len</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">FakeSnake</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>   <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">meters</span><span class="p">):</span>
+<span class="o">...</span>     <span class="k">pass</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sized</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">FakeSnake</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">FakeSnake</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sized</span><span class="p">)</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">f</span> <span class="o">=</span> <span class="n">FakeSnake</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="nb">object</span> <span class="n">of</span> <span class="nb">type</span> <span class="s">&#39;FakeSnake&#39;</span> <span class="n">has</span> <span class="n">no</span> <span class="nb">len</span><span class="p">()</span>
+</pre></div>
 
 
 <p>Remember that ABCs are classes just like any other standard Python class, which means that they can be inherited to build more specialized ABCs.</p>
-
 <h4>The Naked Class</h4>
-
 <p>The <code>abc</code> module provides two decorators <code>@abstractmethod</code> and <code>@abstractproperty</code> to help the design of Abstract Base Classes. The first decorator, <code>@abstractmethod</code>, may only be used in a class which metaclass is <code>ABCMeta</code> (just like the example <code>MyABC</code> class described above). Decorating a method with it blocks the instantiation of the class itself until that method is overridden. That enables to write classes that may inherited only if the child class provides an implementation of some specific methods. The <code>@abstractproperty</code> decorator provides the same service for properties.</p>
-
 <p>Let us run through a very simple example:</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">abc</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="kn">import</span> <span class="nn">abc</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">AbstractCalculator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@abc.abstractmethod</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">pass</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@abc.abstractmethod</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">mutiply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">pass</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="k">class</span> <span class="nc">AbstractCalculator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">abc</span><span class="o">.</span><span class="n">ABCMeta</span>
+
+    <span class="nd">@abc.abstractmethod</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@abc.abstractmethod</span>
+    <span class="k">def</span> <span class="nf">mutiply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="k">pass</span>
+</pre></div>
 
 
 <p>This is a class with <code>ABCMeta</code> as its metaclass, which makes <code>AbstractCalculator</code> an Abstract Base Class. The two <code>sum()</code> and <code>multiply()</code> methods are decorated with <code>@abstractmethod</code>, that raises an exception when we try to instance the class:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">ac</span> <span class="o">=</span> <span class="n">AbstractCalculator</span><span class="p">()</span>
-</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="n">Can</span><span class="s">&#39;t instantiate abstract class AbstractCalculator with abstract methods mutiply, sum</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">ac</span> <span class="o">=</span> <span class="n">AbstractCalculator</span><span class="p">()</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">Can</span><span class="s">&#39;t instantiate abstract class AbstractCalculator with abstract methods mutiply, sum</span>
+<span class="o">&gt;&gt;&gt;</span> 
+</pre></div>
 
 
 <p>Moreover, any class that derives from <code>AbstractCalculator</code> and does not override the two methods (implementing them), cannot be instantiated:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Calculator</span><span class="p">(</span><span class="n">AbstractCalculator</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">()</span>
-</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="n">Can</span><span class="s">&#39;t instantiate abstract class Calculator with abstract methods mutiply, sum</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">Calculator</span><span class="p">(</span><span class="n">AbstractCalculator</span><span class="p">):</span>
+<span class="o">...</span>  <span class="k">pass</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="n">Calculator</span><span class="p">()</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">Can</span><span class="s">&#39;t instantiate abstract class Calculator with abstract methods mutiply, sum</span>
+<span class="o">&gt;&gt;&gt;</span> 
+</pre></div>
 
 
-<p>These two decorators are the standard way to enforce a check about a behaviour or an interface, and are the closest thing to a &#8220;strict interface check&#8221;.</p>
-
+<p>These two decorators are the standard way to enforce a check about a behaviour or an interface, and are the closest thing to a "strict interface check".</p>
 <h2>A Fish Called Object</h2>
-
 <p>In the first post, when I discussed for the first time the concept of instantiation, I stated that an instance of a class may be obtained by calling the class itself just like a function. Let me recall you the example</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
-<p>Later, speaking about methods and attributes, I defined <em>callable</em> something that can be invoked with that syntax. Thus, we can now say that classes are callables, just like methods. What makes an object callable, anyway? It turns out that, as many other things in Python, the solution is pretty straightforward: an object is callable if it contains the <code>__call__()</code> method. Simple, isn&#8217;t it?</p>
-
+<p>Later, speaking about methods and attributes, I defined <em>callable</em> something that can be invoked with that syntax. Thus, we can now say that classes are callables, just like methods. What makes an object callable, anyway? It turns out that, as many other things in Python, the solution is pretty straightforward: an object is callable if it contains the <code>__call__()</code> method. Simple, isn't it?</p>
 <p>When we execute a syntax like</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">some_object</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">some_object</span><span class="p">()</span>
+</pre></div>
 
 
 <p>Python executes under the hood the following code</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">some_object</span><span class="o">.</span><span class="n">__call__</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">some_object</span><span class="o">.</span><span class="n">__call__</span><span class="p">()</span>
+</pre></div>
 
 
 <p>where any parameter passed to the class is obviously passed to <code>__call__()</code>.</p>
-
 <p>For standard classes the <code>__call__()</code> method is provided by <code>type</code>, which is the standard metaclass. So when we write</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
+</pre></div>
 
 
 <p>python actually executes this code</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
 
 
-<p>This standard implementation of <code>__call__()</code> runs the constructor mechanism as depicted in the second post, executing <code>__new__()</code> and <code>__init__()</code> to get a new instance and initialize it.</p>
-
+<p>This standard implementation of <code>__call__()</code> runs the constructor mechanism as depicted in the second post, executing <code>__new__()</code> and <code>__init__()</code> to get a new instance and initialize it. </p>
 <p>The definition of callable object is very powerful, since it allows to flatten the difference between classes and functions. In OOP many times the two are presented as two completely separated concepts, but in Python it is usually more convenient to talk about callables. Here, Python shows its polymorphic nature at its maximum: if I expect a function and what is given to me is something that acts like a function everything is fine. Functions, however, are themselves simple callable objects. Remember: in Python everything is an object.</p>
-
 <p>Since <code>__call__()</code> is a method we can redefine it in any class, let us try and see what happens</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">CallMe</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="mi">1</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">CallMe</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span>
+</pre></div>
 
 
 <p>Class instances usually contain no definition of <code>__call__()</code> and the implementation provided in the class hierarchy prevents them from being called</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">()</span>
-</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="s">&#39;int&#39;</span> <span class="nb">object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">callable</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="p">()</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="s">&#39;int&#39;</span> <span class="nb">object</span> <span class="ow">is</span> <span class="ow">not</span> <span class="nb">callable</span>
+</pre></div>
 
 
 <p>Nothing forbids us to define a custom <code>__call__()</code> method inside the instance and make it callable. This allows us to pass the instance where Python expects a function or, better, a callable. A classical example is the <code>sort()</code> method of <code>list</code> objects, which accepts an optional callable <code>f</code> that shall compare objects. Here, a callable instance is accepted just like a plain function.</p>
-
 <h2>Final words</h2>
-
 <p>There is still a lot to say about Python OOP. Just to name one topic, functions are a very interesting and wide subject. I would prefer now to update the current material to Python 3, so this is the last post in this small series. Stay tuned <a href="https://twitter.com/tw_lgiordani/">on Twitter</a> if you want to get the latest news from the blog!</p>
-
 <h2>Movie Trivia</h2>
-
 <p>Section titles of this issue come from the following movies: <em>The Breakfast Club</em>, <em>E.T. the Extra-Terrestrial</em>, <em>Who Framed Roger Rabbit</em>, <em>Trading Places</em>, <em>This is Spinal Tap</em>, <em>Little Shop of Horrors</em>, <em>The Naked Gun</em>, <em>A Fish Called Wanda</em>.</p>
-
 <h2>Sources</h2>
-
 <p>Some sources for the content of this post. Thank you authors!</p>
-
 <ul>
 <li><a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a> and the <a href="https://docs.python.org/2/library/abc.html#module-abc">ABC module documentation</a></li>
-<li><a href="http://www.jeffknupp.com/blog/2013/02/14/drastically-improve-your-python-understanding-pythons-execution-model/">Understanding Python&#8217;s Execution Model</a> and <a href="http://jeffknupp.com/blog/2014/06/18/improve-your-python-python-classes-and-object-oriented-programming/">Python Classes and Object Oriented Programming</a> by Jeff Knupp</li>
-<li><a href="http://www.rafekettler.com/magicmethods.html">A Guide to Python&#8217;s Magic Methods</a> by Rafe Kettler</li>
+<li><a href="http://www.jeffknupp.com/blog/2013/02/14/drastically-improve-your-python-understanding-pythons-execution-model/">Understanding Python's Execution Model</a> and <a href="http://jeffknupp.com/blog/2014/06/18/improve-your-python-python-classes-and-object-oriented-programming/">Python Classes and Object Oriented Programming</a> by Jeff Knupp</li>
+<li><a href="http://www.rafekettler.com/magicmethods.html">A Guide to Python's Magic Methods</a> by Rafe Kettler</li>
 <li>Many <a href="http://stackoverflow.com/questions/tagged/python">Stackoverflow</a> questions and answers</li>
 </ul>
-
-
 <h2>Feedback</h2>
-
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
-
 <h2>Previous articles</h2>
-
 <ul>
 <li><a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">OOP Concepts in Python 2.x - Part 1</a></li>
 <li><a href="/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2">OOP Concepts in Python 2.x - Part 2</a></li>
 </ul>
-
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">"OOP concepts in Python 2.x - Part 1"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/">"OOP concepts in Python 2.x - Part 2"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">"Python 3 OOP Part 4 - Polymorphism"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/">"Method overriding in Python"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
 
         </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
 
-<div class="meta">
-	
-</div>
-</article>
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
 
-	<div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
-</div>
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                "Advanced use of Python decorators and metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                "Python 3 OOP Part 6 - Abstract Base Classes"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                "Python 3 OOP Part 5 - Metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">
+                                "Python 3 OOP Part 4 - Polymorphism"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">
+                                "Python 3 OOP Part 3 - Delegation: composition and inheritance"
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/amqp/">
+                                amqp
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/c/">
+                                c++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/c-language/">
+                                C-language
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/django/">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/erlang/">
+                                erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/git/">
+                                git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/pika/">
+                                pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/postage/">
+                                postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python/">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/python2/">
+                                python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python3/">
+                                python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/qt/">
+                                qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/rabbitmq/">
+                                rabbitmq
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
 
+        </ul>
+    </section>
+
+</aside>        </div>
     </div>
-    <footer id="footer">
-    <div style="display:inline">
-	<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">The Digital Cat</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://lgiordani.com/about/" property="cc:attributionName" rel="cc:attributionURL">Leonardo Giordani</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-	<br />
-    Powered by <a href="http://octopress.org">Octopress</a> | Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
 </div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
 
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
 
-    </footer>
-    <script src="/javascripts/fabric.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
 
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-
-
-
-<!-- end toload --> 
-</div>
-</div>
-<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
-<script type="text/javascript">
-/*<![CDATA[*/
-;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
-/*]]>*/
-</script><!-- remove it to remove the scroll to top button -->
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
 </body>
 </html>

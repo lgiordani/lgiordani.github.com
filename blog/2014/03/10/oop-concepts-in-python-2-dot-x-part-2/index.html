@@ -1,741 +1,447 @@
-
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en"
+>
 <head>
-	<meta charset="utf-8">
-	<title>OOP concepts in Python 2.x - Part 2 - The digital cat</title>
-    <meta name="author" content="Leonardo Giordani">
-    
-	<meta name="description" content="Published on: Mar 10th, 2014 Tags: oop, python, python2 Posted by Leonardo Giordani Abstract This post continues the analysis of the Python OOP &hellip;">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>"OOP concepts in Python 2.x - Part 2" - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.ico" rel="shortcut icon">
-    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
 
-    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<link rel="canonical" href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/">
 
-    <!-- remove or comment it to disable ajaxification -->   
-    <script src="/javascripts/ajaxify.js"></script>
-   
-    
-    
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="python2,python,OOP" />
 
-  ga('create', 'UA-38715090-1', 'auto');
-  ga('send', 'pageview');
+    <!-- Enable latex plugin -->
 
-</script>
 
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/categories/Programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
 
 </head>
-
-
 <body>
-    <div id="wrapper">
-    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
-<h1 class="animated pulse">
-    <div id="headerbg">
-        The digital cat
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-</h1>
-<br>
+</div> <!-- /.navbar -->
 
-<ul id="social-links" style="text-align:center">
-  
-  <!-- GitHub -->
-  <li>
-  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
-  </li>
-  
-  
-  <!-- Google Plus -->
-  <li>
-  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
-  </li>
-  
-  
-  
-  <!-- Twitter -->
-  <li>
-  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
-  </li>
-  
-  
-  
-  
-  
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/"
+                       rel="bookmark"
+                       title="Permalink to "OOP concepts in Python 2.x - Part 2"">
+                        "OOP concepts in Python 2.x - Part 2"
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-03-10T18:56:56+01:00"> lun 10 marzo 2014</time>
+    </span>
 
 
-<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
-<ul id="nav">
-	<li id="ajax"><a href="/index.html">Home</a></li>
-	<li id="ajax"><a href="/about">About me</a></li>
-	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
-    <li><a href="/atom.xml">RSS</a></li>
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/blog/categories/python2/">python2</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/python/">python</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/oop/">OOP</a>
     
-    <li>
-    <div id="dark">
-        <form method="get" action="/search.html" id="search">
-            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
-        </form>
-    </div>
-    </li>
-        
-</ul>
-
-
-
-
-</header>
-
-<div id="toload">
-<!-- begin toload --> 
-    <div id="content" class="inner">
-        <article class="post">
-	<h2 class="title">OOP Concepts in Python 2.x - Part 2</h2>
-	<div class="entry-content">
-          <div class="meta">
-            <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-10T18:56:56+01:00" pubdate data-updated="true">Mar 10<span>th</span>, 2014</time></div>
-            <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/oop/'>oop</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/python2/'>python2</a>
-
-
-</div>
-          </div>
-          
-  
-
-<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
-
-          <h2>Abstract</h2>
-
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <h2>Abstract</h2>
 <p>This post continues the analysis of the Python OOP implementation started with <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">this post</a>, which I recommend reading before taking on this new one.</p>
-
 <p>This second post discusses the following OOP features in Python:</p>
-
 <ul>
 <li>Polymorphism</li>
 <li>Classes and instances (again)</li>
 <li>Metaclasses</li>
 <li>Object creation</li>
 </ul>
-
-
 <p>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the <strong>updated version</strong> <a href="/blog/categories/python3/">here</a>.</p>
-
-<!--more-->
-
-
 <h2>Good Morning, Polymorphism</h2>
-
 <p>The term <em>polymorphism</em>, in the OOP lingo, refers to the ability of an object to adapt the code to the type of the data it is processing.</p>
-
 <p>Polymorphism has two major applications in an OOP language. The first is that an object may provide different implementations of one of its methods depending on the type of the input parameters. The second is that code written for a given type of data may be used on data with a derived type, i.e. methods understand the class hierarchy of a type.</p>
-
 <p>In Python polymorphism is one of the key concepts, and we can say that it is a built-in feature. Let us deal with it step by step.</p>
-
 <p>First of all, you know that in Python the type of a variable is not explicitly declared. Beware that this does not mean that Python variables are <em>untyped</em>. On the contrary, everything in Python has a type, it just happens that the type is implicitly assigned. If you remember the last paragraph of the previous post, I stated that in Python variables are just pointers (using a C-like nomenclature), in other words they just tell the language <em>where</em> in memory a variable has been stored. What is stored at that address is not a business of the variable.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
-</span><span class='line'><span class="mi">5</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0x89812b0&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="s">&quot;five&quot;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
-</span><span class='line'><span class="s">&#39;five&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;str&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0xb74bb280L&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
+<span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="s">&#39;0x89812b0&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="s">&quot;five&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span>
+<span class="s">&#39;five&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;str&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="s">&#39;0xb74bb280L&#39;</span>
+</pre></div>
 
 
 <p>This little example shows a lot about the Python typing system. The variable <code>a</code> is not statically declared, after all it can contain only one type of data: a memory address. When we assign the number 5 to it, Python stores in <code>a</code> the <em>address</em> of the number 5 (<code>0x89812b0</code> in my case, but your result will be different). The <code>type()</code> built-in function is smart enough to understand that we are not asking about the type of <code>a</code> (which is always a reference), but about the type of the content. When you store another value in <code>a</code>, the string <code>"five"</code>, Python shamelessly replaces the previous content of the variable with the new address.</p>
-
 <p>So, thanks to the reference system, Python type system is both <em>strong</em> and <em>dynamic</em>. The exact definition of those two concepts is not universal, so if you are interested be ready to dive into a broad matter. However, in Python, the meaning of those two words is the following:</p>
-
 <ul>
 <li>type system is <em>strong</em> because everything has a well-defined type, that you can check with the <code>type()</code> built-in</li>
 <li>type system is <em>dynamic</em> since the type of a variable is not explicitly declared, but changes with the content</li>
 </ul>
-
-
 <p>Onward! We just scratched the surface of the whole thing.</p>
-
 <p>To explore the subject a little more, try to define the simplest function in Python (apart from an empty function)</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">echo</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">a</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">echo</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span>
+</pre></div>
 
 
-<p>Pretty straightforward, isn&#8217;t it? Well, if you come from a statically compiled language such as C or C++ you should be at least puzzled. What is <code>a</code>? I mean: what type of data does it contain? Moreover, how can Python know what it is returning if there is no type specification?</p>
-
+<p>Pretty straightforward, isn't it? Well, if you come from a statically compiled language such as C or C++ you should be at least puzzled. What is <code>a</code>? I mean: what type of data does it contain? Moreover, how can Python know what it is returning if there is no type specification?</p>
 <p>Again, if you recall the references stuff everything becomes clear: that function accepts a reference and returns a reference. In other words we just defined a sort of universal function, that does the same thing regardless of the input.</p>
-
 <p>This is exactly the problem that polymorphism wants to solve. We want to describe an action regardless of the type of objects, and this is what we do when we talk among humans. When you describe how to move an object by pushing it, you may explain it using a box, but you expect the person you are addressing to be able to repeat the action even if you need to move a pen, or a book, or a bottle.</p>
-
 <p>There are two main strategies you can apply to get code that performs the same operation regardless of the input types.</p>
-
 <p>The first approach is to cover all cases, and this is a typical approach of procedural languages. If you need to sum two numbers that can be integers, float or complex, you just need to write three <code>sum()</code> functions, one bound to the integer type, the second bound to the float type and the third bound to the complex type, and to have some language feature that takes charge of choosing the correct implementation depending on the input type. This logic can be implemented by a compiler (if the language is statically typed) or by a runtime environment (if the language is dynamically typed) and is the approach chosen by C++. The disadvantage of this solution is that it requires the programmer to forecast all the possible situations: what if I need to sum an integer with a float? What if I need to sum two lists? (Please note that C++ is not so poorly designed, and the operator overloading technique allows to manage such cases, but the base polymorphism strategy of that language is the one exposed here).</p>
-
 <p>The second strategy, the one implemented by Python, is simply to require the input objects to solve the problem for you. In other words you <em>ask the data itself to perform the operation</em>, reversing the problem. Instead of writing a bunch on functions that sum all the possible types in every possible combination you just write one function that requires the input data to sum, trusting that they know how to do it. Does it sound complex? It is not.</p>
-
-<p>Let&#8217;s look at the Python implementation of the <code>+</code> operator. When we write <code>c = a + b</code>, Python actually executes <code>c = a.__add__(b)</code>. As you can see the sum operation is delegated to the first input variable. So if we write</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>Let's look at the Python implementation of the <code>+</code> operator. When we write <code>c = a + b</code>, Python actually executes <code>c = a.__add__(b)</code>. As you can see the sum operation is delegated to the first input variable. So if we write</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+</pre></div>
 
 
 <p>there is no need to specify the type of the two input variables. The object <code>a</code> (the object contained in the variable <code>a</code>) shall be able to sum with the object <code>b</code>. This is a very beautiful and simple implementation of the polymorphism concept. Python functions are polymorphic simply because they accept everything and trust the input data to be able to perform some actions.</p>
-
 <p>Let us consider another simple example before moving on. The built-in <code>len()</code> function returns the length of the input object. For example</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
-</span><span class='line'><span class="mi">3</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;Just a sentence&quot;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-</span><span class='line'><span class="mi">15</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+<span class="mi">3</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span> <span class="o">=</span> <span class="s">&quot;Just a sentence&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="mi">15</span>
+</pre></div>
 
 
-<p>As you can see it is perfectly polymorphic: you can feed both a list or a string to it and it just computes its length. Does it work with any type? let&#8217;s check</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-</span><span class='line'><span class="mi">2</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="nb">object</span> <span class="n">of</span> <span class="nb">type</span> <span class="s">&#39;int&#39;</span> <span class="n">has</span> <span class="n">no</span> <span class="nb">len</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>As you can see it is perfectly polymorphic: you can feed both a list or a string to it and it just computes its length. Does it work with any type? let's check</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="nb">object</span> <span class="n">of</span> <span class="nb">type</span> <span class="s">&#39;int&#39;</span> <span class="n">has</span> <span class="n">no</span> <span class="nb">len</span><span class="p">()</span>
+</pre></div>
 
 
 <p>Ouch! Seems that the <code>len()</code> function is smart enough to deal with dictionaries, but not with integers. Well, after all, the length of an integer is not defined.</p>
-
 <p>Indeed this is exactly the point of Python polymorphism: <em>the integer type does not define a length operation</em>. While you blame the <code>len()</code> function, the <code>int</code> type is at fault. The <code>len()</code> function just calls the <code>__len__()</code> method of the input object, as you can see from this code</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
-</span><span class='line'><span class="mi">3</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
-</span><span class='line'><span class="mi">15</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
-</span><span class='line'><span class="mi">2</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">i</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
-</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-</span><span class='line'><span class="ne">AttributeError</span><span class="p">:</span> <span class="s">&#39;int&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s">&#39;__len__&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+<span class="mi">3</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">s</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+<span class="mi">15</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">d</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+<span class="mi">2</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">i</span><span class="o">.</span><span class="n">__len__</span><span class="p">()</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">AttributeError</span><span class="p">:</span> <span class="s">&#39;int&#39;</span> <span class="nb">object</span> <span class="n">has</span> <span class="n">no</span> <span class="n">attribute</span> <span class="s">&#39;__len__&#39;</span>
+</pre></div>
 
 
 <p>but the <code>'int' object</code> does not define any <code>__len__()</code> method.</p>
-
 <p>So, to sum up what we discovered until here, I would say that <em>Python polymorphism is based on delegation</em>. In the following sections we will talk about the <a href="http://docs.python.org/2/glossary.html#term-eafp">EAFP</a> Python principle, and you will see that the delegation principle is somehow ubiquitous in this language.</p>
-
 <h2>Type Hard</h2>
-
 <p>Another real-life concept that polymorphism wants to bring into a programming language is the ability to walk the class hierarchy, that is <em>to run code on specialized types</em>. This is a complex sentence to say something we are used to do every day, and an example will clarify the matter.</p>
-
 <p>You know how to open a door, it is something you learned in your early years. Under an OOP point of view you are an object (sorry, no humiliation intended) which is capable of interacting with a wood rectangle rotating on hinges. When you can open a door, however, you can also open a window, which, after all, is a specialized type of wood-rectangle-with-hinges, hopefully with some glass in it too. You are also able to open the car door, which is also a specialized type (this one is a mix between a standard door and a window). This shows that, once you know how to interact with the most generic type (basic door) you can also interact with specialized types (window, car door) as soon as they act like the ancestor type (e.g. as soon as they rotate on hinges).</p>
-
-<p>This directly translates into OOP languages: polymorphism requires that <em>code written for a given type may also be run on derived types</em>. For example, a list (a generic list object, not a Python one) that can contain &#8220;numbers&#8221; shall be able to accept integers because they <em>are</em> numbers. The list could specify an ordering operation which requires the numbers to be able to compare each other. So, as soon as integers specify a way to compare each other they can be inserted into the list and ordered.</p>
-
+<p>This directly translates into OOP languages: polymorphism requires that <em>code written for a given type may also be run on derived types</em>. For example, a list (a generic list object, not a Python one) that can contain "numbers" shall be able to accept integers because they <em>are</em> numbers. The list could specify an ordering operation which requires the numbers to be able to compare each other. So, as soon as integers specify a way to compare each other they can be inserted into the list and ordered.</p>
 <p>Statically compiled languages shall provide specific language features to implement this part of the polymorphism concept. In C++, for example, the language needs to introduce the concept of pointer compatibility between parent and child classes.</p>
-
 <p>In Python there is no need to provide special language features to implement subtype polymorphism. As we already discovered Python functions accept any variable without checking the type and rely on the variable itself to provide the correct methods. But you already know that a subtype must provide the methods of the parent type, either redefining them or through implicit delegation, so as you can see Python implements subtype polymorphism from the very beginning.</p>
-
-<p>I think this is one of the most important things to understand when working with this language. Python is not really interested in the actual type of the variables you are working with. It is interested in how those variables act, that is it just wants the variable <em>to provide the right methods</em>. So, if you come from statically typed languages, you need to make a special effort to think about <em>acting like</em> instead of <em>being</em>. This is what we called &#8220;duck typing&#8221;.</p>
-
+<p>I think this is one of the most important things to understand when working with this language. Python is not really interested in the actual type of the variables you are working with. It is interested in how those variables act, that is it just wants the variable <em>to provide the right methods</em>. So, if you come from statically typed languages, you need to make a special effort to think about <em>acting like</em> instead of <em>being</em>. This is what we called "duck typing".</p>
 <p>Time to do an example. Let us define a <code>Room</code> class</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Room</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">door</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span> <span class="o">=</span> <span class="n">door</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Room</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">door</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span> <span class="o">=</span> <span class="n">door</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">is_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">is_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+</pre></div>
 
 
-<p>A very simple class, as you can see, just enough to exemplify polymorphism. The <code>Room</code> class accepts a <code>door</code> variable, and the type of this variable is not specified. Duck typing in action: the actual type of <code>door</code> is not declared, there is no &#8220;acceptance test&#8221; built in the language. Indeed, the incoming variable shall export the following methods that are used in the <code>Room</code> class: <code>open()</code>, <code>close()</code>, <code>is_open()</code>. So we can build the following classes</p>
+<p>A very simple class, as you can see, just enough to exemplify polymorphism. The <code>Room</code> class accepts a <code>door</code> variable, and the type of this variable is not specified. Duck typing in action: the actual type of <code>door</code> is not declared, there is no "acceptance test" built in the language. Indeed, the incoming variable shall export the following methods that are used in the <code>Room</code> class: <code>open()</code>, <code>close()</code>, <code>is_open()</code>. So we can build the following classes</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&quot;closed&quot;</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&quot;closed&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&quot;open&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&quot;closed&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">is_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s">&quot;open&quot;</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'><span class="k">class</span> <span class="nc">BooleanDoor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">False</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">is_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&quot;open&quot;</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&quot;closed&quot;</span>
+
+    <span class="k">def</span> <span class="nf">is_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s">&quot;open&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">BooleanDoor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">is_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span>
+</pre></div>
 
 
 <p>Both represent a door that can be open or closed, and they implement the concept in two different ways: the first class relies on strings, while the second leverages booleans. Despite <em>being</em> two different types, both <em>act</em> the same way, so both can be used to build a <code>Room</code> object.</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_door</span> <span class="o">=</span> <span class="n">BooleanDoor</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">(</span><span class="n">door</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">(</span><span class="n">bool_door</span><span class="p">)</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">bool_door</span> <span class="o">=</span> <span class="n">BooleanDoor</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">(</span><span class="n">door</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span> <span class="o">=</span> <span class="n">Room</span><span class="p">(</span><span class="n">bool_door</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">room</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">room</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-</span><span class='line'><span class="bp">False</span>
-</span><span class='line'>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
-</span><span class='line'><span class="bp">False</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">room</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">room</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+<span class="bp">False</span>
+
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">bool_room</span><span class="o">.</span><span class="n">is_open</span><span class="p">()</span>
+<span class="bp">False</span>
+</pre></div>
 
 
 <h4>File Like Us</h4>
-
 <p>File-like objects are a concrete and very useful example of polymorphism in Python. A file-like object is a class (or the instance of a class) that acts like a file, i.e. it provides those methods a file object exposes.</p>
-
 <p>Say for example that you code a class that parses an XML tree, and that you expect the XML code to be contained in a file. So your class accepts a file in its <code>__init__()</code> method, and reads the content from it</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">XMLReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">xmlfile</span><span class="p">):</span>
+        <span class="n">xmlfile</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">xmlfile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="n">xmlfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">XMLReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">xmlfile</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">xmlfile</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">content</span> <span class="o">=</span> <span class="n">xmlfile</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-</span><span class='line'>        <span class="n">xmlfile</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'><span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
 
 
 <p>The class works well until your application shall be modified to receive XML content from a network stream. To use the class without modifying it you shall write the stream in a temporary file and load this latter, but this sounds a little overkill. So you plan to change the class to accept a string, but this way you shall change every single code that uses the class to read a file, since now you shall open, read and close the file on your own, outside the class.</p>
-
 <p>Polymorphism offers a better way. Why not store the incoming stream inside an object that <em>acts like</em> a file, even if it is not an actual one? If you check the StringIO module you will find that such an object has been already invented and provided in the standard Python library.</p>
-
 <p>Other very useful file-like classes are those contained in the <code>gzip</code>, <code>bz2</code>, and <code>zipfile</code> modules (just to name some of the most used), which provide objects that allow you to manage compressed files just like plain files, hiding the decompression/compression machinery.</p>
-
 <h2>Unforgiveness</h2>
-
 <p>EAFP is a Python acronym that stands for <em>easier to ask for forgiveness than permission</em>. This coding style is highly pushed in the Python community because it completely relies on the duck typing concept, thus fitting well with the language philosophy.</p>
-
 <p>The concept behind EAFP is fairly easy: instead of checking if an object has a given attribute or method before actually accessing or using it, just trust the object to provide what you need and manage the error case. This can be probably better understood by looking at some code. According to EAFP, instead of writing</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">someobj</span><span class="p">,</span> <span class="s">&#39;open&#39;</span><span class="p">):</span>
-</span><span class='line'>    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span><span class='line'><span class="k">else</span><span class="p">:</span>
-</span><span class='line'>    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">someobj</span><span class="p">,</span> <span class="s">&#39;open&#39;</span><span class="p">):</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
 
 
 <p>you shall write</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">try</span><span class="p">:</span>
-</span><span class='line'>    <span class="n">someobj</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'>    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span><span class='line'><span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-</span><span class='line'>    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">try</span><span class="p">:</span>
+    <span class="n">someobj</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+<span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+    <span class="p">[</span><span class="o">...</span><span class="p">]</span>
+</pre></div>
 
 
 <p>As you can see, the second snippet directly uses the method and deals with the possible <code>AttributeError</code> exception (by the way: managing exceptions is one of the top Black Magic Topics in Python, more on it in a future post. A very quick preview: I think we may learn something from Erlang - check <a href="/blog/2013/05/30/error-handling-in-erlang-a-primer/">this</a>).</p>
-
 <p>Why is this coding style pushed so much in the Python community? I think the main reason is that through EAFP you <em>think</em> polymorphically: you are not interested in knowing if the object <em>has</em> the <code>open</code> attribute, you are interested in knowing if the object can satisfy your request, that is to perform the <code>open()</code> method call.</p>
-
 <h2>Intermezzo</h2>
-
 <p>Are you still with me? Good. Now go, make yourself a cup of tea and fasten belts: the Python roller coaster is about to start.</p>
-
-<p>We will leave the polymorphism palace for a while to explore other parts of the Python OOP world. Don&#8217;t worry, however, it is just to lay some foundation before diving another time into the matter.</p>
-
+<p>We will leave the polymorphism palace for a while to explore other parts of the Python OOP world. Don't worry, however, it is just to lay some foundation before diving another time into the matter.</p>
 <h2>The Type Brothers</h2>
-
 <p>The first step into the most intimate secrets of Python objects comes from two components we already met in the first post: <code>type</code> and <code>object</code>. These two things are the very fundamental elements of Python OOP system, so it is worth spending some time to understand how they work and relate each other.</p>
-
-<p>First of all recall that in Python <em>everything is an object</em>, that is everything inherits from <code>object</code>. Thus, <code>object</code> seems to be the deepest thing you can find digging into Python variables. Let&#8217;s check this</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span>
-</span><span class='line'><span class="p">(</span><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;object&#39;</span><span class="o">&gt;</span><span class="p">,)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">object</span><span class="o">.</span><span class="n">__bases__</span>
-</span><span class='line'><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>First of all recall that in Python <em>everything is an object</em>, that is everything inherits from <code>object</code>. Thus, <code>object</code> seems to be the deepest thing you can find digging into Python variables. Let's check this</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span>
+<span class="p">(</span><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;object&#39;</span><span class="o">&gt;</span><span class="p">,)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">object</span><span class="o">.</span><span class="n">__bases__</span>
+<span class="p">()</span>
+</pre></div>
 
 
 <p>The variable <code>a</code> is an instance of the <code>int</code> class, and this latter inherits from <code>object</code>, which inherits from nothing. This demonstrates that <code>object</code> is at the top of the class hierarchy. However, as you can see, both <code>int</code> and <code>object</code> are called <em>types</em> (<code>&lt;type 'int'&gt;</code>, <code>&lt;type 'object'&gt;</code>), which in Python is a pure alias of the word <em>class</em>. Indeed, while <code>a</code> is an instance of the <code>int</code> class, <code>int</code> itself is an instance of another class, <em>a class that is instanced to build classes</em></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">dict</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
-<p></p>
-
-<p>Since in Python everything is an object, everything is the instance of a class, even classes. Well, <code>type</code> is the class that is instanced to get classes. So remember this: <code>object</code> is the base of every object, <code>type</code> is the class of every type. Sounds puzzling? It is not your fault, don&#8217;t worry. However, just to strike you with the finishing move, this is what Python is built on</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">__bases__</span>
-</span><span class='line'><span class="p">(</span><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;object&#39;</span><span class="o">&gt;</span><span class="p">,)</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>Since in Python everything is an object, everything is the instance of a class, even classes. Well, <code>type</code> is the class that is instanced to get classes. So remember this: <code>object</code> is the base of every object, <code>type</code> is the class of every type. Sounds puzzling? It is not your fault, don't worry. However, just to strike you with the finishing move, this is what Python is built on</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">object</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="o">.</span><span class="n">__bases__</span>
+<span class="p">(</span><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;object&#39;</span><span class="o">&gt;</span><span class="p">,)</span>
+</pre></div>
 
 
 <p>If you are not about to faint at this point chances are that you are Guido van Rossum of one of his friends down at the Python core development team (in this case let me thank you for your beautiful creation). You may get another cup of tea, if you need it.</p>
-
 <p>Jokes apart, at the very base of Python type system there are two things, <code>object</code> and <code>type</code>, which are inseparable. The previous code shows that <code>object</code> is an instance of <code>type</code>, and <code>type</code> inherits from <code>object</code>. Take your time to understand this subtle concept, as it is very important for the upcoming discussion about metaclasses.</p>
-
 <p>When you think you grasped the <code>type</code>/<code>object</code> matter read this and start thinking again</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="nb">type</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
 <p>Hint: type is a class (i.e. a type). =)</p>
-
 <h2>The Metaclasses Take Python</h2>
-
 <p>You are now familiar with Python classes. You know that a class is used to create an instance, and that the structure of this latter is ruled by the source class and all its parent classes (until you reach <code>object</code>).</p>
-
 <p>Since classes are objects too, you know that a class itself is an instance of a (super)class, and this class is <code>type</code>. That is, as already stated, <code>type</code> is the class that is used to build classes.</p>
-
 <p>So for example you know that a class may be instanced, i.e. it can be called and by calling it you obtain another object that is linked with the class. What prepares the class for being called? What gives the class all its methods? In Python the class in charge of performing such tasks is called <em>metaclass</em>, and <code>type</code> is the default metaclass of all classes.</p>
-
 <p>The point of exposing this structure of Python objects is that you may change the way classes are built. As you know, <code>type</code> is an object, so it can be subclassed just like any other class. Once you get a subclass of <code>type</code> you need to instruct your class to use it as the metaclass instead of type, and you can do this by setting the <code>__metaclass__</code> attribute.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>  <span class="k">pass</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MySpecialClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>  <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">MyType</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">msp</span> <span class="o">=</span> <span class="n">MySpecialClass</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">msp</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">MySpecialClass</span><span class="s">&#39;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">MySpecialClass</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">MyType</span><span class="s">&#39;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">MyType</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MyType</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<span class="o">...</span>  <span class="k">pass</span>
+<span class="o">...</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">MySpecialClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>  <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">MyType</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">msp</span> <span class="o">=</span> <span class="n">MySpecialClass</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">msp</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">MySpecialClass</span><span class="s">&#39;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">MySpecialClass</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">MyType</span><span class="s">&#39;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">MyType</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
 <h4>Metaclasses 2: Singleton Day</h4>
-
 <p>Metaclasses are a very advanced topic in Python, but they have many practical uses. For example, by means of a custom metaclass you may log any time a class is instanced, which can be important for applications that shall keep a low memory usage or have to monitor it.</p>
-
 <p>I am going to show here a very simple example of metaclass, the Singleton. Singleton is a well known design pattern, and many description of it may be found on the Internet. It has also been heavily criticized mostly because its bad behaviour when subclassed, but here I do not want to introduce it for its technological value, but for its simplicity (so please do not question the choice, it is just an example). Check the links at the bottom if you are interested in this topic.</p>
-
 <p>Singleton has one purpose: to return the same instance every time it is instanced, like a sort of object-oriented global variable. So we need to build a class that does not work like standard classes, which return a new instance every time they are called.</p>
-
-<p>&#8220;Build a class&#8221;? This is a task for metaclasses. The following implementation comes from <a href="http://python-3-patterns-idioms-test.readthedocs.org/en/latest/Metaprogramming.html#intercepting-class-creation">Python 3 Patterns, Recipes and Idioms</a>, but is also valid for Python 2.x</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">instance</span> <span class="o">=</span> <span class="bp">None</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">instance</span><span class="p">:</span>
-</span><span class='line'>             <span class="n">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Singleton</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">instance</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>"Build a class"? This is a task for metaclasses. The following implementation comes from <a href="http://python-3-patterns-idioms-test.readthedocs.org/en/latest/Metaprogramming.html#intercepting-class-creation">Python 3 Patterns, Recipes and Idioms</a>, but is also valid for Python 2.x</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="n">instance</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cls</span><span class="o">.</span><span class="n">instance</span><span class="p">:</span>
+             <span class="n">cls</span><span class="o">.</span><span class="n">instance</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Singleton</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">instance</span>
+</pre></div>
 
 
 <p>We are defining a new type, which inherits from <code>type</code> to provide all bells and whistles of Python classes. We override the <code>__call__</code> method, that is a special method invoked when we call the class, i.e. when we instance it. The new method wraps the original method of <code>type</code> by calling it only when the <code>instance</code> attribute is not set, i.e. the first time the class is instanced, otherwise it just returns the recorded instance. As you can see this is a very basic cache class, the only trick is that it is applied to the creation of instances.</p>
-
 <p>To test the new type we need to define a new class that uses it as its metaclass</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">ASingleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'><span class="o">...</span>     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">Singleton</span>
-</span><span class='line'><span class="o">...</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">ASingleton</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="n">ASingleton</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="ow">is</span> <span class="n">b</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0xb6aae28cL&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0xb6aae28cL&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="k">class</span> <span class="nc">ASingleton</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="o">...</span>     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">Singleton</span>
+<span class="o">...</span> 
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="n">ASingleton</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="n">ASingleton</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="ow">is</span> <span class="n">b</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="s">&#39;0xb6aae28cL&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="s">&#39;0xb6aae28cL&#39;</span>
+</pre></div>
 
 
 <p>By using the <code>is</code> operator we test that the two objects are the very same structure in memory, that is their ids are the same, as explicitly shown. What actually happens is that when you issue <code>a = ASingleton()</code> the <code>ASingleton</code> class runs its <code>__call__()</code> method, which is taken from the <code>Singleton</code> type behind the class. That method recognizes that no instance has been created (<code>Singleton.instance</code> is <code>None</code>) and acts just like any standard class does. When you issue <code>b = ASingleton()</code> the very same things happen, but since <code>Singleton.instance</code> is now different from <code>None</code> its value (the previous instance) is directly returned.</p>
-
 <p>Metaclasses are a very powerful programming tool and leveraging them you can achieve very complex behaviours with a small effort. Their use is a must every time you are actually metaprogramming, that is you are writing code that has to drive the way your code works. Good examples are creational patterns (injecting custom class attributes depending on some configuration), testing, debugging, and performance monitoring.</p>
-
 <h2>Coming to Instance</h2>
-
 <p>Before introducing you to a very smart use of metaclasses by talking about Abstract Base Classes (read: to save some topics for the third part of this series), I want to dive into the object creation procedure in Python, that is what happens when you instance a class. In the previous post this procedure was described only partially, by looking at the <code>__init_()</code> method.</p>
-
 <p>In the first post I recalled the object-oriented concept of <em>constructor</em>, which is a special method of the class that is automatically called when the instance is created. The class may also define a destructor, which is called when the object is destroyed. In languages without a garbage collection mechanism such as C++ the destructor shall be carefully designed. In Python the destructor may be defined through the <code>__del__()</code> method, but it is hardly used.</p>
-
 <p>The constructor mechanism in Python is on the contrary very important, and it is implemented by two methods, instead of just one: <code>__new__()</code> and <code>__init__()</code>. The tasks of the two methods are very clear and distinct: <code>__new__()</code> shall perform actions needed when <em>creating</em> a new instance while <code>__init__</code> deals with object <em>initialization</em>.</p>
-
 <p>Since in Python you do not need to declare attributes due to its dynamic nature, <code>__new__()</code> is rarely defined by programmers, who may rely on <code>__init__</code> to perform the majority of the usual tasks. Typical uses of <code>__new__()</code> are very similar to those listed in the previous section, since it allows to trigger some code whenever your class is instanced.</p>
-
-<p>The standard way to override <code>__new__()</code> is</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
-</span><span class='line'>        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyClass</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
-</span><span class='line'>        <span class="p">[</span><span class="n">put</span> <span class="n">your</span> <span class="n">code</span> <span class="n">here</span><span class="p">]</span>
-</span><span class='line'>        <span class="k">return</span> <span class="n">obj</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>The standard way to override <code>__new__()</code> is </p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">MyClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MyClass</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+        <span class="p">[</span><span class="n">put</span> <span class="n">your</span> <span class="n">code</span> <span class="n">here</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">obj</span>
+</pre></div>
 
 
 <p>just like you usually do with <code>__init__()</code>. When your class inherits from <code>object</code> you do not need to call the parent method (<code>object.__init__()</code>) because it is empty.</p>
-
 <p>Remember that <code>__new__()</code> is not forced to return an instance of the class in which it is defined, even if you shall have very good reasons to break this behaviour. Anyway, <code>__init__()</code> will be called only if you return an instance of the container class. Please also note that <code>__new__()</code>, unlike <code>__init__()</code>, accepts the class as its first parameter. The name is not important in Python, and you can also call it <code>self</code>, but it is worth using <code>cls</code> to remember that it is not an instance.</p>
-
 <h2>Final words</h2>
-
 <p>Next post will introduce Abstract Base Classes as the major topic. Slots are another topic which for many people is buried into the Tome of Python Secrets and is worth uncovering. Stay tuned! You can <a href="https://twitter.com/tw_lgiordani/">follow me on Twitter</a> if you want to get the latest news from the blog.</p>
-
 <h2>Movie Trivia</h2>
-
 <p>This time section titles come from the following movies: <em>Good Morning, Vietnam</em>, <em>Die Hard</em>, <em>Spies Like Us</em>, <em>Unforgiven</em>, <em>The Blues Brothers</em>, <em>The Muppets Take Manhattan</em>, <em>Terminator 2: Judgement Day</em>, <em>Coming to America</em></p>
-
 <h2>Sources</h2>
-
 <p>Some sources for the content of this post. Thank you authors!</p>
-
 <ul>
 <li><a href="http://docs.python.org/2/tutorial/classes.html">The official Python documentation</a> and the Python source code.</li>
 <li><a href="http://www.cafepy.com/article/python_types_and_objects/">Python Types and Objects - by Shalabh Chaturvedi</a></li>
@@ -745,80 +451,214 @@
 <li><a href="http://www.aleax.it/5ep.html">Singleton and Borg patterns - by Alex Martelli</a></li>
 <li>Many <a href="http://stackoverflow.com/questions/tagged/python">Stackoverflow</a> questions and answers</li>
 </ul>
-
-
 <h2>Feedback</h2>
-
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
-
 <h2>Previous articles</h2>
-
 <ul>
 <li><a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">OOP Concepts in Python 2.x - Part 1</a></li>
 </ul>
-
-
 <h2>Next articles</h2>
-
 <ul>
 <li><a href="/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3">OOP Concepts in Python 2.x - Part 3</a></li>
 </ul>
-
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">"OOP concepts in Python 2.x - Part 1"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/">"OOP concepts in Python 2.x - Part 3"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">"Python 3 OOP Part 4 - Polymorphism"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/">"Method overriding in Python"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
 
         </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
 
-<div class="meta">
-	
-</div>
-</article>
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
 
-	<div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
-</div>
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                "Advanced use of Python decorators and metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                "Python 3 OOP Part 6 - Abstract Base Classes"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                "Python 3 OOP Part 5 - Metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">
+                                "Python 3 OOP Part 4 - Polymorphism"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">
+                                "Python 3 OOP Part 3 - Delegation: composition and inheritance"
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/amqp/">
+                                amqp
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/c/">
+                                c++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/c-language/">
+                                C-language
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/django/">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/erlang/">
+                                erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/git/">
+                                git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/pika/">
+                                pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/postage/">
+                                postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python/">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/python2/">
+                                python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python3/">
+                                python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/qt/">
+                                qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/rabbitmq/">
+                                rabbitmq
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
 
+        </ul>
+    </section>
+
+</aside>        </div>
     </div>
-    <footer id="footer">
-    <div style="display:inline">
-	<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">The Digital Cat</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://lgiordani.com/about/" property="cc:attributionName" rel="cc:attributionURL">Leonardo Giordani</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-	<br />
-    Powered by <a href="http://octopress.org">Octopress</a> | Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
 </div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
 
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
 
-    </footer>
-    <script src="/javascripts/fabric.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
 
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-
-
-
-<!-- end toload --> 
-</div>
-</div>
-<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
-<script type="text/javascript">
-/*<![CDATA[*/
-;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
-/*]]>*/
-</script><!-- remove it to remove the scroll to top button -->
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
 </body>
 </html>

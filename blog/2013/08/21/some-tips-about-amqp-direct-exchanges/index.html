@@ -1,313 +1,369 @@
-
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en"
+>
 <head>
-	<meta charset="utf-8">
-	<title>Some tips about AMQP direct exchanges - The digital cat</title>
-    <meta name="author" content="Leonardo Giordani">
-    
-	<meta name="description" content="Published on: Aug 21st, 2013 Tags: amqp, rabbitmq Posted by Leonardo Giordani EDIT: thanks to Alvaro Videla that pointed out that a queue can be &hellip;">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>"Some tips about AMQP direct exchanges" - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.ico" rel="shortcut icon">
-    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
 
-    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<link rel="canonical" href="http://lgiordani.com/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/">
 
-    <!-- remove or comment it to disable ajaxification -->   
-    <script src="/javascripts/ajaxify.js"></script>
-   
-    
-    
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="rabbitmq,amqp" />
 
-  ga('create', 'UA-38715090-1', 'auto');
-  ga('send', 'pageview');
+    <!-- Enable latex plugin -->
 
-</script>
 
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/categories/Programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
 
 </head>
-
-
 <body>
-    <div id="wrapper">
-    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
-<h1 class="animated pulse">
-    <div id="headerbg">
-        The digital cat
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-</h1>
-<br>
+</div> <!-- /.navbar -->
 
-<ul id="social-links" style="text-align:center">
-  
-  <!-- GitHub -->
-  <li>
-  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
-  </li>
-  
-  
-  <!-- Google Plus -->
-  <li>
-  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
-  </li>
-  
-  
-  
-  <!-- Twitter -->
-  <li>
-  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
-  </li>
-  
-  
-  
-  
-  
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2013/08/21/some-tips-about-amqp-direct-exchanges/"
+                       rel="bookmark"
+                       title="Permalink to "Some tips about AMQP direct exchanges"">
+                        "Some tips about AMQP direct exchanges"
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-08-21T18:10:00+01:00"> mer 21 agosto 2013</time>
+    </span>
 
 
-<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
-<ul id="nav">
-	<li id="ajax"><a href="/index.html">Home</a></li>
-	<li id="ajax"><a href="/about">About me</a></li>
-	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
-    <li><a href="/atom.xml">RSS</a></li>
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/blog/categories/rabbitmq/">rabbitmq</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/amqp/">amqp</a>
     
-    <li>
-    <div id="dark">
-        <form method="get" action="/search.html" id="search">
-            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
-        </form>
-    </div>
-    </li>
-        
-</ul>
-
-
-
-
-</header>
-
-<div id="toload">
-<!-- begin toload --> 
-    <div id="content" class="inner">
-        <article class="post">
-	<h2 class="title">Some Tips About AMQP Direct Exchanges</h2>
-	<div class="entry-content">
-          <div class="meta">
-            <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-08-21T18:10:00+02:00" pubdate data-updated="true">Aug 21<span>st</span>, 2013</time></div>
-            <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/amqp/'>amqp</a>, <a class='category' href='/blog/categories/rabbitmq/'>rabbitmq</a>
-
-
-</div>
-          </div>
-          
-  
-
-<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
-
-          <p><em>EDIT: thanks to Alvaro Videla that pointed out that a queue can be connected to more than one exchange; sorry for the wrong information.</em></p>
-
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p><em>EDIT: thanks to Alvaro Videla that pointed out that a queue can be connected to more than one exchange; sorry for the wrong information.</em></p>
 <p>Everyone who started using AMQP learned from the very beginning that there are three different types of exchanges, namely direct, fanout and topic. In this post, I am going to highlight some interesting properties of direct exchanges, which were not clear to me when I started using RabbitMQ.</p>
-
 <p>Now some time has passed since I started, and reading the <a href="http://www.rabbitmq.com/getstarted.html">RabbitMQ tutorials</a> again I can see that these properties are no mystery. However, in this short post I want to clearly point out three different uses of direct exchanges, in the hope that other novices will be helped to better understand those powerful components of an AMQP system.</p>
-
-<!--more-->
-
-
 <h2>Movie cast</h2>
-
 <p>The cast of an AMQP message delivery is made of three different type of components: the exchange, the queues, and the consumers.</p>
-
 <p>The exchange is the container of all the messages other components sent; each message has been tagged with a routing key and they can be extracted from the exchange by means of those keys.</p>
-
 <p>The consumers are those which are interested in getting messages from the exchange, so their main activity is to connect to the exchange, pick messages from it and act according to its content. A consumer can connect to more than one exchange and receive messages concurrently.</p>
-
-<p>The queues are the real core of the system. They actually extract messages from the exchange according to their configuration, and you are not wrong if you think that they are the real routing component of AMQP; indeed exchanges do not exist as separate components, so the routing game is played by the channel and the queues.</p>
-
+<p>The queues are the real core of the system. They actually extract messages from the exchange according to their configuration, and you are not wrong if you think that they are the real routing component of AMQP; indeed exchanges do not exist as separate components, so the routing game is played by the channel and the queues. </p>
 <p>Let us consider queues at a deeper level. They are two sided components, messages enter from one side and exit from the other one. Thus each queue can establish connections on both sides: on the input side a queue fetches messages from <strong>one or more exchanges</strong> while on the output side the queue can be connected to <strong>one or more consumers</strong>. From the single queue point of view being connected to more than one exchange with the same routing key is transparent, since the only thing that concerns the queue itself are the incoming messages; being connected to more than one exchange with different routing keys leads to complex scenarios, so in this article I will consider a single direct exchange delivering messages to queues.</p>
-
 <h2>Three configurations</h2>
-
 <p>As you can easily see, the most general case with direct exchanges is that of multiple queues connected to the same exchange, with multiple consumers connected to each queue.</p>
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image01.jpg"></p>
-
+<p><img alt="Image 01" src="/images/amqp_direct_exchanges/image01.jpg" /></p>
 <p>The edge cases of this configuration can be obtained decreasing the number of queues, the number of consumers, or both, to a single unit. This leads to three different configurations:</p>
-
 <ul>
-<li>The &#8220;direct&#8221; case (see <a href="http://www.rabbitmq.com/tutorials/tutorial-one-python.html">tutorial number 1</a>). Here, only a queue is configured with a given routing key and only a consumer is connected to that queue. Every message sent to the exchange with that routing key will be delivered to the consumer.</li>
+<li>The "direct" case (see <a href="http://www.rabbitmq.com/tutorials/tutorial-one-python.html">tutorial number 1</a>). Here, only a queue is configured with a given routing key and only a consumer is connected to that queue. Every message sent to the exchange with that routing key will be delivered to the consumer.</li>
 </ul>
-
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image02.jpg"></p>
-
+<p><img alt="Image 02" src="/images/amqp_direct_exchanges/image02.jpg" /></p>
 <ul>
-<li>The &#8220;round robin&#8221; case (see <a href="http://www.rabbitmq.com/tutorials/tutorial-two-python.html">tutorial number 2</a>). Here, two or more consumers are connected to the same queue (pay attention, not two queues configured with the same key), and the messages in the queue are dispatched in a round robin way, i.e. each consumer receives one of the messages until there are no more consumers, then the procedure starts again.</li>
+<li>The "round robin" case (see <a href="http://www.rabbitmq.com/tutorials/tutorial-two-python.html">tutorial number 2</a>). Here, two or more consumers are connected to the same queue (pay attention, not two queues configured with the same key), and the messages in the queue are dispatched in a round robin way, i.e. each consumer receives one of the messages until there are no more consumers, then the procedure starts again.</li>
 </ul>
-
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image03.jpg"></p>
-
+<p><img alt="Image 03" src="/images/amqp_direct_exchanges/image03.jpg" /></p>
 <ul>
-<li>The &#8220;fanout&#8221; case (see &#8220;Multiple bindings&#8221; in <a href="http://www.rabbitmq.com/tutorials/tutorial-four-python.html">tutorial number 4</a>). Here, two or more different queues configured with the same key connect to the same exchange, and each of them dispatches messages to only one consumer. Since the queues pick messages with the same routing key, messages are duplicated and dispatched simultaneously to each of them. This makes the direct exchange behave like a fanout one, <strong>but only for the queues bound with that routing key</strong>.</li>
+<li>The "fanout" case (see "Multiple bindings" in <a href="http://www.rabbitmq.com/tutorials/tutorial-four-python.html">tutorial number 4</a>). Here, two or more different queues configured with the same key connect to the same exchange, and each of them dispatches messages to only one consumer. Since the queues pick messages with the same routing key, messages are duplicated and dispatched simultaneously to each of them. This makes the direct exchange behave like a fanout one, <strong>but only for the queues bound with that routing key</strong>.</li>
 </ul>
-
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image04.jpg"></p>
-
+<p><img alt="Image 04" src="/images/amqp_direct_exchanges/image04.jpg" /></p>
 <p>The last consideration about the fanout case is important. A pure fanout exchange is somehow limited since it can only blindly dispatch messages to everyone connects. A direct exchange can behave like a fanout only for certain keys while acting as a direct or round robin dispatcher with other keys, at the same time.</p>
-
 <h2>A real use case</h2>
-
 <p>Let us look at a concrete example to better understand why direct exchanges can be used to solve the most part of routing issues we face. Remember that in AMQP queues are named objects and that names are primary keys, i.e. there cannot be two queues with the same name under the same virtual host.</p>
-
 <p>This example is a simplified version of a real RabbitMQ system running Python programs based on <a href="https://github.com/lgiordani/postage">Postage</a>.</p>
-
-<p>In a cluster, a single program can be uniquely identified by the compound value <code>(pid,host)</code>, since given a host only one program can have the given PID. To simplify the notation say that any program in the cluster is identified by a string of the form <code>pid@host</code> (for example <code>8669@yoda</code>, which is the editor I&#8217;m using in this very moment). To further simplify the management of our cluster say that each program has a name, such as the name of its executable file.</p>
-
+<p>In a cluster, a single program can be uniquely identified by the compound value <code>(pid,host)</code>, since given a host only one program can have the given PID. To simplify the notation say that any program in the cluster is identified by a string of the form <code>pid@host</code> (for example <code>8669@yoda</code>, which is the editor I'm using in this very moment). To further simplify the management of our cluster say that each program has a name, such as the name of its executable file.</p>
 <p>Given this configuration an obvious requirement is to be able to reach programs with messages grouping them according to some of the listed properties; the possible targets of our messages are:</p>
-
 <ul>
 <li>All programs on a given host. This is useful for example when you are going to reset that machine, and you need to previously signal each program running on it.</li>
 <li>All programs running with a given name. This can be leveraged, for example, because you updated the executable or some plugins and you want them to refresh the code.</li>
 <li>A single program, given its unique key <code>pid@host</code>. This comes in handy when you have to address a specific process, for example to gracefuly terminate it or to collect output.</li>
 </ul>
-
-
 <p>All these requirements can be fulfilled by a single direct exchange and multiple queues with suitable routing keys.</p>
-
-<p>Take as an instance the first requirement: reaching all programs on a single host. You only need each program to declare a queue which is unique and to bind it to the exchange with the routing key <code>@host</code>, where host is the actual name of the host (<code>@yoda</code> in the previous example). Declaring a unique queue is simple, in that you can use the unique process name <code>pid@host</code>. The following picture shows the resulting setup: as you can see each queue has a unique name (its owner&#8217;s unique key) and is bound to the exchange with a routing key that depends on the host.</p>
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image05.jpg"></p>
-
-<p>Now some little magic. The second requirement can be fulfilled by connecting <strong>the same queue to the same exchange</strong> but with a different routing key, this time made by the program&#8217;s name. The resulting setup is represented in the following picture.</p>
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image06.jpg"></p>
-
+<p>Take as an instance the first requirement: reaching all programs on a single host. You only need each program to declare a queue which is unique and to bind it to the exchange with the routing key <code>@host</code>, where host is the actual name of the host (<code>@yoda</code> in the previous example). Declaring a unique queue is simple, in that you can use the unique process name <code>pid@host</code>. The following picture shows the resulting setup: as you can see each queue has a unique name (its owner's unique key) and is bound to the exchange with a routing key that depends on the host.</p>
+<p><img alt="Image 05" src="/images/amqp_direct_exchanges/image05.jpg" /></p>
+<p>Now some little magic. The second requirement can be fulfilled by connecting <strong>the same queue to the same exchange</strong> but with a different routing key, this time made by the program's name. The resulting setup is represented in the following picture.</p>
+<p><img alt="Image 06" src="/images/amqp_direct_exchanges/image06.jpg" /></p>
 <p>The third requirement makes us connect the same queue with the same exchange with a routing key which is the unique name of the queue.</p>
-
-<p>I hear you scream &#8220;Why do you call this <em>magic</em>?&#8221;</p>
-
-<p>Indeed it is something very simple and straightforward, but take a look at the complete setup, where, for simplicity&#8217;s sake, the three connections between a queue and the exchange have been collapsed to one line.</p>
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image07.jpg"></p>
-
-<p>Here, we have a &#8220;selective fanout&#8221; behaviour, in that the actual &#8220;active&#8221; connections change depending on the routing key. If an incoming message is routed with the key &#8220;@host1&#8221;, for example, we obtain the following connections</p>
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image08.jpg"></p>
-
-<p>If the routing key changes to &#8220;program1&#8221; the connections become the following</p>
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image09.jpg"></p>
-
+<p>I hear you scream "Why do you call this <em>magic</em>?"</p>
+<p>Indeed it is something very simple and straightforward, but take a look at the complete setup, where, for simplicity's sake, the three connections between a queue and the exchange have been collapsed to one line.</p>
+<p><img alt="Image 07" src="/images/amqp_direct_exchanges/image07.jpg" /></p>
+<p>Here, we have a "selective fanout" behaviour, in that the actual "active" connections change depending on the routing key. If an incoming message is routed with the key "@host1", for example, we obtain the following connections</p>
+<p><img alt="Image 08" src="/images/amqp_direct_exchanges/image08.jpg" /></p>
+<p>If the routing key changes to "program1" the connections become the following</p>
+<p><img alt="Image 09" src="/images/amqp_direct_exchanges/image09.jpg" /></p>
 <h2>Direct exchanges and load balance</h2>
-
-<p>In the previous section we looked at a smart use of the third of the three configurations explained at the beginning of the post. We can profitably leverage the second one (the &#8220;round robin&#8221; case) to selectively reach cluster programs while balancing the load. Remember that the main use of a round robin message delivery is indeed to avoid overloading a single component or machine.</p>
-
+<p>In the previous section we looked at a smart use of the third of the three configurations explained at the beginning of the post. We can profitably leverage the second one (the "round robin" case) to selectively reach cluster programs while balancing the load. Remember that the main use of a round robin message delivery is indeed to avoid overloading a single component or machine.</p>
 <p>To balance the load among a set of programs we need each of them to declare a queue and share it with others: in other words we need to declare a queue with a shared name. This is very easy: for each of the properties of our programs a shared queue can be declared simply by naming it with the value of the property itself.</p>
-
-<p>For example, declaring a queue named &#8220;@host1&#8221; creates a queue shared by each program running on host1, while a queue named &#8220;program1&#8221; is shared among all the programs running the same executable. Even PIDs can be used in this way, but since it is usually not interesting to get the set of all programs on the cluster running with the same pid, there is also no point in defining queues based on them.</p>
-
-<p>In defining such queues you need to define a syntax (just like for the previous &#8220;fanout&#8221; case) to avoid name clashes; this is the reason why host routing keys have been prepended the <code>@</code> sign. Otherwise, a process named as one of the hosts would break the routing scheme.</p>
-
+<p>For example, declaring a queue named "@host1" creates a queue shared by each program running on host1, while a queue named "program1" is shared among all the programs running the same executable. Even PIDs can be used in this way, but since it is usually not interesting to get the set of all programs on the cluster running with the same pid, there is also no point in defining queues based on them.</p>
+<p>In defining such queues you need to define a syntax (just like for the previous "fanout" case) to avoid name clashes; this is the reason why host routing keys have been prepended the <code>@</code> sign. Otherwise, a process named as one of the hosts would break the routing scheme.</p>
 <p>The resulting setup is portrayed in the following picture</p>
-
-<p><img src="/downloads/images/amqp_direct_exchanges/image10.jpg"></p>
-
-<p>Here you can see, for example, that sending a message with the routing key &#8220;@host1/rr&#8221; makes the message flow into the queue called &#8220;@host1&#8221;, which is shared by all the processes running on that host. Since the queue is shared, messages are not duplicated but delivered in a balanced way. The &#8220;/rr&#8221; suffix stands for Round Robin and usefully tells apart fanout routing keys from load balance ones.</p>
-
+<p><img alt="Image 10" src="/images/amqp_direct_exchanges/image10.jpg" /></p>
+<p>Here you can see, for example, that sending a message with the routing key "@host1/rr" makes the message flow into the queue called "@host1", which is shared by all the processes running on that host. Since the queue is shared, messages are not duplicated but delivered in a balanced way. The "/rr" suffix stands for Round Robin and usefully tells apart fanout routing keys from load balance ones.</p>
 <h2>Conclusions</h2>
-
-<p>Well, after all I just explained again and more verbosely the basic RabbitMQ examples, didn&#8217;t I?</p>
-
+<p>Well, after all I just explained again and more verbosely the basic RabbitMQ examples, didn't I?</p>
 <p>Yes. However, I think such considerations can be useful for novices and from time to time it is a good thing for experts to refresh the plain old basic stuff. So this post can be used as a quick memo of the different configurations you can create with an AMQP direct exchange.</p>
-
 <p>Stay tuned for other <a href="/blog/categories/rabbitmq/">RabbitMQ</a> and <a href="/blog/categories/amqp/">AMQP</a> posts!</p>
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/">"Postage - a RabbitMQ-based component Python library"</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
 
         </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
 
-<div class="meta">
-	
-</div>
-</article>
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
 
-	<div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
-</div>
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                "Advanced use of Python decorators and metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                "Python 3 OOP Part 6 - Abstract Base Classes"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                "Python 3 OOP Part 5 - Metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">
+                                "Python 3 OOP Part 4 - Polymorphism"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">
+                                "Python 3 OOP Part 3 - Delegation: composition and inheritance"
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/amqp/">
+                                amqp
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/c/">
+                                c++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/c-language/">
+                                C-language
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/django/">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/erlang/">
+                                erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/git/">
+                                git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/pika/">
+                                pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/postage/">
+                                postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python/">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/python2/">
+                                python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python3/">
+                                python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/qt/">
+                                qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/rabbitmq/">
+                                rabbitmq
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
 
+        </ul>
+    </section>
+
+</aside>        </div>
     </div>
-    <footer id="footer">
-    <div style="display:inline">
-	<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">The Digital Cat</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://lgiordani.com/about/" property="cc:attributionName" rel="cc:attributionURL">Leonardo Giordani</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-	<br />
-    Powered by <a href="http://octopress.org">Octopress</a> | Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
 </div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
 
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
 
-    </footer>
-    <script src="/javascripts/fabric.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
 
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-
-
-
-<!-- end toload --> 
-</div>
-</div>
-<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
-<script type="text/javascript">
-/*<![CDATA[*/
-;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
-/*]]>*/
-</script><!-- remove it to remove the scroll to top button -->
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
 </body>
 </html>

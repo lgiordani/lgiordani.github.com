@@ -1,1155 +1,692 @@
-
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en"
+>
 <head>
-	<meta charset="utf-8">
-	<title>OOP concepts in Python 2.x - Part 1 - The digital cat</title>
-    <meta name="author" content="Leonardo Giordani">
-    
-	<meta name="description" content="Published on: Mar 5th, 2014 Tags: oop, python, python2 Posted by Leonardo Giordani Abstract Object-oriented programming (OOP) has been the leading &hellip;">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>"OOP concepts in Python 2.x - Part 1" - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.ico" rel="shortcut icon">
-    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
 
-    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<link rel="canonical" href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">
 
-    <!-- remove or comment it to disable ajaxification -->   
-    <script src="/javascripts/ajaxify.js"></script>
-   
-    
-    
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="python2,python,OOP" />
 
-  ga('create', 'UA-38715090-1', 'auto');
-  ga('send', 'pageview');
+    <!-- Enable latex plugin -->
 
-</script>
 
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/categories/Programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
 
 </head>
-
-
 <body>
-    <div id="wrapper">
-    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
-<h1 class="animated pulse">
-    <div id="headerbg">
-        The digital cat
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-</h1>
-<br>
+</div> <!-- /.navbar -->
 
-<ul id="social-links" style="text-align:center">
-  
-  <!-- GitHub -->
-  <li>
-  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
-  </li>
-  
-  
-  <!-- Google Plus -->
-  <li>
-  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
-  </li>
-  
-  
-  
-  <!-- Twitter -->
-  <li>
-  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
-  </li>
-  
-  
-  
-  
-  
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/"
+                       rel="bookmark"
+                       title="Permalink to "OOP concepts in Python 2.x - Part 1"">
+                        "OOP concepts in Python 2.x - Part 1"
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2014-03-05T12:46:06+01:00"> mer 05 marzo 2014</time>
+    </span>
 
 
-<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
-<ul id="nav">
-	<li id="ajax"><a href="/index.html">Home</a></li>
-	<li id="ajax"><a href="/about">About me</a></li>
-	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
-    <li><a href="/atom.xml">RSS</a></li>
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/blog/categories/python2/">python2</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/python/">python</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/oop/">OOP</a>
     
-    <li>
-    <div id="dark">
-        <form method="get" action="/search.html" id="search">
-            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
-        </form>
-    </div>
-    </li>
-        
-</ul>
-
-
-
-
-</header>
-
-<div id="toload">
-<!-- begin toload --> 
-    <div id="content" class="inner">
-        <article class="post">
-	<h2 class="title">OOP Concepts in Python 2.x - Part 1</h2>
-	<div class="entry-content">
-          <div class="meta">
-            <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2014-03-05T12:46:06+01:00" pubdate data-updated="true">Mar 5<span>th</span>, 2014</time></div>
-            <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/oop/'>oop</a>, <a class='category' href='/blog/categories/python/'>python</a>, <a class='category' href='/blog/categories/python2/'>python2</a>
-
-
-</div>
-          </div>
-          
-  
-
-<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
-
-          <h2>Abstract</h2>
-
-<p>Object-oriented programming (OOP) has been the leading programming paradigm for several decades now, starting from the initial attempts back in the 60s to some of the most important languages used nowadays. Being a set of programming concepts and design methodologies, OOP can never be said to be &#8220;correctly&#8221; or &#8220;fully&#8221; implemented by a language: indeed there are as many implementations as languages.</p>
-
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <h2>Abstract</h2>
+<p>Object-oriented programming (OOP) has been the leading programming paradigm for several decades now, starting from the initial attempts back in the 60s to some of the most important languages used nowadays. Being a set of programming concepts and design methodologies, OOP can never be said to be "correctly" or "fully" implemented by a language: indeed there are as many implementations as languages.</p>
 <p>So one of the most interesting aspects of OOP languages is to understand how they implement those concepts. In this post I am going to try and start analyzing the OOP implementation of the Python language. Due to the richness of the topic, however, I consider this attempt just like a set of thoughts for Python beginners trying to find their way into this beautiful (and sometimes peculiar) language.</p>
-
 <p>This first post covers the following topics:</p>
-
 <ul>
 <li>Objects and types</li>
 <li>Classes and instances</li>
 <li>Object members: methods and attributes</li>
 <li>Delegation: inheritance and composition</li>
 </ul>
-
-
 <p>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the <strong>updated version</strong> <a href="/blog/categories/python3/">here</a>.</p>
-
-<!--more-->
-
-
 <h2>Back to the Object</h2>
-
-<p>Computer science deals with data and with procedures to manipulate that data. Everything, from the earliest Fortran programs to the latest mobile apps is about data and their manipulation.</p>
-
+<p>Computer science deals with data and with procedures to manipulate that data. Everything, from the earliest Fortran programs to the latest mobile apps is about data and their manipulation. </p>
 <p>So if data are the ingredients and procedures are the recipes, it seems (and can be) reasonable to keep them separate.</p>
+<p>Let's do some procedural programming in Python</p>
+<div class="highlight"><pre><span class="c"># This is some data</span>
+<span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">378</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
 
-<p>Let&#8217;s do some procedural programming in Python</p>
+<span class="c"># This is a procedure that computes the average</span>
+<span class="k">def</span> <span class="nf">avg</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c"># This is some data</span>
-</span><span class='line'><span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">378</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># This is a procedure that computes the average</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">avg</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">print</span> <span class="n">avg</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="k">print</span> <span class="n">avg</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
 
 
 <p>As you can see the procedure is quite good and general: the procedure is run on a sequence of data, and it returns the average of the sequence items. So far, so good: computing the average of some numbers leaves the numbers untouched and creates new data.</p>
-
 <p>The observation of the everyday world, however, shows that <em>complex data mutate</em>: an electrical device is on or off, a door is open or closed, the content of a bookshelf in your room changes as you buy new books.</p>
-
 <p>You can still manage it keeping data and procedures separate, for example</p>
+<div class="highlight"><pre><span class="c"># These are two numbered doors, initially closed</span>
+<span class="n">door1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">]</span>
+<span class="n">door2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">]</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c"># These are two numbered doors, initially closed</span>
-</span><span class='line'><span class="n">door1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="n">door2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># This procedure opens a door</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">open_door</span><span class="p">(</span><span class="n">door</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">door</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">open_door</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-</span><span class='line'><span class="k">print</span> <span class="n">door1</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="c"># This procedure opens a door</span>
+<span class="k">def</span> <span class="nf">open_door</span><span class="p">(</span><span class="n">door</span><span class="p">):</span>
+    <span class="n">door</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+
+<span class="n">open_door</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">door1</span>
+</pre></div>
 
 
 <p>I described a door as a structure containing a number and the status of the door. The procedure knows how this structure is made and may alter it.</p>
+<p>This also works like a charm. Some problems arise, however, when we start building specialized types of data. What happens, for example, when I introduce a "lockable door" data type, which can be opened only when it is not locked? Let's see</p>
+<div class="highlight"><pre><span class="c"># These are two standard doors, initially closed</span>
+<span class="n">door1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">]</span>
+<span class="n">door2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">]</span>
 
-<p>This also works like a charm. Some problems arise, however, when we start building specialized types of data. What happens, for example, when I introduce a &#8220;lockable door&#8221; data type, which can be opened only when it is not locked? Let&#8217;s see</p>
+<span class="c"># This is a lockable door, initially closed and unlocked</span>
+<span class="n">ldoor1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">,</span> <span class="s">&#39;unlocked&#39;</span><span class="p">]</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="c"># These are two standard doors, initially closed</span>
-</span><span class='line'><span class="n">door1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="n">door2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># This is a lockable door, initially closed and unlocked</span>
-</span><span class='line'><span class="n">ldoor1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">,</span> <span class="s">&#39;unlocked&#39;</span><span class="p">]</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># This procedure opens a standard door</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">open_door</span><span class="p">(</span><span class="n">door</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">door</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
-</span><span class='line'>
-</span><span class='line'><span class="c"># This procedure opens a lockable door</span>
-</span><span class='line'><span class="k">def</span> <span class="nf">open_ldoor</span><span class="p">(</span><span class="n">door</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">if</span> <span class="n">door</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;unlocked`:</span>
-</span><span class='line'>        <span class="n">door</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sb">`open`</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">open_door</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-</span><span class='line'><span class="k">print</span> <span class="n">door1</span>
-</span><span class='line'>
-</span><span class='line'><span class="n">open_ldoor</span><span class="p">(</span><span class="n">ldoor1</span><span class="p">)</span>
-</span><span class='line'><span class="k">print</span> <span class="n">ldoor1</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="c"># This procedure opens a standard door</span>
+<span class="k">def</span> <span class="nf">open_door</span><span class="p">(</span><span class="n">door</span><span class="p">):</span>
+    <span class="n">door</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+
+<span class="c"># This procedure opens a lockable door</span>
+<span class="k">def</span> <span class="nf">open_ldoor</span><span class="p">(</span><span class="n">door</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">door</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;unlocked`:</span>
+        <span class="n">door</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sb">`open`</span>
+
+<span class="n">open_door</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">door1</span>
+
+<span class="n">open_ldoor</span><span class="p">(</span><span class="n">ldoor1</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">ldoor1</span>
+</pre></div>
 
 
-<p>Everything still works, no surprises in this code. However, as you can see, I had to find a different name for the procedure that opens a locked door since its implementation differs from the procedure that opens a standard door. But, wait&#8230; I&#8217;m still opening a door, the action is the same, and it just changes the status of the door itself. So why shall I remember that a locked door shall be opened with <code>open_ldoor()</code> instead of <code>open_door()</code> if the verb is the same?</p>
-
-<p>Chances are that this separation between data and procedures doesn&#8217;t perfectly fit some situations. The key problem is that the &#8220;open&#8221; action is not actually <em>using</em> the door; rather it is <em>changing its state</em>. So, just like the volume control buttons of your phone, which are <em>on</em> your phone, the &#8220;open&#8221; procedure should stick to the &#8220;door&#8221; data.</p>
-
+<p>Everything still works, no surprises in this code. However, as you can see, I had to find a different name for the procedure that opens a locked door since its implementation differs from the procedure that opens a standard door. But, wait... I'm still opening a door, the action is the same, and it just changes the status of the door itself. So why shall I remember that a locked door shall be opened with <code>open_ldoor()</code> instead of <code>open_door()</code> if the verb is the same?</p>
+<p>Chances are that this separation between data and procedures doesn't perfectly fit some situations. The key problem is that the "open" action is not actually <em>using</em> the door; rather it is <em>changing its state</em>. So, just like the volume control buttons of your phone, which are <em>on</em> your phone, the "open" procedure should stick to the "door" data.</p>
 <p>This is exactly what leads to the concept of <em>object</em>: an object, in the OOP context, is a structure holding data <em>and</em> procedures operating on them.</p>
-
 <h2>What About Type?</h2>
-
 <p>When you talk about data you immediately need to introduce the concept of <em>type</em>. This concept may have two meanings that are worth being mentioned in computer science: the <em>behavioural</em> and the <em>structural</em> one.</p>
-
-<p>The behavioural meaning represents the fact that you know what something is by describing how it acts. This is the foundation of the so-called &#8220;duck typing&#8221; (here &#8220;typing&#8221; means &#8220;to give a type&#8221; and not &#8220;to type on a keyboard&#8221;): if it <del>types</del> acts like a duck, it <em>is</em> a duck.</p>
-
+<p>The behavioural meaning represents the fact that you know what something is by describing how it acts. This is the foundation of the so-called "duck typing" (here "typing" means "to give a type" and not "to type on a keyboard"): if it <del>types</del> acts like a duck, it <em>is</em> a duck.</p>
 <p>The structural meaning identifies the type of something by looking at its internal structure. So two things that act in the same way but are internally different are of different type.</p>
-
 <p>Both points of view can be valid, and different languages may implement and emphasize one meaning of type or the other, and even both.</p>
-
 <h2>Class Games</h2>
-
-<p>Objects in Python may be built describing their structure through a <em>class</em>. A class is the programming representation of a generic object, such as &#8220;a book&#8221;, &#8220;a car&#8221;, &#8220;a door&#8221;: when I talk about &#8220;a door&#8221; everyone can understand what I&#8217;m saying, without the need of referring to a specific door in the room.</p>
-
+<p>Objects in Python may be built describing their structure through a <em>class</em>. A class is the programming representation of a generic object, such as "a book", "a car", "a door": when I talk about "a door" everyone can understand what I'm saying, without the need of referring to a specific door in the room.</p>
 <p>In Python, the type of an object is represented by the class used to build the object: that is, in Python the word <em>type</em> has the same meaning of the word <em>class</em>.</p>
-
 <p>For example, one of the built-in classes of Python is <code>int</code>, which represents an integer number</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">6</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">a</span>
-</span><span class='line'><span class="mi">6</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">6</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">a</span>
+<span class="mi">6</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">a</span><span class="o">.</span><span class="n">__class__</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
 <p>As you can see, the built-in function <code>type()</code> returns the content of the <em>magic attribute</em> <code>__class__</code> (magic here means that its value is managed by Python itself offstage). The type of the variable <code>a</code>, or its class, is <code>int</code>. (This is a very inaccurate description of this rather complex topic, so remember that we are just scratching the surface).</p>
-
 <p>Once you have a class you can <em>instantiate</em> it to get a concrete object (an <em>instance</em>) of that type, i.e. an object built according to the structure of that class. The Python syntax to instantiate a class is the same of a function call</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;int&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
 <p>When you create an instance, you can pass some values, according to the class definition, to <em>initialize</em> it.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">b</span>
-</span><span class='line'><span class="mi">0</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">c</span>
-</span><span class='line'><span class="mi">7</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="nb">int</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">b</span>
+<span class="mi">0</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">c</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">c</span>
+<span class="mi">7</span>
+</pre></div>
 
 
 <p>In this example, the <code>int</code> class creates an integer with value 0 when called without arguments, otherwise it uses the given argument to initialize the newly created object.</p>
-
 <p>Let us write a class that represents a door to match the procedural examples done in the first section</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
+</pre></div>
 
 
-<p>The <code>class</code> keyword defines a new class named <code>Door</code>; everything indented under <code>class</code> is part of the class. The functions you write inside the object are called <em>methods</em> and don&#8217;t differ at all from standard functions; the name changes only to highlight the fact that those functions now are part of an object.</p>
-
+<p>The <code>class</code> keyword defines a new class named <code>Door</code>; everything indented under <code>class</code> is part of the class. The functions you write inside the object are called <em>methods</em> and don't differ at all from standard functions; the name changes only to highlight the fact that those functions now are part of an object.</p>
 <p>Methods of a class must accept as first argument a special value called <code>self</code> (the name is a convention but please never break it).</p>
-
 <p>The class can be given a special method called <code>__init__()</code> which is run when the class is instantiated, receiving the arguments passed when calling the class; the general name of such a method, in the OOP context, is <em>constructor</em>, even if the <code>__init__()</code> method is not the only part of this mechanism in Python.</p>
-
 <p>The <code>self.number</code> and <code>self.status</code> variables are called <em>attributes</em> of the object. In Python, methods and attributes are both <em>members</em> of the object and are accessible with the dotted syntax; the difference between attributes and methods is that the latter can be called (in Python lingo you say that a method is a <em>callable</em>).</p>
-
 <p>As you can see the <code>__init__()</code> method shall create and initialize the attributes since they are not declared elsewhere.</p>
-
 <p>The class can be used to create a concrete object</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">number</span>
-</span><span class='line'><span class="mi">1</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
-</span><span class='line'><span class="n">closed</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">number</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
+<span class="n">closed</span>
+</pre></div>
 
 
 <p>Now <code>door1</code> is an instance of the <code>Door</code> class; <code>type()</code> returns the class as <code>__main__.Door</code> since the class was defined directly in the interactive shell, that is in the current main module. To call a method of an object, that is to run one of its internal functions, you just access it as an attribute with the dotted syntax and call it like a standard function.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">number</span>
-</span><span class='line'><span class="mi">1</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
-</span><span class='line'><span class="nb">open</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">number</span>
+<span class="mi">1</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
+<span class="nb">open</span>
+</pre></div>
 
 
 <p>In this case, the <code>open()</code> method of the <code>door1</code> instance has been called. No arguments have been passed to the <code>open()</code> method, but if you review the class declaration, you see that it was declared to accept an argument (<code>self</code>). When you call a method of an instance, Python automatically passes the instance itself to the method as the first argument.</p>
-
 <p>You can create as many instances as needed and they are completely unrelated each other. That is the changes you make on one instance do not reflect on another instance of the same class.</p>
-
 <h4>Recap</h4>
-
 <p>Objects are described by a <em>class</em>, which can generate one or more <em>instances</em>, unrelated each other. A class contains <em>methods</em>, which are functions, and they accept at least one argument called <code>self</code>, which is the actual instance on which the method has been called. A special method, <code>__init__()</code> deals with the initialization of the object, setting the initial value of the <em>attributes</em>.</p>
-
 <h2>Python Classes Strike Again</h2>
-
 <p>The Python implementation of classes has some peculiarities. The bare truth is that in Python the class of an object is an object itself. You can check this by issuing <code>type()</code> on the class</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">Door</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">Door</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;type&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
 <p>This shows that the <code>Door</code> class is an object, an instance of the <code>type</code> class.</p>
-
-<p>This concept is not so difficult to grasp as it can seem at first sight: in the real world we deal with concepts using them like <em>things</em>: for example we can talk about the concept of &#8220;door&#8221;, telling people how a door looks like and how it works. So in our everyday experience the <em>type</em> of an object is an object itself. In Python this can be expressed by saying that <em>everything is an object</em>.</p>
-
+<p>This concept is not so difficult to grasp as it can seem at first sight: in the real world we deal with concepts using them like <em>things</em>: for example we can talk about the concept of "door", telling people how a door looks like and how it works. So in our everyday experience the <em>type</em> of an object is an object itself. In Python this can be expressed by saying that <em>everything is an object</em>.</p>
 <p>If the class is an instance it is a concrete object and is stored somewhere in memory. Let us leverage the <em>inspection</em> capabilities of Python and its <code>id()</code> function to check the status of our objects. The <code>id()</code> built-in function returns the memory position of an object.</p>
-
-<p>First of all, let&#8217;s check that the two objects are stored at different addresses</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0x7fa4c818bad0&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0x7fa4c818b890&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>First of all, let's check that the two objects are stored at different addresses</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="p">))</span>
+<span class="s">&#39;0x7fa4c818bad0&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="p">))</span>
+<span class="s">&#39;0x7fa4c818b890&#39;</span>
+</pre></div>
 
 
 <p>This confirms that the two instances are separate and unrelated.
 <strong>Please note that your values are very likely to be different from the ones I got.</strong></p>
-
 <p>However if we use <code>id()</code> on the class of the two instances we discover that the class is <em>exactly</em> the same</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0x766800&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0x766800&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+<span class="s">&#39;0x766800&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">__class__</span><span class="p">))</span>
+<span class="s">&#39;0x766800&#39;</span>
+</pre></div>
 
 
 <p>Well this is very important. In Python, a class is not just the schema used to build an object. Rather, the class is a shared living object, which code is accessed at run time.</p>
-
-<p>As we already tested, however, attributes are not stored in the class but in every instance, due to the fact that <code>__init__()</code> works on <code>self</code> when creating them. Classes, however, can be given attributes like any other object; with a terrific effort of imagination, let&#8217;s call them <em>class attributes</em>.</p>
-
+<p>As we already tested, however, attributes are not stored in the class but in every instance, due to the fact that <code>__init__()</code> works on <code>self</code> when creating them. Classes, however, can be given attributes like any other object; with a terrific effort of imagination, let's call them <em>class attributes</em>.</p>
 <p>As you can expect, class attributes are shared among the class instances just like their container</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;brown&#39;</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;brown&#39;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
+</pre></div>
 
 
 <p>The <code>colour</code> attribute here is not created using <code>self</code>, and any change of its value reflects on all instances</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="s">&#39;brown&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="s">&#39;brown&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="s">&#39;brown&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="s">&#39;white&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="s">&#39;white&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="s">&#39;white&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0xb74c5420L&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0xb74c5420L&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
-</span><span class='line'><span class="s">&#39;0xb74c5420L&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="s">&#39;brown&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+<span class="s">&#39;brown&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+<span class="s">&#39;brown&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="s">&#39;white&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span>
+<span class="s">&#39;white&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door2</span><span class="o">.</span><span class="n">colour</span>
+<span class="s">&#39;white&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">Door</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+<span class="s">&#39;0xb74c5420L&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+<span class="s">&#39;0xb74c5420L&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">door2</span><span class="o">.</span><span class="n">colour</span><span class="p">))</span>
+<span class="s">&#39;0xb74c5420L&#39;</span>
+</pre></div>
 
 
 <h2>Raiders of the Lost Attribute</h2>
-
-<p>Any Python object is automatically given a <code>__dict__</code> attribute, which contains its list of attributes. Let&#8217;s investigate what this dictionary contains for our example objects:</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
-</span><span class='line'><span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__weakref__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__weakref__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__dict__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__dict__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;close&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">close</span> <span class="n">at</span> <span class="mh">0xb6a8a56c</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6a8a534</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__init__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">__init__</span> <span class="n">at</span> <span class="mh">0xb6a8a48c</span><span class="o">&gt;</span><span class="p">})</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span>
-</span><span class='line'><span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;closed&#39;</span><span class="p">,</span> <span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>Any Python object is automatically given a <code>__dict__</code> attribute, which contains its list of attributes. Let's investigate what this dictionary contains for our example objects:</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
+    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span>
+    <span class="s">&#39;__weakref__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__weakref__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;__dict__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__dict__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;close&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">close</span> <span class="n">at</span> <span class="mh">0xb6a8a56c</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6a8a534</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+    <span class="s">&#39;__init__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">__init__</span> <span class="n">at</span> <span class="mh">0xb6a8a48c</span><span class="o">&gt;</span><span class="p">})</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;closed&#39;</span><span class="p">,</span> <span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+</pre></div>
 
 
 <p>Leaving aside the difference between a dictionary and a <code>dict_proxy</code> object, you can see that the <code>colour</code> attribute is listed among the <code>Door</code> class attributes, while <code>status</code> and <code>number</code> are listed for the instance.</p>
-
 <p>How comes that we can call <code>door1.colour</code>, if that attribute is not listed for that instance? This is a job performed by the magic <code>__getattribute__()</code> method; in Python the dotted syntax automatically invokes this method so when we write <code>door1.colour</code>, Python executes <code>door1.__getattribute__('colour')</code>. That method performs the  <em>attribute  lookup</em> action, i.e. finds the value of the attribute by looking in different places.</p>
-
 <p>The standard implementation of <code>__getattribute__()</code> searches first the internal dictionary (<code>__dict__</code>) of an object, then the type of the object itself; in this case <code>door1.__getattribute__('colour')</code> executes first <code>door1.__dict__['colour']</code> and then <code>door1.__class__.__dict__['colour']</code></p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-</span><span class='line'><span class="ne">KeyError</span><span class="p">:</span> <span class="s">&#39;colour&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="s">&#39;brown&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">KeyError</span><span class="p">:</span> <span class="s">&#39;colour&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="s">&#39;brown&#39;</span>
+</pre></div>
 
 
 <p>Indeed, if we check the objects equality through the <code>is</code> operator we can confirm that both <code>door1.colour</code> and <code>Door.colour</code> are exactly the same object</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="bp">True</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="bp">True</span>
+</pre></div>
 
 
 <p>When we try to assign a value to a class attribute directly on an instance, we just put in the <code>__dict__</code> of the instance a value with that name, and this value masks the class attribute since it is found first by <code>__getattribute__()</code>. As you can see from the examples of the previous section, this is different from changing the value of the attribute on the class itself.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="s">&#39;white&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="s">&#39;brown&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;red&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="s">&#39;white&#39;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="s">&#39;red&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;white&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="s">&#39;white&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="s">&#39;brown&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;red&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="s">&#39;white&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
+<span class="s">&#39;red&#39;</span>
+</pre></div>
 
 
 <h2>Revenge of the Methods</h2>
-
-<p>Let&#8217;s play the same game with methods. First of all you can see that, just like class attributes, methods are listed only in the class <code>__dict__</code>. Chances are that they behave the same as attributes when we get them</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
-</span><span class='line'><span class="bp">False</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>Let's play the same game with methods. First of all you can see that, just like class attributes, methods are listed only in the class <code>__dict__</code>. Chances are that they behave the same as attributes when we get them</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
+<span class="bp">False</span>
+</pre></div>
 
 
 <p>Whoops. Let us further investigate the matter</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">unbound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
+<span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span>
+<span class="o">&lt;</span><span class="n">unbound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">open</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
+</pre></div>
 
 
-<p>So, the class method is listed in the members dictionary as <em>function</em>. So far, so good. The same method, taken directly from the class is returned as <em>unbound method</em>, while taking it from the instance it changes to <em>bound method</em>. Well, a <em>function</em> is a procedure you named and defined with the <code>def</code> statement. When you refer to a function as part of a class you get an unbound method. The name <em>method</em> simply means &#8220;a function inside a class&#8221;, according to the usual OOP definitions, while <em>unbound</em> signals that the method is not bound to any instance. As you can see, as soon as you access the method from an instance, the method becomes <em>bound</em>.</p>
-
+<p>So, the class method is listed in the members dictionary as <em>function</em>. So far, so good. The same method, taken directly from the class is returned as <em>unbound method</em>, while taking it from the instance it changes to <em>bound method</em>. Well, a <em>function</em> is a procedure you named and defined with the <code>def</code> statement. When you refer to a function as part of a class you get an unbound method. The name <em>method</em> simply means "a function inside a class", according to the usual OOP definitions, while <em>unbound</em> signals that the method is not bound to any instance. As you can see, as soon as you access the method from an instance, the method becomes <em>bound</em>.</p>
 <p>Why does Python bother with methods being bound or unbound? And how does Python transform an unbound method into a bound one?</p>
-
 <p>First of all, if you try to call an unbound method you get an error</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'><span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-</span><span class='line'>  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
-</span><span class='line'><span class="ne">TypeError</span><span class="p">:</span> <span class="n">unbound</span> <span class="n">method</span> <span class="nb">open</span><span class="p">()</span> <span class="n">must</span> <span class="n">be</span> <span class="n">called</span> <span class="k">with</span>
-</span><span class='line'>    <span class="n">Door</span> <span class="n">instance</span> <span class="k">as</span> <span class="n">first</span> <span class="n">argument</span> <span class="p">(</span><span class="n">got</span> <span class="n">nothing</span> <span class="n">instead</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="n">File</span> <span class="s">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="ow">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+<span class="ne">TypeError</span><span class="p">:</span> <span class="n">unbound</span> <span class="n">method</span> <span class="nb">open</span><span class="p">()</span> <span class="n">must</span> <span class="n">be</span> <span class="n">called</span> <span class="k">with</span>
+    <span class="n">Door</span> <span class="n">instance</span> <span class="k">as</span> <span class="n">first</span> <span class="n">argument</span> <span class="p">(</span><span class="n">got</span> <span class="n">nothing</span> <span class="n">instead</span><span class="p">)</span>
+</pre></div>
 
 
 <p>so by default Python considers methods as functions that shall operate on instances, and calling them from the class leaves the interpreter puzzled. Let us try to pass the instance as suggested by the exception message</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
-</span><span class='line'><span class="s">&#39;open&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">status</span>
+<span class="s">&#39;open&#39;</span>
+</pre></div>
 
 
 <p>Python does not complain here, and the method works as expected. So <code>Door.open(door1)</code> is the same as <code>door1.open()</code>. Again, under the hood, <code>__getattribute__()</code> is working to make everything work and when we call <code>door1.open()</code>, Python actually calls <code>door1.__class__.open(door1)</code>. However, <code>door1.__class__.open</code> is an unbound method, so there is something more that converts it into a bound method that Python can safely call.</p>
-
 <p>When you access a member of an object, Python calls <code>__getattribute__()</code> to satisfy the request. This magic method, however, conforms to a procedure known as <em>descriptor protocol</em>. For the read access <code>__getattribute__()</code> checks if the object has a <code>__get__()</code> method and calls this latter. So for function the conversion from an unbound into a bound method is made by such a mechanism. Let us review it by means of an example.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
+<span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
+</pre></div>
 
 
-<p>This syntax retrieves the function defined in the class; the function knows nothing about objects, but it <em>is</em> an object (remember &#8220;everything is an object&#8221;). So we can look inside it with the <code>dir()</code> built-in function</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">dir</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">])</span>
-</span><span class='line'><span class="p">[</span><span class="s">&#39;__call__&#39;</span><span class="p">,</span> <span class="s">&#39;__class__&#39;</span><span class="p">,</span> <span class="s">&#39;__closure__&#39;</span><span class="p">,</span> <span class="s">&#39;__code__&#39;</span><span class="p">,</span> <span class="s">&#39;__defaults__&#39;</span><span class="p">,</span>
-</span><span class='line'> <span class="s">&#39;__delattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__dict__&#39;</span><span class="p">,</span> <span class="s">&#39;__doc__&#39;</span><span class="p">,</span> <span class="s">&#39;__format__&#39;</span><span class="p">,</span> <span class="s">&#39;__get__&#39;</span><span class="p">,</span>
-</span><span class='line'> <span class="s">&#39;__getattribute__&#39;</span><span class="p">,</span> <span class="s">&#39;__globals__&#39;</span><span class="p">,</span> <span class="s">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s">&#39;__init__&#39;</span><span class="p">,</span>
-</span><span class='line'> <span class="s">&#39;__module__&#39;</span><span class="p">,</span> <span class="s">&#39;__name__&#39;</span><span class="p">,</span> <span class="s">&#39;__new__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce_ex__&#39;</span><span class="p">,</span>
-</span><span class='line'> <span class="s">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s">&#39;__setattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s">&#39;__str__&#39;</span><span class="p">,</span> <span class="s">&#39;__subclasshook__&#39;</span><span class="p">,</span>
-</span><span class='line'> <span class="s">&#39;func_closure&#39;</span><span class="p">,</span> <span class="s">&#39;func_code&#39;</span><span class="p">,</span> <span class="s">&#39;func_defaults&#39;</span><span class="p">,</span> <span class="s">&#39;func_dict&#39;</span><span class="p">,</span> <span class="s">&#39;func_doc&#39;</span><span class="p">,</span>
-</span><span class='line'> <span class="s">&#39;func_globals&#39;</span><span class="p">,</span> <span class="s">&#39;func_name&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">method</span><span class="o">-</span><span class="n">wrapper</span> <span class="s">&#39;__get__&#39;</span> <span class="n">of</span> <span class="n">function</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<p>This syntax retrieves the function defined in the class; the function knows nothing about objects, but it <em>is</em> an object (remember "everything is an object"). So we can look inside it with the <code>dir()</code> built-in function</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">dir</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">])</span>
+<span class="p">[</span><span class="s">&#39;__call__&#39;</span><span class="p">,</span> <span class="s">&#39;__class__&#39;</span><span class="p">,</span> <span class="s">&#39;__closure__&#39;</span><span class="p">,</span> <span class="s">&#39;__code__&#39;</span><span class="p">,</span> <span class="s">&#39;__defaults__&#39;</span><span class="p">,</span>
+ <span class="s">&#39;__delattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__dict__&#39;</span><span class="p">,</span> <span class="s">&#39;__doc__&#39;</span><span class="p">,</span> <span class="s">&#39;__format__&#39;</span><span class="p">,</span> <span class="s">&#39;__get__&#39;</span><span class="p">,</span>
+ <span class="s">&#39;__getattribute__&#39;</span><span class="p">,</span> <span class="s">&#39;__globals__&#39;</span><span class="p">,</span> <span class="s">&#39;__hash__&#39;</span><span class="p">,</span> <span class="s">&#39;__init__&#39;</span><span class="p">,</span>
+ <span class="s">&#39;__module__&#39;</span><span class="p">,</span> <span class="s">&#39;__name__&#39;</span><span class="p">,</span> <span class="s">&#39;__new__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce__&#39;</span><span class="p">,</span> <span class="s">&#39;__reduce_ex__&#39;</span><span class="p">,</span>
+ <span class="s">&#39;__repr__&#39;</span><span class="p">,</span> <span class="s">&#39;__setattr__&#39;</span><span class="p">,</span> <span class="s">&#39;__sizeof__&#39;</span><span class="p">,</span> <span class="s">&#39;__str__&#39;</span><span class="p">,</span> <span class="s">&#39;__subclasshook__&#39;</span><span class="p">,</span>
+ <span class="s">&#39;func_closure&#39;</span><span class="p">,</span> <span class="s">&#39;func_code&#39;</span><span class="p">,</span> <span class="s">&#39;func_defaults&#39;</span><span class="p">,</span> <span class="s">&#39;func_dict&#39;</span><span class="p">,</span> <span class="s">&#39;func_doc&#39;</span><span class="p">,</span>
+ <span class="s">&#39;func_globals&#39;</span><span class="p">,</span> <span class="s">&#39;func_name&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span>
+<span class="o">&lt;</span><span class="n">method</span><span class="o">-</span><span class="n">wrapper</span> <span class="s">&#39;__get__&#39;</span> <span class="n">of</span> <span class="n">function</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73ee10c</span><span class="o">&gt;</span>
+</pre></div>
 
 
 <p>As you can see, a <code>__get__</code> method is listed among the members of the function, and Python recognizes it as a <em>method-wrapper</em>. This method shall connect the <code>open</code> function to the <code>door1</code> instance, so we can call it passing the instance alone</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="err">?</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="err">?</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
+</pre></div>
 
 
 <p>Ok, something is missing. Indeed <code>__get__()</code> in this case also accepts the <em>owner</em> class, i.e. the class we are trying to get the attribute from. So the correct form is</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">,</span> <span class="n">Door</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="n">Door</span><span class="o">.</span><span class="n">open</span> <span class="n">of</span> <span class="o">&lt;</span><span class="n">__main__</span><span class="o">.</span><span class="n">Door</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb73f956c</span><span class="o">&gt;&gt;</span>
+</pre></div>
 
 
 <h2>When methods met classes</h2>
-
 <p>If we use <code>type()</code> on an unbound method, we get an interesting result</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6aa548c</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">open</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;open&#39;</span><span class="p">]</span>
+<span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6aa548c</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">open</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
 <p>The method is an <em>instance method</em>; as we discovered, it shall be bound to an instance to work, so the name is a good choice. Does this imply that we can also define a <em>class method</em>? Indeed we can, through the <code>classmethod</code> decorator</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;brown&#39;</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">Door</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;brown&#39;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="nd">@classmethod</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">knock</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">print</span> <span class="s">&quot;Knock!&quot;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="n">number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="n">status</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">knock</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&quot;Knock!&quot;</span>
+
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;closed&#39;</span>
+</pre></div>
 
 
 <p>Such a definition makes the method callable on both the instance and the class</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
-</span><span class='line'><span class="n">Knock</span><span class="err">!</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
-</span><span class='line'><span class="n">Knock</span><span class="err">!</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">knock</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">knock</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
+<span class="n">Knock</span><span class="err">!</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">knock</span><span class="p">()</span>
+<span class="n">Knock</span><span class="err">!</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">knock</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">knock</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;&gt;</span>
+</pre></div>
 
 
 <p>And this is possible since, as you can see, both the class method and the instance method are bound. The class method is bound to the class itself, while the instance method is bound to the instance of the class. What about the type of the method?</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb6a8db6c</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">knock</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span>
+<span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb6a8db6c</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">knock</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
-<p>Puzzled? Don&#8217;t be confused! When you look in the <code>__dict__</code> you are not going through the <code>__getattribute__()</code> and <code>__get__()</code> machinery, so you get the plain unprocessed attribute. With standard methods you find <code>function</code> objects in the members dictionary, while for class methods you find <code>classmethod</code> objects.</p>
-
+<p>Puzzled? Don't be confused! When you look in the <code>__dict__</code> you are not going through the <code>__getattribute__()</code> and <code>__get__()</code> machinery, so you get the plain unprocessed attribute. With standard methods you find <code>function</code> objects in the members dictionary, while for class methods you find <code>classmethod</code> objects.</p>
 <p>On the other side, when you check the type of <code>door1.__class__.knock</code> you implicitly invoke <code>__get__()</code>, which binds the method to the class.</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">,</span> <span class="n">Door</span><span class="p">))</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">])</span>
-</span><span class='line'><span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;classmethod&#39;</span><span class="o">&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">door1</span><span class="p">,</span> <span class="n">Door</span><span class="p">))</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;instancemethod&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="nb">type</span><span class="p">(</span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">])</span>
+<span class="o">&lt;</span><span class="nb">type</span> <span class="s">&#39;classmethod&#39;</span><span class="o">&gt;</span>
+</pre></div>
 
 
 <p>After all, it is no surprise that a class method is bound since a class is an instance of <code>type</code>.</p>
-
 <h2>Intermezzo</h2>
-
-<p>I realize now that I introduced this post as &#8220;a set of thoughts for Python beginners&#8221;. Sorry. If you are reading this, however, chances are that you are still alive. Calm down. Breathe. Relaxed? Ready to go? Let&#8217;s dive into delegation!</p>
-
+<p>I realize now that I introduced this post as "a set of thoughts for Python beginners". Sorry. If you are reading this, however, chances are that you are still alive. Calm down. Breathe. Relaxed? Ready to go? Let's dive into delegation!</p>
 <h2>The Delegation Run</h2>
-
-<p>If classes are objects what is the difference between types and instances? When I talk about &#8220;my cat&#8221; I am referring to a concrete instance of the &#8220;cat&#8221; concept, which is a <em>subtype</em> of &#8220;animal&#8221;. So, despite being both objects, while types can be <em>specialized</em>, instances cannot.</p>
-
+<p>If classes are objects what is the difference between types and instances? When I talk about "my cat" I am referring to a concrete instance of the "cat" concept, which is a <em>subtype</em> of "animal". So, despite being both objects, while types can be <em>specialized</em>, instances cannot.</p>
 <p>Usually an object B is said to be a specialization of an object A when:</p>
-
 <ul>
 <li>B has all the features of A</li>
 <li>B can provide new features</li>
 <li>B can perform some or all the tasks performed by A in a different way</li>
 </ul>
-
-
 <p>Those targets are very general and valid for any system and the key to achieve them with the maximum reuse of already existing components is <em>delegation</em>. Delegation means that an object shall perform only what it knows best, and leave the rest to other objects.</p>
-
 <p>Delegation can be implemented with two different mechanisms: <em>composition</em> and <em>inheritance</em>. Sadly, very often inheritance is listed among the pillars of OOP techniques, forgetting that it is an implementation of the more generic and fundamental mechanism of delegation; perhaps a better nomenclature for the two techniques could be <em>explicit delegation</em> (composition) and <em>implicit delegation</em> (inheritance). Please note that, again, when talking about composition and inheritance we are talking about focusing on a behavioural or structural delegation. Another way to think about the difference between composition and inheritance is to consider if the object <em>knows</em> who can satisfy your request or if the object <em>is</em> the one that satisfy the request.</p>
-
-<p>Please, please, please do not forget composition: in many cases, composition can lead you to a simpler system, with benefits on maintainability and changeability.</p>
-
+<p>Please, please, please do not forget composition: in many cases, composition can lead you to a simpler system, with benefits on maintainability and changeability. </p>
 <p>Usually composition is said to be a very generic technique that needs no special syntax, while inheritance and its rules are strongly dependent on the language of choice. Actually, the strong dynamic nature of Python softens the boundary line between the two techniques.</p>
-
 <h2>Inheritance Now</h2>
-
 <p>In Python a class can be declared as an <em>extension</em> of one or more different classes, through the <em>class inheritance</em> mechanism. The child class (the one that inherits) internally has the same structure of the parent class (the one that is inherited), and for the case of multiple inheritance the language has very specific rules to manage possible conflicts or redefinitions among the parent classes. A very simple example of inheritance is</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">pass</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
 
 
 <p>where we declare a new class <code>SecurityDoor</code> that, at the moment, is a perfect copy of the <code>Door</code> class. Let us investigate what happens when we access attributes and methods. First we instance the class</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span> <span class="o">=</span> <span class="n">SecurityDoor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span> <span class="o">=</span> <span class="n">SecurityDoor</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;closed&#39;</span><span class="p">)</span>
+</pre></div>
 
 
 <p>The first check we can do is that class attributes are still global and shared</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="bp">True</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
-</span><span class='line'><span class="bp">True</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="bp">True</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">colour</span> <span class="ow">is</span> <span class="n">Door</span><span class="o">.</span><span class="n">colour</span>
+<span class="bp">True</span>
+</pre></div>
 
 
 <p>This shows us that Python tries to resolve instance members not only looking into the class the instance comes from, but also investigating the parent classes. In this case <code>sdoor.colour</code> becomes <code>SecurityDoor.colour</code>, that in turn becomes <code>Door.colour</code>. <code>SecurityDoor</code> <em>is</em> a <code>Door</code>.</p>
-
 <p>If we investigate the content of <code>__dict__</code> we can catch a glimpse of the inheritance mechanism in action</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__dict__</span>
-</span><span class='line'><span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;closed&#39;</span><span class="p">,</span> <span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span>
-</span><span class='line'><span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span> <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
-</span><span class='line'><span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;knock&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb6a8db6c</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__weakref__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__weakref__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__dict__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__dict__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;close&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">close</span> <span class="n">at</span> <span class="mh">0xb6aa5454</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6aa53e4</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__init__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">__init__</span> <span class="n">at</span> <span class="mh">0xb6aa51ec</span><span class="o">&gt;</span><span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="p">{</span><span class="s">&#39;status&#39;</span><span class="p">:</span> <span class="s">&#39;closed&#39;</span><span class="p">,</span> <span class="s">&#39;number&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span> <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">Door</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;knock&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">classmethod</span> <span class="nb">object</span> <span class="n">at</span> <span class="mh">0xb6a8db6c</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
+    <span class="s">&#39;__weakref__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__weakref__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;__dict__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">attribute</span> <span class="s">&#39;__dict__&#39;</span> <span class="n">of</span> <span class="s">&#39;Door&#39;</span> <span class="n">objects</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;close&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">close</span> <span class="n">at</span> <span class="mh">0xb6aa5454</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;brown&#39;</span><span class="p">,</span>
+    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb6aa53e4</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
+    <span class="s">&#39;__init__&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="n">__init__</span> <span class="n">at</span> <span class="mh">0xb6aa51ec</span><span class="o">&gt;</span><span class="p">})</span>
+</pre></div>
 
 
 <p>As you can see the content of <code>__dict__</code> for <code>SecurityDoor</code> is very narrow compared to that of <code>Door</code>. The inheritance mechanism takes care of the missing elements by climbing up the classes tree. Where does Python get the parent classes? A class always contains a <code>__bases__</code> tuple that lists them</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__bases__</span>
-</span><span class='line'><span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;,)</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__bases__</span>
+<span class="p">(</span><span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">Door</span><span class="s">&#39;&gt;,)</span>
+</pre></div>
 
 
 <p>So an example of what Python does to resolve a class method call through the inheritance tree is</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">sdoor</span><span class="p">,</span> <span class="n">SecurityDoor</span><span class="p">)</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">SecurityDoor</span><span class="s">&#39;&gt;&gt;</span>
-</span><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">knock</span>
-</span><span class='line'><span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">SecurityDoor</span><span class="s">&#39;&gt;&gt;</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__bases__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;knock&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">sdoor</span><span class="p">,</span> <span class="n">SecurityDoor</span><span class="p">)</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">SecurityDoor</span><span class="s">&#39;&gt;&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">sdoor</span><span class="o">.</span><span class="n">knock</span>
+<span class="o">&lt;</span><span class="n">bound</span> <span class="n">method</span> <span class="nb">type</span><span class="o">.</span><span class="n">knock</span> <span class="n">of</span> <span class="o">&lt;</span><span class="k">class</span> <span class="err">&#39;</span><span class="nc">__main__</span><span class="o">.</span><span class="n">SecurityDoor</span><span class="s">&#39;&gt;&gt;</span>
+</pre></div>
 
 
 <p>Please note that this is just an example that does not consider multiple inheritance.</p>
-
 <p>Let us try now to override some methods and attributes. In Python you can <em>override</em> (redefine) a parent class member simply by redefining it in the child class.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
+    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;gray&#39;</span>
+    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;gray&#39;</span>
-</span><span class='line'>    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
-</span><span class='line'>            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="o">=</span> <span class="s">&#39;open&#39;</span>
+</pre></div>
 
 
 <p>As you can forecast, the overridden members now are present in the <code>__dict__</code> of the <code>SecurityDoor</code> class</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__dict__</span>
-</span><span class='line'><span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;locked&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73d8844</span><span class="o">&gt;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;gray&#39;</span><span class="p">,</span>
-</span><span class='line'>    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">SecurityDoor</span><span class="o">.</span><span class="n">__dict__</span>
+<span class="n">dict_proxy</span><span class="p">({</span><span class="s">&#39;locked&#39;</span><span class="p">:</span> <span class="bp">True</span><span class="p">,</span>
+    <span class="s">&#39;__module__&#39;</span><span class="p">:</span> <span class="s">&#39;__main__&#39;</span><span class="p">,</span>
+    <span class="s">&#39;open&#39;</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">function</span> <span class="nb">open</span> <span class="n">at</span> <span class="mh">0xb73d8844</span><span class="o">&gt;</span><span class="p">,</span>
+    <span class="s">&#39;colour&#39;</span><span class="p">:</span> <span class="s">&#39;gray&#39;</span><span class="p">,</span>
+    <span class="s">&#39;__doc__&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
+</pre></div>
 
 
 <p>So when you override a member, the one you put in the child class is used instead of the one in the parent class simply because the former is found before the latter while climbing the class hierarchy. This also shows you that Python does not implicitly call the parent implementation when you override a method. So, overriding is a way to block implicit delegation.</p>
-
 <p>If we want to call the parent implementation we have to do it explicitly. In the former example we could write</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
+    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;gray&#39;</span>
+    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;gray&#39;</span>
-</span><span class='line'>    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">return</span>
-</span><span class='line'>        <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
 
 
 <p>You can easily test that this implementation is working correctly. This form of explicit parent delegation is heavily discouraged, however.</p>
-
 <p>The first reason is because of the very high coupling that results from explicitly naming the parent class again when calling the method; if you decide to use a new parent class you have to manually propagate the change to every method that calls it. Moreover, since in Python the class hierarchy can be dynamically changed (i.e. at runtime), this form of explicit delegation could be not only annoying but wrong.</p>
-
 <p>The second reason is that in general you need to deal with multiple inheritance, where you do not know a priori which parent class implements the original form of the method you are overriding.</p>
-
 <p>To solve these issues, Python supplies the <code>super()</code> built-in function, that climbs the class hierarchy and returns the correct class that shall be called. The syntax for calling <code>super()</code> is</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
+    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;gray&#39;</span>
+    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="n">Door</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;gray&#39;</span>
-</span><span class='line'>    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">return</span>
-</span><span class='line'>        <span class="nb">super</span><span class="p">(</span><span class="n">SecurityDoor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SecurityDoor</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div>
 
 
 <p>As you can see you have to explicitly pass the class you are in and the current instance. This is a (indeed very light) form of repetition that has been fixed in Python 3.x.</p>
-
 <h2>Enter the Composition</h2>
-
 <p>Composition means that an object knows another object, and explicitly delegates some tasks to it. While inheritance is implicit, composition is explicit: in Python, however, things are far more interesting than this =).</p>
-
 <p>First of all let us implement classic composition, which simply makes an object part of the other as an attribute</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;gray&#39;</span>
+    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">colour</span> <span class="o">=</span> <span class="s">&#39;gray&#39;</span>
-</span><span class='line'>    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">return</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
 
 
 <p>The primary goal of composition is to relax the coupling between objects. This little example shows that now <code>SecurityDoor</code> is an <code>object</code> and no more a <code>Door</code>, which means that the internal structure of <code>Door</code> is not copied. For this very simple example both <code>Door</code> and <code>SecurityDoor</code> are not big classes, but in a real system objects can very complex; this means that their allocation consumes a lot of memory and if a system contains thousands or millions of objects that could be an issue.</p>
-
 <p>As you can see, however, our solution is far from perfect.</p>
-
-<p>The composed <code>SecurityDoor</code> has to redefine the <code>colour</code> attribute since the concept of delegation applies only to methods and not to attributes, doesn&#8217;t it? Well, no. Python provides a very high degree of indirection for objects manipulation and attribute access is one of the most useful. As you already discovered, accessing attributes is ruled by a special method called <code>__getattribute__()</code> that is called whenever an attribute of the object is accessed. Overriding <code>__getattribute__()</code>, however, is overkill; it is a very complex method, and, being called on every attribute access, any change makes the whole thing slower.</p>
-
+<p>The composed <code>SecurityDoor</code> has to redefine the <code>colour</code> attribute since the concept of delegation applies only to methods and not to attributes, doesn't it? Well, no. Python provides a very high degree of indirection for objects manipulation and attribute access is one of the most useful. As you already discovered, accessing attributes is ruled by a special method called <code>__getattribute__()</code> that is called whenever an attribute of the object is accessed. Overriding <code>__getattribute__()</code>, however, is overkill; it is a very complex method, and, being called on every attribute access, any change makes the whole thing slower.</p>
 <p>The method we have to leverage to delegate attribute access is <code>__getattr__()</code>, which is a special method that is called whenever the requested attribute is not found in the object. So basically it is the right place to dispatch all attribute and method access our object cannot handle. In the previous example</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">SecurityDoor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="n">locked</span> <span class="o">=</span> <span class="bp">True</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
-</span><span class='line'>            <span class="k">return</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">locked</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+</pre></div>
 
 
 <p>Using <code>__getattr__()</code> blends the separation line between inheritance and composition since after all the former is a form of automatic delegation of every member access.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">ComposedDoor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">ComposedDoor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
-</span><span class='line'>        <span class="bp">self</span><span class="o">.</span><span class="n">door</span> <span class="o">=</span> <span class="n">Door</span><span class="p">(</span><span class="n">number</span><span class="p">,</span> <span class="n">status</span><span class="p">)</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
-</span><span class='line'>        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">door</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+</pre></div>
 
 
 <p>As this last example shows, delegating every member access through <code>__getattr__()</code> is very simple. Pay attention to <code>getattr()</code> which is different from <code>__getattr__()</code>. The former is a built-in that is equivalent to the dotted syntax, i.e. <code>getattr(obj, 'someattr')</code> is the same as <code>obj.someattr</code>, but you have to use it since the name of the attribute is contained in a string.</p>
-
 <p>Composition provides a superior way to manage delegation since it can selectively delegate the access, even mask some attributes or methods, while inheritance cannot. In Python you also avoid the memory problems that might arise when you put many objects inside another; Python handles everything through its reference, i.e. through a pointer to the memory position of the thing, so the size of an attribute is constant and very limited.</p>
-
 <h2>Final words</h2>
-
-<p>There is much more that can be said about the Python implementation of objects, classes, and friends. Just to name a couple of things, the object creation mechanism and the relationship between <code>object</code> and <code>type</code> have not been explained. Hopefully, there will be space in a later post. In the second post, however, I&#8217;ll start talking about polymorphism, Abstract Base Classes, and metaclasses. Stay tuned!</p>
-
+<p>There is much more that can be said about the Python implementation of objects, classes, and friends. Just to name a couple of things, the object creation mechanism and the relationship between <code>object</code> and <code>type</code> have not been explained. Hopefully, there will be space in a later post. In the second post, however, I'll start talking about polymorphism, Abstract Base Classes, and metaclasses. Stay tuned!</p>
 <h2>Movie Trivia</h2>
-
 <p>If you are wondering why section titles are so weird, chances are that you missed some good movies to watch while you are not coding =). The movies are: <em>Back to the Future</em>, <em>What About Bob?</em>, <em>Wargames</em>, <em>The Empire Strikes Back</em>, <em>Raiders of the Lost Ark</em>, <em>Revenge of the Nerds</em>, <em>When Harry Met Sally</em>, <em>The Cannonball Run</em>, <em>Apocalypse Now</em>, <em>Enter the Dragon</em>.</p>
-
 <h2>Sources</h2>
-
 <p>Some sources for the content of this post. Thank you authors!</p>
-
 <ul>
 <li><a href="http://docs.python.org/2/tutorial/classes.html">The official Python documentation</a> and the Python source code.</li>
 <li><a href="http://www.cafepy.com/article/python_types_and_objects/">Python Types and Objects - by Shalabh Chaturvedi</a></li>
@@ -1157,82 +694,215 @@
 <li><a href="http://www.aleax.it/gdd_pydp.pdf">Design Patterns in Python - by Alex Martelli</a></li>
 <li>Many <a href="http://stackoverflow.com/questions/tagged/python">Stackoverflow</a> questions and answers</li>
 </ul>
-
-
 <h2>Updates</h2>
-
-<p>2014-03-08: &#8220;When methods met classes&#8221; section had a typo: the sentence &#8220;The class method is bound to the class itself, while the instance method is bound to the class of the instance.&#8221; is &#8220;while the instance method is bound to instance of the class.&#8221;. Thanks <a href="https://plus.google.com/u/0/116309787480950087834/posts">Mohcin Shah</a> for spotting it!</p>
-
-<p>2014-03-10: Fixed link to Alex Martelli&#8217;s presentation.</p>
-
+<p>2014-03-08: "When methods met classes" section had a typo: the sentence "The class method is bound to the class itself, while the instance method is bound to the class of the instance." is "while the instance method is bound to instance of the class.". Thanks <a href="https://plus.google.com/u/0/116309787480950087834/posts">Mohcin Shah</a> for spotting it!</p>
+<p>2014-03-10: Fixed link to Alex Martelli's presentation.</p>
 <p>2014-04-07: A typo when discussing <code>door1.colour</code> has been fixed. Thanks to <a href="http://www.reddit.com/user/pujuma">pujuma</a>.</p>
-
 <h2>Feedback</h2>
-
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
-
 <h2>Next articles</h2>
-
 <ul>
 <li><a href="/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2">OOP Concepts in Python 2.x - Part 2</a></li>
 <li><a href="/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3">OOP Concepts in Python 2.x - Part 3</a></li>
 </ul>
-
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/">"OOP concepts in Python 2.x - Part 2"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/">"OOP concepts in Python 2.x - Part 3"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">"Python 3 OOP Part 4 - Polymorphism"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/">"Method overriding in Python"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
 
         </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
 
-<div class="meta">
-	
-</div>
-</article>
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
 
-	<div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
-</div>
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                "Advanced use of Python decorators and metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                "Python 3 OOP Part 6 - Abstract Base Classes"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                "Python 3 OOP Part 5 - Metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">
+                                "Python 3 OOP Part 4 - Polymorphism"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">
+                                "Python 3 OOP Part 3 - Delegation: composition and inheritance"
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/amqp/">
+                                amqp
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/c/">
+                                c++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/c-language/">
+                                C-language
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/django/">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/erlang/">
+                                erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/git/">
+                                git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/pika/">
+                                pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/postage/">
+                                postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python/">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/python2/">
+                                python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python3/">
+                                python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/qt/">
+                                qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/rabbitmq/">
+                                rabbitmq
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
 
+        </ul>
+    </section>
+
+</aside>        </div>
     </div>
-    <footer id="footer">
-    <div style="display:inline">
-	<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">The Digital Cat</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://lgiordani.com/about/" property="cc:attributionName" rel="cc:attributionURL">Leonardo Giordani</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-	<br />
-    Powered by <a href="http://octopress.org">Octopress</a> | Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
 </div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
 
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
 
-    </footer>
-    <script src="/javascripts/fabric.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
 
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-
-
-
-<!-- end toload --> 
-</div>
-</div>
-<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
-<script type="text/javascript">
-/*<![CDATA[*/
-;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
-/*]]>*/
-</script><!-- remove it to remove the scroll to top button -->
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
 </body>
 </html>

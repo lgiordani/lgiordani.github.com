@@ -1,379 +1,416 @@
-
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en"
+>
 <head>
-	<meta charset="utf-8">
-	<title>Python generators - from iterators to cooperative multitasking - The digital cat</title>
-    <meta name="author" content="Leonardo Giordani">
-    
-	<meta name="description" content="Published on: Mar 25th, 2013 Tags: generators, python Posted by Leonardo Giordani Introduction Python is a language that in 11 years of life has &hellip;">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>"Python generators - from iterators to cooperative multitasking" - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.ico" rel="shortcut icon">
-    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
 
-    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<link rel="canonical" href="http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/">
 
-    <!-- remove or comment it to disable ajaxification -->   
-    <script src="/javascripts/ajaxify.js"></script>
-   
-    
-    
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="python,generators" />
 
-  ga('create', 'UA-38715090-1', 'auto');
-  ga('send', 'pageview');
+    <!-- Enable latex plugin -->
 
-</script>
 
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/categories/Programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
 
 </head>
-
-
 <body>
-    <div id="wrapper">
-    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
-<h1 class="animated pulse">
-    <div id="headerbg">
-        The digital cat
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-</h1>
-<br>
+</div> <!-- /.navbar -->
 
-<ul id="social-links" style="text-align:center">
-  
-  <!-- GitHub -->
-  <li>
-  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
-  </li>
-  
-  
-  <!-- Google Plus -->
-  <li>
-  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
-  </li>
-  
-  
-  
-  <!-- Twitter -->
-  <li>
-  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
-  </li>
-  
-  
-  
-  
-  
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/"
+                       rel="bookmark"
+                       title="Permalink to "Python generators - from iterators to cooperative multitasking"">
+                        "Python generators - from iterators to cooperative multitasking"
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-03-25T10:41:00+01:00"> lun 25 marzo 2013</time>
+    </span>
 
 
-<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
-<ul id="nav">
-	<li id="ajax"><a href="/index.html">Home</a></li>
-	<li id="ajax"><a href="/about">About me</a></li>
-	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
-    <li><a href="/atom.xml">RSS</a></li>
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/blog/categories/python/">python</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/generators/">generators</a>
     
-    <li>
-    <div id="dark">
-        <form method="get" action="/search.html" id="search">
-            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
-        </form>
-    </div>
-    </li>
-        
-</ul>
-
-
-
-
-</header>
-
-<div id="toload">
-<!-- begin toload --> 
-    <div id="content" class="inner">
-        <article class="post">
-	<h2 class="title">Python Generators - From Iterators to Cooperative Multitasking</h2>
-	<div class="entry-content">
-          <div class="meta">
-            <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-03-25T10:41:00+01:00" pubdate data-updated="true">Mar 25<span>th</span>, 2013</time></div>
-            <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/generators/'>generators</a>, <a class='category' href='/blog/categories/python/'>python</a>
-
-
-</div>
-          </div>
-          
-  
-
-<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
-
-          <h2>Introduction</h2>
-
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <h2>Introduction</h2>
 <p>Python is a language that in 11 years of life has been through a very remarkable development and the introduction of several new features, sometimes borrowed from other languages, sometimes arisen from the needs of developers and heavily discussed before being officially implemented. One of these improvements concerns generators, a concept which can be found in the computer science environment since the 70s; it has been implemented in Python from version 2.2 (2001) and became popular from version 2.3 (2003).</p>
-
-<!--more-->
-
-
 <p>Generators are a generalization of functions that allow to deal in a more complete and rich way with iterations, repeated executions and in general with everything concerns the program flow. In the last years a concept which was considered obsolete started to spread again, namely that of cooperative multitasking. This concept has been shadowed for some years by the advent of multiprocessing and multithreading but, as happened to interpreted languages and virtual machines, as time passes and contexts change good ideas rise again and prove to be anything but dead.</p>
-
 <p>In the Python world, in particular, numerous solutions have appeared which endorse the use of microthreads: these are parallel execution flows without implicit scheduling as opposed to what happens with traditional processes and threads. The big advantage of such objects is the ease of implementation and management of the multiprogramming code, since all synchronization and data protection problems simply do not exist. On the other hand, their use requires a voluntary scheduling, in other words a system that explicitly acquires and releases system resources.</p>
-
 <p>To start talking about cooperative multitasking in Python, thus, it is imperative to understand generators. This first post reviews the concept of iteration and its implementation.</p>
-
 <h2>Iterations</h2>
-
 <p><strong>Iteration</strong> in Python, like in other languages, is a process ruled by the <strong>for</strong> statement and allows to repeatedly execute a block of code, assigning to a variable a value extracted at each execution from a given ordered set. The simplest case of iteration is the processing of a list of values</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]:</span>
-</span><span class='line'>  <span class="k">print</span> <span class="n">i</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="k">print</span> <span class="n">i</span>
+</pre></div>
 
 
 <p>In Python, however, iteration is more than simple loop over the elements of an array. The for statement implements a well-defined and nontrivial protocol, which allows to build very complex objects.</p>
-
 <p>To understand the structure of iteration in Python we have to clarify what is the difference between iterable and iterator objects.</p>
-
 <h4>Iterators</h4>
-
 <p>In Python jargon an iterator is an object with the following properties:</p>
-
 <ul>
 <li>it contains a <strong>set of data</strong></li>
 <li>it exposes the <code>next()</code> method, which returns one of the contained elements at each call. Each element is returned only one time. This method goes through the whole set of data the iterator incorporates. In Python 3 this method has been renamed <code>__next__()</code>.</li>
 <li>after the <code>next()</code> method returns the last element any successive call of this method raises the <code>StopIteration</code> exception. This signals that the iterator is exhausted.</li>
 <li>it exposes the <code>__iter__()</code> method that returns the iterator itself.</li>
 </ul>
-
-
 <h4>Iterables</h4>
-
 <p>The definition of iterable, on the other hand, is more generic: an iterable is a container of data that exposes either the <code>__getitem__()</code> or the <code>__iter__()</code> methods (or both):</p>
-
 <ul>
 <li><code>__getitem__(i)</code> shall return the value at the given position <code>i</code> or raise the <code>IndexError</code> exception if there is no data at that position.</li>
 <li><code>__iter__()</code> shall return an iterator on the data contained in the iterable</li>
 </ul>
-
-
 <p>As you can see the <code>__getitem__()</code> method considers the data as an ordered set, which is not always the case; for this reason an iterable may define the two different methods, or both.</p>
-
 <p>From the previous definitions you see that an iterator is also automatically an iterable, since it exposes the <code>__iter__()</code> method that returns an iterator (itself).</p>
-
 <h4>Loop protocol</h4>
-
 <p>Back to the loop syntax from above we can clarify the matter saying that in Python <strong>the for statement expects an iterable as argument</strong>. This means that we can give any object the capability of being used in a for loop, simply exposing one of the two previously mentioned methods, <code>__getitem__()</code> or <code>__iter__()</code>.</p>
-
 <p>Let’s look at an example:</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">AnIterator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">class</span> <span class="nc">AnIterator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-</span><span class='line'>  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-</span><span class='line'>      
-</span><span class='line'>  <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-</span><span class='line'>      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-</span><span class='line'>          <span class="k">raise</span> <span class="ne">StopIteration</span>
-</span><span class='line'>      <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-</span><span class='line'>      <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="mi">1</span>
-</span><span class='line'>      <span class="k">return</span> <span class="n">tmp</span>
-</span><span class='line'>      
-</span><span class='line'>  <span class="k">def</span> <span class="nf">__iter__</span><span class="p">():</span>
-</span><span class='line'>      <span class="k">return</span> <span class="bp">self</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">StopIteration</span>
+        <span class="n">tmp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">tmp</span>
+
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">():</span>
+        <span class="k">return</span> <span class="bp">self</span>
+</pre></div>
 
 
 <p>This object is an iterator since it exposes <code>__iter__()</code>. Its <code>next()</code> method returns the decreasing sequence of integer numbers starting from a given number. Testing it we obtain</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-</pre></td><td class='code'><pre><code class='sh'><span class='line'>&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
-</span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-</span><span class='line'>3
-</span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-</span><span class='line'>2
-</span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-</span><span class='line'>1
-</span><span class='line'>&gt;&gt;&gt; print iterator.next<span class="o">()</span>
-</span><span class='line'>Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
-</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
-</span><span class='line'>  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 7, in next
-</span><span class='line'>StopIteration
-</span><span class='line'>&gt;&gt;&gt;
-</span><span class='line'>&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
-</span><span class='line'>&gt;&gt;&gt; <span class="k">for </span>i in iterator:
-</span><span class='line'>...     print i
-</span><span class='line'>...
-</span><span class='line'>3
-</span><span class='line'>2
-</span><span class='line'>1
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre>&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
+&gt;&gt;&gt; print iterator.next<span class="o">()</span>
+3
+&gt;&gt;&gt; print iterator.next<span class="o">()</span>
+2
+&gt;&gt;&gt; print iterator.next<span class="o">()</span>
+1
+&gt;&gt;&gt; print iterator.next<span class="o">()</span>
+Traceback <span class="o">(</span>most recent call last<span class="o">)</span>:
+  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 1, in &lt;module&gt;
+  File <span class="s2">&quot;&lt;stdin&gt;&quot;</span>, line 7, in next
+StopIteration
+&gt;&gt;&gt;
+&gt;&gt;&gt; <span class="nv">iterator</span> <span class="o">=</span> AnIterator<span class="o">(</span>3<span class="o">)</span>
+&gt;&gt;&gt; <span class="k">for</span> i in iterator:
+...     print i
+...
+3
+2
+1
+</pre></div>
 
 
 <p>This execution shows that the iterator can be used in a for loop. Pay attention to the fact that I had to instance twice the class, since the first three calls of next() exhausted the first instance.</p>
-
 <p>Let’s dive a little more inside what happens when the for loop runs. The Python code</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
-</span><span class='line'>  <span class="n">some_code</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">iterable</span><span class="p">:</span>
+    <span class="n">some_code</span>
+</pre></div>
 
 
 <p>is equivalent to</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-</pre></td><td class='code'><pre><code class='python'><span class='line'><span class="n">_iter</span> <span class="o">=</span> <span class="n">iterable</span><span class="o">.</span><span class="n">__iter__</span><span class="p">()</span>
-</span><span class='line'><span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
-</span><span class='line'>  <span class="k">try</span><span class="p">:</span>
-</span><span class='line'>      <span class="n">i</span> <span class="o">=</span> <span class="n">_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-</span><span class='line'>  <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
-</span><span class='line'>      <span class="k">break</span>
-</span><span class='line'>  <span class="n">some_code</span>
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre><span class="n">_iter</span> <span class="o">=</span> <span class="n">iterable</span><span class="o">.</span><span class="n">__iter__</span><span class="p">()</span>
+<span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="n">_iter</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+        <span class="k">break</span>
+    <span class="n">some_code</span>
+</pre></div>
 
 
 <p>The for construct receives here an <strong>iterable</strong> object and calls its <code>__iter__()</code> method, obtaining an <strong>iterator</strong> object; then it calls the <code>next()</code> method of this latter until the <code>StopIteration</code> exception is raised. The actual code is a little different, here simplified for clarity’s sake; if you want to learn more about it check the following addresses</p>
-
 <ul>
 <li><a href="http://docs.python.org/2/glossary.html">Python Glossary</a></li>
 <li><a href="http://docs.python.org/2/library/functions.html#iter">Built-in iter()</a></li>
 <li><a href="http://docs.python.org/2/library/stdtypes.html#typeiter">Iterators and sequences</a></li>
 </ul>
-
-
 <h2>Conclusion</h2>
-
 <p>This first post tried to summarize the loop protocol implemented by the for statement, which is in Python very different from many classic languages. Next post will explore the concept of generator and its Python implementation.</p>
-
 <h2>Next articles</h2>
-
 <ul>
 <li><a href="/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2">Python Generators - From Iterators to Cooperative Multitasking 2</a></li>
 <li><a href="/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3">Python Generators - From Iterators to Cooperative Multitasking 3</a></li>
 </ul>
-
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/">"Python Generators - From Iterators to Cooperative Multitasking - 2"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/">"Python Generators - From Iterators to Cooperative Multitasking - 3"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/">"Digging up Django class-based views - 2"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">"OOP concepts in Python 2.x - Part 1"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/">"Postage - a RabbitMQ-based component Python library"</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
 
         </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
 
-<div class="meta">
-	
-</div>
-</article>
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
 
-	<div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
-</div>
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                "Advanced use of Python decorators and metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                "Python 3 OOP Part 6 - Abstract Base Classes"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                "Python 3 OOP Part 5 - Metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">
+                                "Python 3 OOP Part 4 - Polymorphism"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">
+                                "Python 3 OOP Part 3 - Delegation: composition and inheritance"
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/amqp/">
+                                amqp
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/c/">
+                                c++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/c-language/">
+                                C-language
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/django/">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/erlang/">
+                                erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/git/">
+                                git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/pika/">
+                                pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/postage/">
+                                postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python/">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/python2/">
+                                python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python3/">
+                                python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/qt/">
+                                qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/rabbitmq/">
+                                rabbitmq
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
 
+        </ul>
+    </section>
+
+</aside>        </div>
     </div>
-    <footer id="footer">
-    <div style="display:inline">
-	<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">The Digital Cat</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://lgiordani.com/about/" property="cc:attributionName" rel="cc:attributionURL">Leonardo Giordani</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-	<br />
-    Powered by <a href="http://octopress.org">Octopress</a> | Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
 </div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
 
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
 
-    </footer>
-    <script src="/javascripts/fabric.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
 
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-
-
-
-<!-- end toload --> 
-</div>
-</div>
-<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
-<script type="text/javascript">
-/*<![CDATA[*/
-;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
-/*]]>*/
-</script><!-- remove it to remove the scroll to top button -->
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
 </body>
 </html>

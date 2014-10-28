@@ -1,1090 +1,783 @@
-
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en"
+>
 <head>
-	<meta charset="utf-8">
-	<title>Concurrent programming - 6 - The digital cat</title>
-    <meta name="author" content="Leonardo Giordani">
-    
-	<meta name="description" content="Published on: Apr 23rd, 2013 Tags: concurrent programming, operating systems Posted by Leonardo Giordani Abstract Issue 5 of this series ended with &hellip;">
-	
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>"Concurrent programming - 6" - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="/atom.xml" rel="alternate" title="The digital cat" type="application/atom+xml">
-	<link rel="canonical" href="">
-	<link href="/favicon.ico" rel="shortcut icon">
-    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
 
-    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
 
-    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+<link rel="canonical" href="http://lgiordani.com/blog/2013/04/23/concurrent-programming-6/">
 
-    <!-- remove or comment it to disable ajaxification -->   
-    <script src="/javascripts/ajaxify.js"></script>
-   
-    
-    
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="C-language,operating systems,concurrent programming" />
 
-  ga('create', 'UA-38715090-1', 'auto');
-  ga('send', 'pageview');
+    <!-- Enable latex plugin -->
 
-</script>
 
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/categories/Programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
 
 </head>
-
-
 <body>
-    <div id="wrapper">
-    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
-<h1 class="animated pulse">
-    <div id="headerbg">
-        The digital cat
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives.html"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
     </div>
-</h1>
-<br>
+</div> <!-- /.navbar -->
 
-<ul id="social-links" style="text-align:center">
-  
-  <!-- GitHub -->
-  <li>
-  <a href="https://github.com/lgiordani" class="github" title="Github"></a>
-  </li>
-  
-  
-  <!-- Google Plus -->
-  <li>
-  <a href="http://plus.google.com/+LeonardoGiordani?rel=author" class="google" title="Google+"></a>
-  </li>
-  
-  
-  
-  <!-- Twitter -->
-  <li>
-  <a href="http://www.twitter.com/tw_lgiordani" class="twitter" title="Twitter"></a>
-  </li>
-  
-  
-  
-  
-  
-</ul>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2013/04/23/concurrent-programming-6/"
+                       rel="bookmark"
+                       title="Permalink to "Concurrent programming - 6"">
+                        "Concurrent programming - 6"
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2013-04-23T08:29:00+02:00"> mar 23 aprile 2013</time>
+    </span>
 
 
-<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
-<ul id="nav">
-	<li id="ajax"><a href="/index.html">Home</a></li>
-	<li id="ajax"><a href="/about">About me</a></li>
-	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
-    <li><a href="/atom.xml">RSS</a></li>
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/blog/categories/c-language/">C-language</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/operating-systems/">operating systems</a>
+        /
+	<a href="http://lgiordani.com/blog/categories/concurrent-programming/">concurrent programming</a>
     
-    <li>
-    <div id="dark">
-        <form method="get" action="/search.html" id="search">
-            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
-        </form>
-    </div>
-    </li>
-        
-</ul>
-
-
-
-
-</header>
-
-<div id="toload">
-<!-- begin toload --> 
-    <div id="content" class="inner">
-        <article class="post">
-	<h2 class="title">Concurrent Programming - 6</h2>
-	<div class="entry-content">
-          <div class="meta">
-            <div class="date">Published on: 
-
-
-
-
-
-
-
-
-  
-
-
-<time datetime="2013-04-23T08:29:00+02:00" pubdate data-updated="true">Apr 23<span>rd</span>, 2013</time></div>
-            <div class="tags">Tags: 
-
-
-	<a class='category' href='/blog/categories/concurrent-programming/'>concurrent programming</a>, <a class='category' href='/blog/categories/operating-systems/'>operating systems</a>
-
-
-</div>
-          </div>
-          
-  
-
-<span class="byline author vcard">Posted by <span class="fn"><a href="http://plus.google.com/+LeonardoGiordani?rel=author">Leonardo Giordani</a></span></span>
-
-          <h2>Abstract</h2>
-
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <h2>Abstract</h2>
 <p>Issue 5 of this series ended with a small program where two processes exchanged ten numbers through a message queue, thus being a synchronized producer-consumer couple. This time I am going to show and comment the code of a very simple communication simulator written in C. The code leverages IPC queues to allow multiple processes to talk each other while running concurrently.</p>
-
-<!--more-->
-
-
 <h2>The simulator</h2>
-
 <p>The program simulates a messaging switch, where multiple users (child processes) connect to a central switch (parent process) and send text messages (SMS-like) to other users through it. The switch receives messages and route them if the recipient is reachable (process is running). Moreover, the switch can perform a timing operation on a user, checking how much time the user needs to answer a message, or select it for termination. Last, the switch counts how many times a user sends a message to an unreachable user and when a threshold is reached terminates it. Switch and user decisions are taken extracting pseudo-random numbers and comparing them with thresholds given on the command line. Remember that the simulation wants to demonstrate a concrete use of message queues and does not claim to be a complete communication system between processes.</p>
-
 <h2>10,000 feet overview</h2>
-
 <p>I splitted the simulator in 3 parts, namely two stacked layers of function and the main application code. The first layer implements the message structure, provides functions to interact with it (getters and setters), exports basic functions to manage queues and to send and receive messages. The second layer exports functions that implement the protocol, i.e. the actions users and switch can perform. Last, the main function contains the actual logic of the whole simulation. Due to the instructional purpose of the simulation some of the solution implemented are far from optimal or even correct (e.g. random numbers management); I suggest you to try to evolve the simulation, adding new services or messages between users.</p>
-
 <h2>Debugging nightmares</h2>
-
 <p>Be ready to spend some time debugging your multiprocessing applications! If you ever debugged some code, you know that the most friendly bugs are by far those which are reproducible: you only need to add some debugging output or step through the code with the debugger and the bug is spotted. Multiprocessing and network application are at the very opposite corner: most of the time the bugs in that sort of applications are very difficult to reproduce, when not impossible. The concurrent execution of multiple processes, indeed, makes every execution unique, since the actual execution sequence is random (random means that it is the result of so many factors that the result is unpredictable and thus irreproducible). Network programs suffers from the same problems (concurrent execution), worsened by network lags that add a factor of randomness.</p>
-
 <h2>Code and analysis</h2>
-
 <p>I am not going to include the whole code of the layers directly in the post text as they are a straightforward implementation of what was presented in the previous articles; the code of the main application is, on the contrary, analyzed block by block. The links to the source files are at the end of the article, together with compilation instructions.</p>
-
 <h2>Layer 1</h2>
-
 <h4>Message structure</h4>
-
 <p>The structure of the message is</p>
+<div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+ <span class="kt">int</span> <span class="n">sender</span><span class="p">;</span>
+ <span class="kt">int</span> <span class="n">recipient</span><span class="p">;</span>
+ <span class="kt">char</span> <span class="n">text</span><span class="p">[</span><span class="mi">160</span><span class="p">];</span>
+ <span class="kt">int</span> <span class="n">service</span><span class="p">;</span>
+ <span class="kt">int</span> <span class="n">service_data</span><span class="p">;</span>
+<span class="p">}</span> <span class="kt">message_t</span><span class="p">;</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">typedef</span> <span class="k">struct</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'> <span class="kt">int</span> <span class="n">sender</span><span class="p">;</span>
-</span><span class='line'> <span class="kt">int</span> <span class="n">recipient</span><span class="p">;</span>
-</span><span class='line'> <span class="kt">char</span> <span class="n">text</span><span class="p">[</span><span class="mi">160</span><span class="p">];</span>
-</span><span class='line'> <span class="kt">int</span> <span class="n">service</span><span class="p">;</span>
-</span><span class='line'> <span class="kt">int</span> <span class="n">service_data</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="n">message_t</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'><span class="k">typedef</span> <span class="k">struct</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'> <span class="kt">long</span> <span class="n">mtype</span><span class="p">;</span>
-</span><span class='line'> <span class="n">message_t</span> <span class="n">mtext</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span> <span class="n">messagebuf_t</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="k">typedef</span> <span class="k">struct</span>
+<span class="p">{</span>
+ <span class="kt">long</span> <span class="n">mtype</span><span class="p">;</span>
+ <span class="kt">message_t</span> <span class="n">mtext</span><span class="p">;</span>
+<span class="p">}</span> <span class="kt">messagebuf_t</span><span class="p">;</span>
+</pre></div>
 
 
 <p>Here, <code>sender</code> and <code>recipient</code> are numbers that identify the switch and the users (0 is the switch, then users are numbered increasingly when they connect to the switch); <code>text</code> is the content of a message a user sends to another user, and is 160 characters long to mimic SMS behaviour. Last <code>service</code> is the identifier of some system operation, like a request the switch sends to the users; <code>service_data</code> carries the optional data the service needs to communicate. Actual services are implemented in layer 2 and I am going to describe them later.</p>
-
 <h4>Other functions</h4>
-
 <p>Layer 1 exposes many functions: some are simple set and get functions to deal with the message structure while five simplify access to IPC structures; <code>build_key()</code> makes an IPC key from a given character, <code>create_queue()</code> and <code>remove_queue()</code> manage IPC queues and last <code>send_message()</code> and <code>receive_message()</code> give a simple way to route messages.</p>
-
 <p>A very simple error management code has been introduced here: C language does not allow to use exceptions, so errors have to be managed by functions or returned through the <code>return</code> statement. A solid error management in C is outside the scope of this article, so here you will find the bare minimum.</p>
-
 <p>The error management of <code>receive_message()</code> needs a little explanation.</p>
+<div class="highlight"><pre><span class="kt">int</span> <span class="nf">receive_message</span><span class="p">(</span><span class="kt">int</span> <span class="n">qid</span><span class="p">,</span> <span class="kt">long</span> <span class="n">type</span><span class="p">,</span> <span class="kt">messagebuf_t</span> <span class="o">*</span><span class="n">qbuf</span><span class="p">){</span>
+  <span class="kt">int</span> <span class="n">result</span><span class="p">,</span> <span class="n">length</span><span class="p">;</span>
+  <span class="n">length</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">messagebuf_t</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">long</span><span class="p">);</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">receive_message</span><span class="p">(</span><span class="kt">int</span> <span class="n">qid</span><span class="p">,</span> <span class="kt">long</span> <span class="n">type</span><span class="p">,</span> <span class="n">messagebuf_t</span> <span class="o">*</span><span class="n">qbuf</span><span class="p">){</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">result</span><span class="p">,</span> <span class="n">length</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">length</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">messagebuf_t</span><span class="p">)</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">long</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span><span class="p">((</span><span class="n">result</span> <span class="o">=</span> <span class="n">msgrcv</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">msgbuf</span> <span class="o">*</span><span class="p">)</span><span class="n">qbuf</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">IPC_NOWAIT</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">ENOMSG</span><span class="p">){</span>
-</span><span class='line'>      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">else</span><span class="p">{</span>
-</span><span class='line'>      <span class="n">perror</span><span class="p">(</span><span class="s">&quot;msgrcv&quot;</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+  <span class="k">if</span><span class="p">((</span><span class="n">result</span> <span class="o">=</span> <span class="n">msgrcv</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="n">msgbuf</span> <span class="o">*</span><span class="p">)</span><span class="n">qbuf</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">type</span><span class="p">,</span> <span class="n">IPC_NOWAIT</span><span class="p">))</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">errno</span> <span class="o">==</span> <span class="n">ENOMSG</span><span class="p">){</span>
+      <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">else</span><span class="p">{</span>
+      <span class="n">perror</span><span class="p">(</span><span class="s">&quot;msgrcv&quot;</span><span class="p">);</span>
+      <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
 
 
 <p>Here, <code>msgrcv()</code> fails even when there are no messages of the given type, producing a <code>ENOMSG</code> error. This is the reason why that case has been ignored through the <code>if(errno == ENOMSG)</code> construct.</p>
-
 <h2>Layer 2</h2>
-
 <h4>The protocol</h4>
-
-<p>Layer2 implements the actual communication protocol between the switch and the users. Users send text messages to other users, and those messages are routed by the switch. Users and switch can also send service messages; those are messages encompassing information used to manage the system.</p>
-
+<p>Layer2 implements the actual communication protocol between the switch and the users. Users send text messages to other users, and those messages are routed by the switch. Users and switch can also send service messages; those are messages encompassing information used to manage the system. </p>
 <p>Every user, when spawned, initializes a queue, connects to the switch and communicates the queue id. Since the queues can contain old unread messages, it is necessary to empty them before the use. Each user enters a loop where it sleeps a while, receives service messages, sends messages and last receives text messages. At the same time, the switch collects queue ids, routes text messages from the sender to the recipient and sometimes sends a service request to a user.</p>
-
 <p>The services the switch can request from users are to terminate and to test the answering time. Both can be requested on a probability base, but the first is also forced when the user sends too many messages to unreachable recipients.</p>
-
 <p>The answering time test is performed in a simple way: the switch requests the service and records the time of the request. The user answers with a message that contains the time at which it received the request and the switch computes the difference between the two. Pay attention that both the timing service and the random number extraction used to request services on a probability base are not exact; the code works but is good only for a demonstration system.</p>
-
 <p>I defined some useful constants in the header file: <code>MAX_SLEEP</code> is the maximum number of seconds a user waits before performing an action while <code>TYPE_SERVICE</code> and <code>TYPE_TEXT</code> identify the type of message. The defines which name starts with <code>SERVICE_</code> list all the possible services: <code>SERVICE_TERMINATE</code> forces a user to quit; <code>SERVICE_TIME</code> makes it perform a timing operation; <code>SERVICE_CONNECT</code> and <code>SERVICE_DISCONNECT</code> tell the switch a new user has connected or disconnected; <code>SERVICE_QID</code> bears the identifier of the user queue to the switch; <code>SERVICE_UNREACHABLE_DESTINATION</code> communicates a user that the recipient of a message is no more online.</p>
-
 <h4>Queues</h4>
-
-<p>Two functions are dedicated to queues, <code>init_queue()</code> and <code>close_queue()</code>. The first builds an IPC key from a given number (previously converting it to a char) and runs the <code>create_queue()</code> function from layer 1. Because of the char conversion the range of integers it can accept is 0-255, and for simplicity&#8217;s sake there is no check in the whole code that a queue key has not yet been assigned. For this example, I am simply leveraging that different numbers return different keys and, thus, queues.</p>
-
+<p>Two functions are dedicated to queues, <code>init_queue()</code> and <code>close_queue()</code>. The first builds an IPC key from a given number (previously converting it to a char) and runs the <code>create_queue()</code> function from layer 1. Because of the char conversion the range of integers it can accept is 0-255, and for simplicity's sake there is no check in the whole code that a queue key has not yet been assigned. For this example, I am simply leveraging that different numbers return different keys and, thus, queues.</p>
 <p>The second function closes the queue running the <code>remove_queue()</code> function from layer 1. The underlying system calls are not used directly to allow the future introduction of checks on the assigned queues.</p>
-
 <h4>User functions</h4>
-
 <p>Users have five functions that implement their part of the protocol. Two functions communicate to the switch that the user connected or disconnected, namely <code>user_send_connect()</code> and <code>user_send_disconnect()</code>; both carry the <code>sender</code> id and the switch id <code>sw</code>, which however in the main program is always 0. The <code>user_send_qid()</code> function communicates to the switch the queue id of the user; <code>user_send_text_message()</code> sends a string of text to another user and <code>user_send_time()</code> answers the timing service.</p>
-
 <h4>Switch functions</h4>
-
 <p>The switch can execute <code>switch_send_text_message()</code> to deliver a text message sent by a user; <code>switch_send_terminate()</code> to ask a user to terminate; <code>switch_send_time()</code> to ask a user to perform a timing service.</p>
-
 <h4>Code analysis</h4>
+<p>Now I will briefly review the whole application code to better explain the different parts of the system. Please remember that this is a demonstration system so many choices have been made for simplicity's sake.</p>
+<div class="highlight"><pre><span class="cp">#include &lt;stdio.h&gt;</span>
+<span class="cp">#include &lt;stdlib.h&gt;</span>
+<span class="cp">#include &lt;unistd.h&gt;</span>
+<span class="cp">#include &lt;linux/ipc.h&gt;</span>
+<span class="cp">#include &lt;linux/msg.h&gt;</span>
+<span class="cp">#include &lt;time.h&gt;</span>
+<span class="cp">#include &lt;signal.h&gt;</span>
+<span class="cp">#include &lt;wait.h&gt;</span>
+<span class="cp">#include &quot;layer1.h&quot;</span>
+<span class="cp">#include &quot;layer2.h&quot;</span>
 
-<p>Now I will briefly review the whole application code to better explain the different parts of the system. Please remember that this is a demonstration system so many choices have been made for simplicity&#8217;s sake.</p>
+<span class="cp">#define MINCHILDS 1</span>
+<span class="cp">#define MAXCHILDS 15</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="cp">#include &lt;stdio.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;stdlib.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;unistd.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;linux/ipc.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;linux/msg.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;time.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;signal.h&gt;</span>
-</span><span class='line'><span class="cp">#include &lt;wait.h&gt;</span>
-</span><span class='line'><span class="cp">#include &quot;layer1.h&quot;</span>
-</span><span class='line'><span class="cp">#include &quot;layer2.h&quot;</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define MINCHILDS 1</span>
-</span><span class='line'><span class="cp">#define MAXCHILDS 15</span>
-</span><span class='line'>
-</span><span class='line'><span class="cp">#define MAXFAILS 10</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="cp">#define MAXFAILS 10</span>
+</pre></div>
 
 
 <p>After the list of includes, you will find three defines that rule the number of child processes the system can spawn and the maximum number of messages a user can send to unreachable recipients before the switch asks it to terminate.</p>
+<div class="highlight"><pre><span class="kt">int</span> <span class="nf">random_number</span><span class="p">(</span><span class="kt">int</span> <span class="n">max</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">double</span> <span class="n">r</span><span class="p">,</span><span class="n">x</span><span class="p">;</span>
+  <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="n">random</span><span class="p">();</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="n">max</span> <span class="o">/</span> <span class="n">RAND_MAX</span><span class="p">;</span>
+  <span class="k">return</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span> <span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">random_number</span><span class="p">(</span><span class="kt">int</span> <span class="n">max</span><span class="p">)</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="kt">double</span> <span class="n">r</span><span class="p">,</span><span class="n">x</span><span class="p">;</span>
-</span><span class='line'>  <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="n">random</span><span class="p">();</span>
-</span><span class='line'>  <span class="n">x</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="p">(</span><span class="kt">double</span><span class="p">)</span> <span class="n">max</span> <span class="o">/</span> <span class="n">RAND_MAX</span><span class="p">;</span>
-</span><span class='line'>  <span class="k">return</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span> <span class="n">x</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'><span class="kt">void</span> <span class="nf">usage</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Telephone switch simulator</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s &lt;number of users&gt; &lt;service probability&gt; &lt;text message probability&gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;     &lt;number of users&gt; - Number of users alive in the system (%d - %d)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">MINCHILDS</span><span class="p">,</span> <span class="n">MAXCHILDS</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;     &lt;service probability&gt; - The probability that the switch requires a service from the user (0-100)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;     &lt;text message probability&gt; - The probability the a user sends a message to another user (0-100)</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+<span class="kt">void</span> <span class="nf">usage</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Telephone switch simulator</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s &lt;number of users&gt; &lt;service probability&gt; &lt;text message probability&gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;     &lt;number of users&gt; - Number of users alive in the system (%d - %d)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">MINCHILDS</span><span class="p">,</span> <span class="n">MAXCHILDS</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;     &lt;service probability&gt; - The probability that the switch requires a service from the user (0-100)</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;     &lt;text message probability&gt; - The probability the a user sends a message to another user (0-100)</span><span class="se">\n\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
 
 
-<p>The <code>random_number()</code> function is used to extract a random number between 0 and a maximum <code>max</code>; <code>RAND_MAX</code> is a define of the standard library and represents the maximum number the <code>random()</code> function can return and in the GNU C library it is 2<sup>31</sup> (2147483647); here it is used to calculate a proportion with the maximum value given by the caller. The <code>usage()</code> function helps the user remembering the command line arguments; as you can see, the program receives 3 mandatory input values: the number of users that the switch can spawn; the probability that the switch requests a service to a user when this latter sends a message; the probability that a user sends a text message to another user.</p>
+<p>The <code>random_number()</code> function is used to extract a random number between 0 and a maximum <code>max</code>; <code>RAND_MAX</code> is a define of the standard library and represents the maximum number the <code>random()</code> function can return and in the GNU C library it is 2^31 (2147483647); here it is used to calculate a proportion with the maximum value given by the caller. The <code>usage()</code> function helps the user remembering the command line arguments; as you can see, the program receives 3 mandatory input values: the number of users that the switch can spawn; the probability that the switch requests a service to a user when this latter sends a message; the probability that a user sends a text message to another user.</p>
+<div class="highlight"><pre><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+  <span class="kt">pid_t</span> <span class="n">pid</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
-</span><span class='line'><span class="p">{</span>
-</span><span class='line'>  <span class="n">pid_t</span> <span class="n">pid</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">users_number</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">service_probability</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">text_message_probability</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">status</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">deadproc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* A counter of the already terminated user processes */</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">qid</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">sw</span><span class="p">;</span> <span class="cm">/* Qid of the switch */</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">dest</span><span class="p">;</span> <span class="cm">/* Destination of the message */</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">olddest</span><span class="p">;</span> <span class="cm">/* Destination of the previous message */</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">queues</span><span class="p">[</span><span class="n">MAXCHILDS</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span> <span class="cm">/* Queue identifiers - 0 is the qid of the switch */</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">msg_sender</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">msg_recipient</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">char</span> <span class="n">msg_text</span><span class="p">[</span><span class="mi">160</span><span class="p">];</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">msg_service</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">msg_service_data</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">t</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">timing</span><span class="p">[</span><span class="n">MAXCHILDS</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kt">int</span> <span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">MAXCHILDS</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="kt">char</span> <span class="o">*</span><span class="n">padding</span> <span class="o">=</span> <span class="s">&quot;                                                                      &quot;</span><span class="p">;</span>
-</span><span class='line'>  <span class="kt">char</span> <span class="n">text</span><span class="p">[</span><span class="mi">160</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">messagebuf_t</span> <span class="n">msg</span><span class="p">,</span> <span class="n">in</span><span class="p">;</span>
-</span></code></pre></td></tr></table></div></figure>
+  <span class="kt">int</span> <span class="n">users_number</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">service_probability</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">text_message_probability</span><span class="p">;</span>
+
+  <span class="kt">int</span> <span class="n">status</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">deadproc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="cm">/* A counter of the already terminated user processes */</span>
+  <span class="kt">int</span> <span class="n">qid</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">sw</span><span class="p">;</span> <span class="cm">/* Qid of the switch */</span>
+  <span class="kt">int</span> <span class="n">dest</span><span class="p">;</span> <span class="cm">/* Destination of the message */</span>
+  <span class="kt">int</span> <span class="n">olddest</span><span class="p">;</span> <span class="cm">/* Destination of the previous message */</span>
+
+  <span class="kt">int</span> <span class="n">queues</span><span class="p">[</span><span class="n">MAXCHILDS</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span> <span class="cm">/* Queue identifiers - 0 is the qid of the switch */</span>
+
+  <span class="kt">int</span> <span class="n">msg_sender</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">msg_recipient</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">msg_text</span><span class="p">[</span><span class="mi">160</span><span class="p">];</span>
+  <span class="kt">int</span> <span class="n">msg_service</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">msg_service_data</span><span class="p">;</span>
+
+  <span class="kt">int</span> <span class="n">t</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">timing</span><span class="p">[</span><span class="n">MAXCHILDS</span> <span class="o">+</span> <span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">];</span>
+
+  <span class="kt">int</span> <span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">MAXCHILDS</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+
+  <span class="kt">char</span> <span class="o">*</span><span class="n">padding</span> <span class="o">=</span> <span class="s">&quot;                                                                      &quot;</span><span class="p">;</span>
+  <span class="kt">char</span> <span class="n">text</span><span class="p">[</span><span class="mi">160</span><span class="p">];</span>
+
+  <span class="kt">messagebuf_t</span> <span class="n">msg</span><span class="p">,</span> <span class="n">in</span><span class="p">;</span>
+</pre></div>
 
 
 <p>Many of these variables are just helpers that simplify the code; <code>queues</code> holds the queue identifier of each process; <code>timing</code> holds the information about user timing service results; <code>unreachable_destinations</code> contains how many times each user sent a message to an unreachable recipient; <code>dest</code> and <code>olddest</code> are used to avoid a user to send a message to the recipient of the previous one.  The <code>padding</code> variable is a quick and dirty way to create two columns, the left one filled by switch messages and the right one by user ones.</p>
-
 <p>Remember that in C you have to declare variables at the beginning of the program while in C++ you can declare them anywhere. This means that child processes, a copy of the parent, carry in memory some variables such as <code>queues</code> and <code>timings</code> that are used only by the switch. This is both a waste of resources and a dangerous situation, so remember that in general statically allocated variables are not a good choice for concurrent programs.</p>
+<div class="highlight"><pre>  <span class="cm">/* Command line argument parsing */</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">){</span>
+    <span class="n">usage</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="p">}</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="cm">/* Command line argument parsing */</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">){</span>
-</span><span class='line'>    <span class="n">usage</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">users_number</span> <span class="o">=</span> <span class="n">strtol</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">service_probability</span> <span class="o">=</span> <span class="n">strtol</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">text_message_probability</span> <span class="o">=</span> <span class="n">strtol</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span><span class="p">((</span><span class="n">users_number</span> <span class="o">&lt;</span> <span class="n">MINCHILDS</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">users_number</span> <span class="o">&gt;</span> <span class="n">MAXCHILDS</span><span class="p">)){</span>
-</span><span class='line'>    <span class="n">usage</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span><span class="p">((</span><span class="n">service_probability</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">service_probability</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)){</span>
-</span><span class='line'>    <span class="n">usage</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="k">if</span><span class="p">((</span><span class="n">text_message_probability</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">text_message_probability</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)){</span>
-</span><span class='line'>    <span class="n">usage</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Number of users: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">users_number</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Probability of a service request: %d%%</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">service_probability</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Probability of a text message: %d%%</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">text_message_probability</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/* Initialize the random number generator */</span>
-</span><span class='line'>  <span class="n">srandom</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span></code></pre></td></tr></table></div></figure>
+  <span class="n">users_number</span> <span class="o">=</span> <span class="n">strtol</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>  
+  <span class="n">service_probability</span> <span class="o">=</span> <span class="n">strtol</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+  <span class="n">text_message_probability</span> <span class="o">=</span> <span class="n">strtol</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="mi">10</span><span class="p">);</span>
+
+
+  <span class="k">if</span><span class="p">((</span><span class="n">users_number</span> <span class="o">&lt;</span> <span class="n">MINCHILDS</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">users_number</span> <span class="o">&gt;</span> <span class="n">MAXCHILDS</span><span class="p">)){</span>
+    <span class="n">usage</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span><span class="p">((</span><span class="n">service_probability</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">service_probability</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)){</span>
+    <span class="n">usage</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="k">if</span><span class="p">((</span><span class="n">text_message_probability</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">text_message_probability</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">)){</span>
+    <span class="n">usage</span><span class="p">(</span><span class="n">argv</span><span class="p">);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Number of users: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">users_number</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Probability of a service request: %d%%</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">service_probability</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Probability of a text message: %d%%</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">text_message_probability</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+  <span class="cm">/* Initialize the random number generator */</span>
+  <span class="n">srandom</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+</pre></div>
 
 
 <p>All these lines contain initialization code and checks for the values passed on the command line.</p>
+<div class="highlight"><pre>  <span class="cm">/* Switch queue initialization */</span>
+  <span class="n">sw</span> <span class="o">=</span> <span class="n">init_queue</span><span class="p">(</span><span class="mi">255</span><span class="p">);</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="cm">/* Switch queue initialization */</span>
-</span><span class='line'>  <span class="n">sw</span> <span class="o">=</span> <span class="n">init_queue</span><span class="p">(</span><span class="mi">255</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/* Read the last messages we have in the queue */</span>
-</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Receiving old text messages</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/* Read the last messages we have in the queue */</span>
-</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">TYPE_SERVICE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Receiving old service messge</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/* All queues are &quot;uninitialized&quot; (set equal to switch queue) */</span>
-</span><span class='line'>  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">users_number</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
-</span><span class='line'>    <span class="n">queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="p">;</span>
-</span><span class='line'>    <span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+  <span class="cm">/* Read the last messages we have in the queue */</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Receiving old text messages</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* Read the last messages we have in the queue */</span>
+  <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">TYPE_SERVICE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Receiving old service messge</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* All queues are &quot;uninitialized&quot; (set equal to switch queue) */</span>
+  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">users_number</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="n">queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="p">;</span>
+    <span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="p">}</span>
+</pre></div>
 
 
 <p>The switch initializes its queue; this has to be done before spawning users since the <code>sw</code> variable will be copied in each child process and used to communicate with the switch. The queue is initialized with the number 255 just to be sure that no child process initializes the same queue. As explained, IPC queues provide no mechanism to ensure uniqueness of the instanced queues, so we have to establish our own system; in this simple example we spawn a maximum of 15 users, so we could also use <code>16</code> or <code>MAXCHILDS+1</code> to initialize the switch queue. Since queues are shared structures and nothing prevents the system to assign to a process a previously used queue we must ensure that the queue is empty, so the switch reads and discards all text and service messages found in its queue. Last, the <code>queues</code> and <code>unreachable_destinations</code> arrays are initialized.</p>
+<div class="highlight"><pre>  <span class="cm">/* Create users */</span>
+  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">users_number</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">();</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="cm">/* Create users */</span>
-</span><span class='line'>  <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">users_number</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
-</span><span class='line'>    <span class="n">pid</span> <span class="o">=</span> <span class="n">fork</span><span class="p">();</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
-</span><span class='line'>      <span class="n">srandom</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1000</span><span class="o">*</span><span class="n">i</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* Initialize queue  */</span>
-</span><span class='line'>      <span class="n">qid</span> <span class="o">=</span> <span class="n">init_queue</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* Read the last messages we have in the queue */</span>
-</span><span class='line'>      <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Receiving old text messages</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* Read the last messages we have in the queue */</span>
-</span><span class='line'>      <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_SERVICE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Receiving old service messge</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* Let the switch know we are alive */</span>
-</span><span class='line'>      <span class="n">user_send_connect</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">sw</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* Let the switch know how to reach us */</span>
-</span><span class='line'>      <span class="n">user_send_qid</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">qid</span><span class="p">,</span> <span class="n">sw</span><span class="p">);</span>
-</span></code></pre></td></tr></table></div></figure>
+    <span class="k">if</span> <span class="p">(</span><span class="n">pid</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span>
+      <span class="n">srandom</span><span class="p">(</span><span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1000</span><span class="o">*</span><span class="n">i</span><span class="p">);</span>
+
+      <span class="cm">/* Initialize queue  */</span>
+      <span class="n">qid</span> <span class="o">=</span> <span class="n">init_queue</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+
+      <span class="cm">/* Read the last messages we have in the queue */</span>
+      <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Receiving old text messages</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="cm">/* Read the last messages we have in the queue */</span>
+      <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_SERVICE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Receiving old service messge</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
+      <span class="p">}</span>
+
+      <span class="cm">/* Let the switch know we are alive */</span>
+      <span class="n">user_send_connect</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">sw</span><span class="p">);</span>
+
+      <span class="cm">/* Let the switch know how to reach us */</span>
+      <span class="n">user_send_qid</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">qid</span><span class="p">,</span> <span class="n">sw</span><span class="p">);</span>
+</pre></div>
 
 
 <p>This code spawns the users and from here the code splits in two, and the code of the user processes is inside the if construct. As you can see, the user acts like the switch at the very beginning, initializing its own queue and flushing the possible messages it contains. After this, the user sends the switch a message to communicate that it is alive and sends its qid to allow the user to communicate.</p>
+<div class="highlight"><pre>      <span class="cm">/* Enter the main loop */</span>
+      <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+        <span class="n">sleep</span><span class="p">(</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="n">MAX_SLEEP</span><span class="p">);</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="cm">/* Enter the main loop */</span>
-</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
-</span><span class='line'>    <span class="n">sleep</span><span class="p">(</span><span class="n">rand</span><span class="p">()</span><span class="o">%</span><span class="n">MAX_SLEEP</span><span class="p">);</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="cm">/* Check if the switch requested a service */</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_SERVICE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>    <span class="n">msg_service</span> <span class="o">=</span> <span class="n">get_service</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>  
-</span><span class='line'>    <span class="k">switch</span><span class="p">(</span><span class="n">msg_service</span><span class="p">){</span>
-</span><span class='line'>  
-</span><span class='line'>    <span class="k">case</span> <span class="n">SERVICE_TERMINATE</span>:
-</span><span class='line'>      <span class="cm">/* Send an acknowledgement to the switch */</span>
-</span><span class='line'>      <span class="n">user_send_disconnect</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">getpid</span><span class="p">(),</span> <span class="n">sw</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* Read the last messages we have in the queue */</span>
-</span><span class='line'>      <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>        <span class="n">msg_sender</span> <span class="o">=</span> <span class="n">get_sender</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">get_text</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Message received</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s                      Sender: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s                      Text: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* Remove the queue */</span>
-</span><span class='line'>      <span class="n">close_queue</span><span class="p">(</span><span class="n">qid</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Termination</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="k">case</span> <span class="n">SERVICE_TIME</span>:
-</span><span class='line'>      <span class="n">user_send_time</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">sw</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Timing</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+        <span class="cm">/* Check if the switch requested a service */</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_SERVICE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
+          <span class="n">msg_service</span> <span class="o">=</span> <span class="n">get_service</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
+
+          <span class="k">switch</span><span class="p">(</span><span class="n">msg_service</span><span class="p">){</span>
+
+          <span class="k">case</span> <span class="nl">SERVICE_TERMINATE</span><span class="p">:</span>
+            <span class="cm">/* Send an acknowledgement to the switch */</span>
+            <span class="n">user_send_disconnect</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">getpid</span><span class="p">(),</span> <span class="n">sw</span><span class="p">);</span>
+
+            <span class="cm">/* Read the last messages we have in the queue */</span>
+            <span class="k">while</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
+              <span class="n">msg_sender</span> <span class="o">=</span> <span class="n">get_sender</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
+              <span class="n">get_text</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
+              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Message received</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
+              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s                      Sender: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
+              <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s                      Text: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
+            <span class="p">}</span>
+
+            <span class="cm">/* Remove the queue */</span>
+            <span class="n">close_queue</span><span class="p">(</span><span class="n">qid</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Termination</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+
+          <span class="k">case</span> <span class="nl">SERVICE_TIME</span><span class="p">:</span>
+            <span class="n">user_send_time</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">sw</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Timing</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+</pre></div>
 
 
 <p>The user loops infinitely and at each loop sleeps a random number of seconds. After that, it checks its message queue for service messages (<code>receive_message()</code> with the parameter <code>TYPE_SERVICE</code>); if the requested service is <code>SERVICE_TERMINATE</code>, an acknowledgement is sent to the switch (<code>user_send_disconnect()</code>) so that the user is marked as offline and no more messages are sent with it as recipient. The user then reads all remaining text messages in its queue and closes the queue. Last with <code>exit()</code>the user process terminates. If the requested service is <code>SERVICE_TIME</code>, the user simply sends the current time back to the switch through <code>user_send_time()</code>.</p>
+<div class="highlight"><pre>        <span class="cm">/* Send a message */</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">random_number</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">text_message_probability</span><span class="p">){</span>
+          <span class="n">dest</span> <span class="o">=</span> <span class="n">random_number</span><span class="p">(</span><span class="n">users_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>    <span class="cm">/* Send a message */</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">random_number</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">text_message_probability</span><span class="p">){</span>
-</span><span class='line'>    <span class="n">dest</span> <span class="o">=</span> <span class="n">random_number</span><span class="p">(</span><span class="n">users_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="cm">/* Do not send a message to the switch, to yourself and to the previous recipient */</span>
-</span><span class='line'>    <span class="k">while</span><span class="p">((</span><span class="n">dest</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">dest</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">dest</span> <span class="o">==</span> <span class="n">olddest</span><span class="p">)){</span>
-</span><span class='line'>      <span class="n">dest</span> <span class="o">=</span> <span class="n">random_number</span><span class="p">(</span><span class="n">users_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="n">olddest</span> <span class="o">=</span> <span class="n">dest</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Message to user %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">,</span> <span class="n">dest</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">sprintf</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s">&quot;A message from me (%d) to you (%d)&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">dest</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">user_send_text_message</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">sw</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>  <span class="cm">/* Check the incoming box for simple messages */</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>    <span class="n">msg_sender</span> <span class="o">=</span> <span class="n">get_sender</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>    <span class="n">get_text</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Message received</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s                      Sender: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s                      Text: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+          <span class="cm">/* Do not send a message to the switch, to yourself and to the previous recipient */</span>
+          <span class="k">while</span><span class="p">((</span><span class="n">dest</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">dest</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span> <span class="o">||</span> <span class="p">(</span><span class="n">dest</span> <span class="o">==</span> <span class="n">olddest</span><span class="p">)){</span>
+            <span class="n">dest</span> <span class="o">=</span> <span class="n">random_number</span><span class="p">(</span><span class="n">users_number</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+          <span class="p">}</span>
+          <span class="n">olddest</span> <span class="o">=</span> <span class="n">dest</span><span class="p">;</span>
+
+          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Message to user %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">,</span> <span class="n">dest</span><span class="p">);</span>
+          <span class="n">sprintf</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s">&quot;A message from me (%d) to you (%d)&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">dest</span><span class="p">);</span>
+          <span class="n">user_send_text_message</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">dest</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">sw</span><span class="p">);</span>
+        <span class="p">}</span>
+
+        <span class="cm">/* Check the incoming box for simple messages */</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">qid</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
+          <span class="n">msg_sender</span> <span class="o">=</span> <span class="n">get_sender</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
+          <span class="n">get_text</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
+          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s%d -- U %02d -- Message received</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">i</span><span class="p">);</span>
+          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s                      Sender: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
+          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s                      Text: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+</pre></div>
 
 
 <p>The user extracts a random number and tests it against the probability given on the command line; if the test gives a positive result the user extracts a random user, avoiding the switch (<code>dest == 0</code>), itself (<code>dest == i</code>) and the recipient of the previous message it sent (<code>dest == olddest</code>). The new recipient is saved in <code>olddest</code>, and the message is sent through <code>user_send_text_message()</code>. This part ends the user code.</p>
+<div class="highlight"><pre>  <span class="cm">/* Switch (parent process) */</span> 
+  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+    <span class="cm">/* Check if some user is answering to service messages */</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">TYPE_SERVICE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
+      <span class="n">msg_service</span> <span class="o">=</span> <span class="n">get_service</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
+      <span class="n">msg_sender</span> <span class="o">=</span> <span class="n">get_sender</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-<span class='line-number'>38</span>
-<span class='line-number'>39</span>
-<span class='line-number'>40</span>
-<span class='line-number'>41</span>
-<span class='line-number'>42</span>
-<span class='line-number'>43</span>
-<span class='line-number'>44</span>
-<span class='line-number'>45</span>
-<span class='line-number'>46</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="cm">/* Switch (parent process) */</span>
-</span><span class='line'>  <span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
-</span><span class='line'>    <span class="cm">/* Check if some user is answering to service messages */</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">TYPE_SERVICE</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>      <span class="n">msg_service</span> <span class="o">=</span> <span class="n">get_service</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">msg_sender</span> <span class="o">=</span> <span class="n">get_sender</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">switch</span><span class="p">(</span><span class="n">msg_service</span><span class="p">){</span>
-</span><span class='line'>      <span class="k">case</span> <span class="n">SERVICE_CONNECT</span>:
-</span><span class='line'>        <span class="cm">/* A new user has connected */</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Service: connection</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   User: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>        <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">case</span> <span class="n">SERVICE_DISCONNECT</span>:
-</span><span class='line'>        <span class="cm">/* The user is terminating */</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Service: disconnection</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   User: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">deadproc</span><span class="o">++</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">case</span> <span class="n">SERVICE_QID</span>:
-</span><span class='line'>      <span class="cm">/* The user is sending us its queue id */</span>
-</span><span class='line'>      <span class="n">msg_service_data</span> <span class="o">=</span> <span class="n">get_service_data</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Service: queue</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   User: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Qid: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_service_data</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg_service_data</span><span class="p">;</span>
-</span><span class='line'>      <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">case</span> <span class="n">SERVICE_TIME</span>:
-</span><span class='line'>      <span class="n">msg_service_data</span> <span class="o">=</span> <span class="n">get_service_data</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="cm">/* Timing informations */</span>
-</span><span class='line'>        <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg_service_data</span> <span class="o">-</span> <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Service: timing</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   User: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Timing: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="cm">/* The user is no more blocked by a timing operation */</span>
-</span><span class='line'>        <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-</span><span class='line'>        <span class="k">break</span><span class="p">;</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+      <span class="k">switch</span><span class="p">(</span><span class="n">msg_service</span><span class="p">){</span>
+      <span class="k">case</span> <span class="nl">SERVICE_CONNECT</span><span class="p">:</span>
+        <span class="cm">/* A new user has connected */</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Service: connection</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   User: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+
+      <span class="k">case</span> <span class="nl">SERVICE_DISCONNECT</span><span class="p">:</span>
+        <span class="cm">/* The user is terminating */</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Service: disconnection</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   User: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
+
+        <span class="n">deadproc</span><span class="o">++</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+
+      <span class="k">case</span> <span class="nl">SERVICE_QID</span><span class="p">:</span>
+        <span class="cm">/* The user is sending us its queue id */</span>
+        <span class="n">msg_service_data</span> <span class="o">=</span> <span class="n">get_service_data</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Service: queue</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   User: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Qid: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_service_data</span><span class="p">);</span>
+        <span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg_service_data</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+
+      <span class="k">case</span> <span class="nl">SERVICE_TIME</span><span class="p">:</span>
+        <span class="n">msg_service_data</span> <span class="o">=</span> <span class="n">get_service_data</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
+
+        <span class="cm">/* Timing informations */</span>
+        <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">msg_service_data</span> <span class="o">-</span> <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
+
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Service: timing</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   User: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Timing: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">]);</span>
+
+        <span class="cm">/* The user is no more blocked by a timing operation */</span>
+        <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+</pre></div>
 
 
 <p>The switch code has a structure similar to that of the user code. It loops infinitely with a <code>while(1)</code> statement, and inside this it checks for incoming messages and acts accordingly. The first thing it does is to check for service messages. If the service is <code>SERVICE_CONNECT</code> a user is communicating that it is alive, and the switch simply print out a log of this event; when a user disconnects it sends a <code>SERVICE_DISCONNECT</code> message and the switch increases the number of dead processes to monitor the number of active user processes; if the service is a <code>SERVICE_QID</code> a user is sending the switch its queue identifier and this is stored in the <code>queues</code> array; last, the <code>SERVICE_TIME</code> messages mean that a user is answering a timing request; its answer is compared with the recorded send time and the result is printed.</p>
+<div class="highlight"><pre>    <span class="cm">/* Check if some user has connected */</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-<span class='line-number'>23</span>
-<span class='line-number'>24</span>
-<span class='line-number'>25</span>
-<span class='line-number'>26</span>
-<span class='line-number'>27</span>
-<span class='line-number'>28</span>
-<span class='line-number'>29</span>
-<span class='line-number'>30</span>
-<span class='line-number'>31</span>
-<span class='line-number'>32</span>
-<span class='line-number'>33</span>
-<span class='line-number'>34</span>
-<span class='line-number'>35</span>
-<span class='line-number'>36</span>
-<span class='line-number'>37</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>    <span class="cm">/* Check if some user has connected */</span>
-</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">receive_message</span><span class="p">(</span><span class="n">sw</span><span class="p">,</span> <span class="n">TYPE_TEXT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">in</span><span class="p">)){</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">msg_recipient</span> <span class="o">=</span> <span class="n">get_recipient</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">msg_sender</span> <span class="o">=</span> <span class="n">get_sender</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">get_text</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* If the destination is connected */</span>
-</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_recipient</span><span class="p">]</span> <span class="o">!=</span> <span class="n">sw</span><span class="p">){</span>
-</span><span class='line'>      <span class="cm">/* Send the message (forward it) */</span>
-</span><span class='line'>      <span class="n">switch_send_text_message</span><span class="p">(</span><span class="n">msg_sender</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">,</span> <span class="n">queues</span><span class="p">[</span><span class="n">msg_recipient</span><span class="p">]);</span>
-</span><span class='line'>  
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Routing message</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Sender: %d -- Destination: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">,</span> <span class="n">msg_recipient</span><span class="p">);</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Text: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="k">else</span><span class="p">{</span>
-</span><span class='line'>      <span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="k">if</span> <span class="p">(</span><span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">MAXFAILS</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="k">continue</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Unreachable destination</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Sender: %d -- Destination: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">,</span> <span class="n">msg_recipient</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Text: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Threshold: %d/%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">],</span> <span class="n">MAXFAILS</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>        <span class="k">if</span> <span class="p">(</span><span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAXFAILS</span><span class="p">)</span> <span class="p">{</span>
-</span><span class='line'>          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- User %d reached max unreachable destinations</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>          <span class="n">switch_send_terminate</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]);</span>
-</span><span class='line'>
-</span><span class='line'>          <span class="cm">/* Remove its queue from the list */</span>
-</span><span class='line'>          <span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="p">;</span>
-</span><span class='line'>        <span class="p">}</span>
-</span><span class='line'>      <span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+      <span class="n">msg_recipient</span> <span class="o">=</span> <span class="n">get_recipient</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
+      <span class="n">msg_sender</span> <span class="o">=</span> <span class="n">get_sender</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">);</span>
+      <span class="n">get_text</span><span class="p">(</span><span class="o">&amp;</span><span class="n">in</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
+
+      <span class="cm">/* If the destination is connected */</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_recipient</span><span class="p">]</span> <span class="o">!=</span> <span class="n">sw</span><span class="p">){</span>
+        <span class="cm">/* Send the message (forward it) */</span>
+        <span class="n">switch_send_text_message</span><span class="p">(</span><span class="n">msg_sender</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">,</span> <span class="n">queues</span><span class="p">[</span><span class="n">msg_recipient</span><span class="p">]);</span>
+
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Routing message</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Sender: %d -- Destination: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">,</span> <span class="n">msg_recipient</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Text: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
+      <span class="p">}</span>
+      <span class="k">else</span><span class="p">{</span>
+        <span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="p">;</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">MAXFAILS</span><span class="p">)</span> <span class="p">{</span>
+          <span class="k">continue</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- Unreachable destination</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">));</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Sender: %d -- Destination: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_sender</span><span class="p">,</span> <span class="n">msg_recipient</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Text: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">msg_text</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;                   Threshold: %d/%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">],</span> <span class="n">MAXFAILS</span><span class="p">);</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">unreachable_destinations</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">==</span> <span class="n">MAXFAILS</span><span class="p">)</span> <span class="p">{</span>
+          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- User %d reached max unreachable destinations</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">msg_sender</span><span class="p">);</span>
+
+          <span class="n">switch_send_terminate</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]);</span>
+
+          <span class="cm">/* Remove its queue from the list */</span>
+          <span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+</pre></div>
 
 
 <p>Here, the switch checks the queue for incoming text messages users send to other users. If the recipient is connected (reachable) the message is routed through <code>switch_send_text_message()</code>; otherwise the counter of failed dispatches <code>unreachable_destinations</code> is incremented for that user; when the maximum number of failures <code>MAXFAILS</code> is reached the switch sends that user a termination request.</p>
+<div class="highlight"><pre>      <span class="cm">/* Randomly request a service to the sender of the last message */</span>
+      <span class="k">if</span><span class="p">((</span><span class="n">random_number</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>  <span class="o">&lt;</span> <span class="n">service_probability</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">!=</span> <span class="n">sw</span><span class="p">)){</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">random_number</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">40</span><span class="p">){</span>
+          <span class="cm">/* The user must terminate */</span>
+          <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- User %d chosen for termination</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">msg_sender</span><span class="p">);</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-<span class='line-number'>18</span>
-<span class='line-number'>19</span>
-<span class='line-number'>20</span>
-<span class='line-number'>21</span>
-<span class='line-number'>22</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'>  <span class="cm">/* Randomly request a service to the sender of the last message */</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">((</span><span class="n">random_number</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>  <span class="o">&lt;</span> <span class="n">service_probability</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">!=</span> <span class="n">sw</span><span class="p">)){</span>
-</span><span class='line'>    <span class="k">if</span> <span class="p">(</span><span class="n">random_number</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">40</span><span class="p">){</span>
-</span><span class='line'>      <span class="cm">/* The user must terminate */</span>
-</span><span class='line'>      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- User %d chosen for termination</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">),</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="n">switch_send_terminate</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]);</span>
-</span><span class='line'>
-</span><span class='line'>      <span class="cm">/* Remove its queue from the list */</span>
-</span><span class='line'>      <span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="p">;</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>    <span class="k">else</span> <span class="p">{</span>
-</span><span class='line'>      <span class="cm">/* Check if we are already timing that user */</span>
-</span><span class='line'>      <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">0</span><span class="p">]){</span>
-</span><span class='line'>        <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</span><span class='line'>        <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- User %d chosen for timing...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">msg_sender</span><span class="p">);</span>
-</span><span class='line'>        <span class="n">switch_send_time</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]);</span>
-</span><span class='line'>      <span class="p">}</span>
-</span><span class='line'>    <span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+          <span class="n">switch_send_terminate</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]);</span>
+
+          <span class="cm">/* Remove its queue from the list */</span>
+          <span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]</span> <span class="o">=</span> <span class="n">sw</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">else</span> <span class="p">{</span>
+          <span class="cm">/* Check if we are already timing that user */</span>
+          <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">0</span><span class="p">]){</span>
+            <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">time</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d -- S -- User %d chosen for timing...</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">timing</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">msg_sender</span><span class="p">);</span>
+            <span class="n">switch_send_time</span><span class="p">(</span><span class="n">queues</span><span class="p">[</span><span class="n">msg_sender</span><span class="p">]);</span>
+          <span class="p">}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+</pre></div>
 
 
 <p>Each user that sends a message through the switch can be selected as the destination of a service request. Here, the switch tests a random number against the probability given on the command line, ensuring that the users is not already unreachable. The probability of a termination service is hardcoded (40%), the other case being the timing service; when this latter is requested, the switch sends a message to the user recording the dispatch time so that it can be later compared with the user answer.</p>
+<div class="highlight"><pre>    <span class="k">else</span><span class="p">{</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">deadproc</span> <span class="o">==</span> <span class="n">users_number</span><span class="p">){</span>
+        <span class="cm">/* All childs have been terminated, just wait for the last to complete its jobs */</span>
+        <span class="n">waitpid</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">status</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-<span class='line-number'>3</span>
-<span class='line-number'>4</span>
-<span class='line-number'>5</span>
-<span class='line-number'>6</span>
-<span class='line-number'>7</span>
-<span class='line-number'>8</span>
-<span class='line-number'>9</span>
-<span class='line-number'>10</span>
-<span class='line-number'>11</span>
-<span class='line-number'>12</span>
-<span class='line-number'>13</span>
-<span class='line-number'>14</span>
-<span class='line-number'>15</span>
-<span class='line-number'>16</span>
-<span class='line-number'>17</span>
-</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="k">else</span><span class="p">{</span>
-</span><span class='line'>  <span class="k">if</span><span class="p">(</span><span class="n">deadproc</span> <span class="o">==</span> <span class="n">users_number</span><span class="p">){</span>
-</span><span class='line'>    <span class="cm">/* All childs have been terminated, just wait for the last to complete its jobs */</span>
-</span><span class='line'>    <span class="n">waitpid</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">status</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="cm">/* Remove the switch queue */</span>
-</span><span class='line'>  <span class="n">remove_queue</span><span class="p">(</span><span class="n">sw</span><span class="p">);</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;No more active users. Switch turns off.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-</span><span class='line'>  
-</span><span class='line'>  <span class="cm">/* Terminate the program */</span>
-</span><span class='line'>  <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span><span class='line'>  <span class="p">}</span>
-</span><span class='line'><span class="p">}</span>
-</span></code></pre></td></tr></table></div></figure>
+        <span class="cm">/* Remove the switch queue */</span>
+        <span class="n">remove_queue</span><span class="p">(</span><span class="n">sw</span><span class="p">);</span>
+
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;No more active users. Switch turns off.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+        <span class="cm">/* Terminate the program */</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 
 
 <p>When there are no incoming messages the switch checks if the number of dead processes is equal to the number of users; when this happens the switch waits for each child process (to avoid zombie processes), removes its queue and terminates.</p>
-
 <h2>Files and compilation</h2>
-
 <p>The 5 files of this small program can be downloaded here:</p>
-
 <ul>
-<li><a href="/downloads/code/ipc_demo/layer1.h">layer1.h</a></li>
-<li><a href="/downloads/code/ipc_demo/layer1.c">layer1.c</a></li>
-<li><a href="/downloads/code/ipc_demo/layer2.h">layer2.h</a></li>
-<li><a href="/downloads/code/ipc_demo/layer2.c">layer2.c</a></li>
-<li><a href="/downloads/code/ipc_demo/main.c">main.c</a></li>
+<li><a href="/code/ipc_demo/layer1.h">layer1.h</a></li>
+<li><a href="/code/ipc_demo/layer1.c">layer1.c</a></li>
+<li><a href="/code/ipc_demo/layer2.h">layer2.h</a></li>
+<li><a href="/code/ipc_demo/layer2.c">layer2.c</a></li>
+<li><a href="/code/ipc_demo/main.c">main.c</a></li>
 </ul>
-
-
 <p>and can be compiled with the following command line</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>gcc -o ipc_demo main.c layer1.c layer2.c
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre>gcc -o ipc_demo main.c layer1.c layer2.c
+</pre></div>
 
 
 <p>A typical execution can be obtained running the program with the following parameters</p>
-
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>./ipc_demo 8 30 80
-</span></code></pre></td></tr></table></div></figure>
+<div class="highlight"><pre>./ipc_demo <span class="m">8</span> <span class="m">30</span> 80
+</pre></div>
 
 
 <p>Remember that the output lines of the processes are mixed and generally not in order; indeed, you can find the answer of a user printed before the switch request. Timestamps can help you find the right order, but the resolution of the <code>time()</code> function is a second, and in such a time span many messages can be sent.</p>
-
 <h2>Conclusions</h2>
-
 <p>This article ends by now this little series on concurrent programming in C and IPC structures. As you can see C is not the best language to implement concurrent programming concepts, due to its very low level nature. However, since many OSs are written in C (and/or C++) knowledge of the way this language can provide concurrent execution is useful.</p>
-
 <p>There is much left to say about concurrent programming structures: atomicity, mutual exclusions, threads, monitors are just some of the most important. I will post new articles on such topics in the future, perhaps showing their implementation in other languages.</p>
-
-<h2>Past articles</h2>
-
-<p><a href="/blog/2013/01/31/concurrent-programming-1">Concurrent Programming 1</a></p>
-
-<p><a href="/blog/2013/02/04/concurrent-programming-2">Concurrent Programming 2</a></p>
-
-<p><a href="/blog/2013/02/06/concurrent-programming-3">Concurrent Programming 3</a></p>
-
-<p><a href="/blog/2013/02/13/concurrent-programming-4">Concurrent Programming 4</a></p>
-
+<h2>Previous article</h2>
 <p><a href="/blog/2013/02/28/concurrent-programming-5">Concurrent Programming 5</a></p>
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2013/02/06/concurrent-programming-3/">"Concurrent programming - 3"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/02/04/concurrent-programming-2/">"Concurrent programming - 2"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/02/28/concurrent-programming-5/">"Concurrent programming - 5"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/02/13/concurrent-programming-4/">"Concurrent programming - 4"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/01/31/concurrent-programming-1/">"Concurrent programming - 1"</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
 
         </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
 
-<div class="meta">
-	
-</div>
-</article>
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
 
-	<div class="share">
-	<div class="addthis_toolbox addthis_default_style ">
-	
-	
-	<a class="addthis_button_tweet"></a>
-	
-	
-	<a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
-	
-	<a class="addthis_counter addthis_pill_style"></a>
-	</div>
-  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
-</div>
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                "Advanced use of Python decorators and metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                "Python 3 OOP Part 6 - Abstract Base Classes"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                "Python 3 OOP Part 5 - Metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">
+                                "Python 3 OOP Part 4 - Polymorphism"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">
+                                "Python 3 OOP Part 3 - Delegation: composition and inheritance"
+                            </a>
+                        </li>
+                    </ul>
+                </li>
 
 
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/amqp/">
+                                amqp
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/c/">
+                                c++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/c-language/">
+                                C-language
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/django/">
+                                django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/erlang/">
+                                erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/git/">
+                                git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/pika/">
+                                pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/postage/">
+                                postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python/">
+                                python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/blog/categories/python2/">
+                                python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/blog/categories/python3/">
+                                python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/qt/">
+                                qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/blog/categories/rabbitmq/">
+                                rabbitmq
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/blog/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
 
+        </ul>
+    </section>
+
+</aside>        </div>
     </div>
-    <footer id="footer">
-    <div style="display:inline">
-	<a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-sa/4.0/88x31.png" /></a><br /><span xmlns:dct="http://purl.org/dc/terms/" property="dct:title">The Digital Cat</span> by <a xmlns:cc="http://creativecommons.org/ns#" href="http://lgiordani.com/about/" property="cc:attributionName" rel="cc:attributionURL">Leonardo Giordani</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.
-	<br />
-    Powered by <a href="http://octopress.org">Octopress</a> | Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
 </div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2014 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
 
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
 
-    </footer>
-    <script src="/javascripts/fabric.js"></script>
-<script src="/javascripts/jquery.fancybox.pack.js"></script>
-<script type="text/javascript">
-(function($){
-	$('.fancybox').fancybox();
-})(jQuery);
-</script> <!-- Delete or comment this line to disable Fancybox -->
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
 
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-
-
-
-
-<!-- end toload --> 
-</div>
-</div>
-<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
-<script type="text/javascript">
-/*<![CDATA[*/
-;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
-/*]]>*/
-</script><!-- remove it to remove the scroll to top button -->
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
 </body>
 </html>
