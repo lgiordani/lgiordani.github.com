@@ -5,28 +5,28 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/index.html</loc>
-<lastmod>2014-10-31T11:25:40-00:00</lastmod>
+<lastmod>2014-10-31T12:25:41-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/tags.html</loc>
-<lastmod>2014-10-31T11:25:40-00:00</lastmod>
+<lastmod>2014-10-31T12:25:41-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/categories.html</loc>
-<lastmod>2014-10-31T11:25:40-00:00</lastmod>
+<lastmod>2014-10-31T12:25:41-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/pages/about.html</loc>
-<lastmod>2014-10-31T11:25:40-00:00</lastmod>
+<lastmod>2014-10-31T12:25:41-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -249,140 +249,140 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/postage/</loc>
+<loc>http://lgiordani.com/categories/postage/</loc>
 <lastmod>2013-07-25T15:50:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/c/</loc>
-<lastmod>2013-07-18T10:51:00+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>http://lgiordani.com/blog/categories/git/</loc>
-<lastmod>2013-07-18T10:51:00+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>http://lgiordani.com/blog/categories/qt/</loc>
-<lastmod>2013-07-18T10:51:00+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>http://lgiordani.com/blog/categories/python/</loc>
-<lastmod>2014-10-14T09:43:08+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
-<loc>http://lgiordani.com/blog/categories/operating-systems/</loc>
+<loc>http://lgiordani.com/categories/c/</loc>
 <lastmod>2013-04-23T08:29:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/rabbitmq/</loc>
+<loc>http://lgiordani.com/categories/git/</loc>
+<lastmod>2013-07-18T10:51:00+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/categories/qt/</loc>
+<lastmod>2013-07-18T10:51:00+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/categories/python/</loc>
+<lastmod>2014-10-14T09:43:08+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/categories/operating-systems/</loc>
+<lastmod>2013-04-23T08:29:00+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/categories/rabbitmq/</loc>
 <lastmod>2013-08-21T18:10:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/django/</loc>
+<loc>http://lgiordani.com/categories/django/</loc>
 <lastmod>2014-02-14T16:13:41+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/versioning/</loc>
+<loc>http://lgiordani.com/categories/versioning/</loc>
 <lastmod>2013-03-20T10:02:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/pika/</loc>
+<loc>http://lgiordani.com/categories/pika/</loc>
 <lastmod>2013-07-25T15:50:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/generators/</loc>
+<loc>http://lgiordani.com/categories/generators/</loc>
 <lastmod>2013-03-29T13:25:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/oop/</loc>
+<loc>http://lgiordani.com/categories/oop/</loc>
 <lastmod>2014-10-14T09:43:08+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/metaclasses/</loc>
+<loc>http://lgiordani.com/categories/metaclasses/</loc>
 <lastmod>2014-10-14T09:43:08+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/c-language/</loc>
-<lastmod>2013-04-23T08:29:00+00:09</lastmod>
+<loc>http://lgiordani.com/categories/cpp/</loc>
+<lastmod>2013-07-18T10:51:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/amqp/</loc>
+<loc>http://lgiordani.com/categories/amqp/</loc>
 <lastmod>2013-08-21T18:10:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/erlang/</loc>
+<loc>http://lgiordani.com/categories/erlang/</loc>
 <lastmod>2013-06-20T17:49:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/decorators/</loc>
+<loc>http://lgiordani.com/categories/decorators/</loc>
 <lastmod>2014-10-14T09:43:08+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/concurrent-programming/</loc>
+<loc>http://lgiordani.com/categories/concurrent-programming/</loc>
 <lastmod>2013-06-20T17:49:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/python3/</loc>
+<loc>http://lgiordani.com/categories/python3/</loc>
 <lastmod>2014-10-14T09:43:08+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/blog/categories/python2/</loc>
+<loc>http://lgiordani.com/categories/python2/</loc>
 <lastmod>2014-07-04T13:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
