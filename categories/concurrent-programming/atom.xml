@@ -1523,7 +1523,7 @@ and grant access to the owner and group users). The returned integer is called q
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;a href="queues2.c"&gt;source code&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/code/queues2.c"&gt;source code&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Compiling and running the program you can check the correct working of the shared message queue.&lt;/p&gt;
 &lt;h2&gt;Conclusions&lt;/h2&gt;
 &lt;p&gt;In this article, we introduced a new IPC structure called message queue and the related concepts of message and protocol. These concepts are very important and are going to be the foundation stone of a project we will realize step by step in the future articles: a simple telephone switch simulator.&lt;/p&gt;

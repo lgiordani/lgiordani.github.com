@@ -4635,7 +4635,7 @@ A Python class is the implementation of the Object-Oriented concept of class in 
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;a href="python-generators/test_scheduler.py"&gt;source code&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/code/python-generators/test_scheduler.py"&gt;source code&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Here the &lt;code&gt;TestMicroThread&lt;/code&gt; is a microthread but the &lt;code&gt;step()&lt;/code&gt; method was reimplemented to print a number and wait 1 second. Three microthreads are instanced and added to the scheduler and the &lt;code&gt;run()&lt;/code&gt; method of the scheduler is executed. Not surprisingly the result is the following&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="nv"&gt;$ &lt;/span&gt;python test_scheduler.py
 Number: 1
@@ -5360,7 +5360,7 @@ and grant access to the owner and group users). The returned integer is called q
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;a href="queues2.c"&gt;source code&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href="/code/queues2.c"&gt;source code&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Compiling and running the program you can check the correct working of the shared message queue.&lt;/p&gt;
 &lt;h2&gt;Conclusions&lt;/h2&gt;
 &lt;p&gt;In this article, we introduced a new IPC structure called message queue and the related concepts of message and protocol. These concepts are very important and are going to be the foundation stone of a project we will realize step by step in the future articles: a simple telephone switch simulator.&lt;/p&gt;
