@@ -262,7 +262,7 @@
 <h2>Conclusion</h2>
 <p>As you can see, the structure behind the current implementation of Django class-based form views is rather complex. This allows the user to achieve complex behaviours like the CUD operations just by defining a couple of classes as I did in the simple example at the beginning of the post. Most of the time, however, such a simplification makes it difficult for the programmer to understand how to achieve the desired changes to the class behaviour. So the purpose of this big tour I made inside the Django source code was to give an insight of what methods are called in the lifetime of your HTTP request so that you can better identify what methods you need to override.</p>
 <p>When performing special actions that fall outside the standard CUD operations you better inherit from <code>FormView</code> (<a href="https://github.com/django/django/blob/stable/1.5.x/django/views/generic/edit.py#L181">views/generic/edit.py#L181</a>). The first thing to do is to check if and how you need to customize the <code>get()</code> and <code>post()</code> methods; remember that you either need to implement the full behaviour of those methods or make you changes and call the parent implementation. If this is not enough for your application consider overriding one of the more dedicated methods, such as <code>get_form_kwargs()</code> or <code>form_valid()</code>.</p>
-<p>This post ends the series "Digging Up Django Class-based Views". Stay tuned for other <a href="/blog/categories/django/">upcoming articles on Django</a>!</p>
+<p>This post ends the series "Digging Up Django Class-based Views". Stay tuned for other <a href="/categories/django/">upcoming articles on Django</a>!</p>
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post or to ask for an in-depth analysis of some topic. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
 <h2>Previous articles</h2>
 <ul>
@@ -280,9 +280,9 @@
     <ul>
         <li><a href="http://lgiordani.com/blog/2013/10/28/digging-up-django-class-based-views-1/">"Digging up Django class-based views - 1"</a></li>
         <li><a href="http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/">"Digging up Django class-based views - 2"</a></li>
-        <li><a href="http://lgiordani.com/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/">"Postage - a RabbitMQ-based component Python library"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/07/04/oop-concepts-in-python-2-dot-x-part-3/">"OOP concepts in Python 2.x - Part 3"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/">"Method overriding in Python"</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/03/25/python-generators-from-iterators-to-cooperative-multitasking/">"Python generators - from iterators to cooperative multitasking"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">"Python 3 OOP Part 3 - Delegation: composition and inheritance"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
     </ul>
 </section>
 <section class="well" id="related-posts">
@@ -302,6 +302,13 @@
 <aside>
     <section>
         <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+                  <ul class="list-group" id="social">
+                    <li class="list-group-item"><a href="https://twitter.com/tw_lgiordani"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                    <li class="list-group-item"><a href="http://plus.google.com/+LeonardoGiordani?rel=author"><i class="fa fa-google-plus-square fa-lg"></i> Google+</a></li>
+                    <li class="list-group-item"><a href="https://github.com/lgiordani"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                  </ul>
+                </li>
 
                 <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
                     <ul class="list-group" id="recentposts">

@@ -59,4 +59,4 @@
 &lt;h2&gt;Conclusions&lt;/h2&gt;
 &lt;p&gt;Well, after all I just explained again and more verbosely the basic RabbitMQ examples, didn't I?&lt;/p&gt;
 &lt;p&gt;Yes. However, I think such considerations can be useful for novices and from time to time it is a good thing for experts to refresh the plain old basic stuff. So this post can be used as a quick memo of the different configurations you can create with an AMQP direct exchange.&lt;/p&gt;
-&lt;p&gt;Stay tuned for other &lt;a href="/blog/categories/rabbitmq/"&gt;RabbitMQ&lt;/a&gt; and &lt;a href="/blog/categories/amqp/"&gt;AMQP&lt;/a&gt; posts!&lt;/p&gt;</summary><category term="RabbitMQ"></category><category term="AMQP"></category></entry></feed>
+&lt;p&gt;Stay tuned for other &lt;a href="/categories/rabbitmq/"&gt;RabbitMQ&lt;/a&gt; and &lt;a href="/categories/amqp/"&gt;AMQP&lt;/a&gt; posts!&lt;/p&gt;</summary><category term="RabbitMQ"></category><category term="AMQP"></category></entry></feed>

@@ -119,7 +119,7 @@
                 <h2>Abstract</h2>
 <p>Welcome to the third installment of this little series of posts about Python 2.x OOP implementation. The <a href="/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1">first</a> and <a href="/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2">second</a> issues introduced the most important concepts at the basis of Python as an object-oriented language.</p>
 <p>This post will continue the discussion about metaclasses, introducing Abstract Base Classes, and give some insights on callable objects.</p>
-<p>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the <strong>updated version</strong> <a href="/blog/categories/python3/">here</a>.</p>
+<p>This post refers to the internals of Python 2.x - please note that Python 3.x changes (improves!) some of the features shown here. You can find the <strong>updated version</strong> <a href="/categories/python3/">here</a>.</p>
 <h2>The Inspection Club</h2>
 <p>As you know, Python leverages polymorphism at its maximum by dealing only with generic references to objects. This makes OOP not an addition to the language but part of its structure from the ground up. Moreover, Python pushes the EAFP appoach, which tries to avoid direct inspection of objects as much as possible.</p>
 <p>It is however very interesting to read what Guido van Rossum says in <a href="http://legacy.python.org/dev/peps/pep-3119/">PEP 3119</a>: <em>Invocation means interacting with an object by invoking its methods. Usually this is combined with polymorphism, so that invoking a given method may run different code depending on the type of an object. Inspection means the ability for external code (outside of the object's methods) to examine the type or properties of that object, and make decisions on how to treat that object based on that information. [...] In classical OOP theory, invocation is the preferred usage pattern, and inspection is actively discouraged, being considered a relic of an earlier, procedural programming style. However, in practice this view is simply too dogmatic and inflexible, and leads to a kind of design rigidity that is very much at odds with the dynamic nature of a language like Python.</em></p>
@@ -396,7 +396,7 @@
         <li><a href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/">"OOP concepts in Python 2.x - Part 2"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">"OOP concepts in Python 2.x - Part 1"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/05/19/method-overriding-in-python/">"Method overriding in Python"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-2-classes-and-members/">"Python 3 OOP Part 2 - Classes and members"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
     </ul>
 </section>
@@ -417,6 +417,13 @@
 <aside>
     <section>
         <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+                  <ul class="list-group" id="social">
+                    <li class="list-group-item"><a href="https://twitter.com/tw_lgiordani"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                    <li class="list-group-item"><a href="http://plus.google.com/+LeonardoGiordani?rel=author"><i class="fa fa-google-plus-square fa-lg"></i> Google+</a></li>
+                    <li class="list-group-item"><a href="https://github.com/lgiordani"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                  </ul>
+                </li>
 
                 <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
                     <ul class="list-group" id="recentposts">
