@@ -97,7 +97,7 @@
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2014-08-20T14:00:00+02:00"> mer 20 agosto 2014</time>
+        <i class="fa fa-calendar"></i><time datetime="2014-08-20T14:00:00+02:00"> Wed 20 August 2014</time>
     </span>
 
             <span class="label label-default">Series</span>
@@ -232,14 +232,11 @@
 <p>How comes that we can call <code>door1.colour</code>, if that attribute is not listed for that instance? This is a job performed by the magic <code>__getattribute__()</code> method; in Python the dotted syntax automatically invokes this method so when we write <code>door1.colour</code>, Python executes <code>door1.__getattribute__('colour')</code>. That method performs the  <em>attribute  lookup</em> action, i.e. finds the value of the attribute by looking in different places.</p>
 <p>The standard implementation of <code>__getattribute__()</code> searches first the internal dictionary (<code>__dict__</code>) of an object, then the type of the object itself; in this case <code>door1.__getattribute__('colour')</code> executes first <code>door1.__dict__['colour']</code> and then, since the latter raises a <code>KeyError</code> exception, <code>door1.__class__.__dict__['colour']</code></p>
 <div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">KeyError</span>: <span class="n">&#39;colour&#39;</span>
+<span class="go">Traceback  (most recent call last):</span>
+<span class="go">  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">KeyError: &#39;colour&#39;</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">door1</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="s">&#39;colour&#39;</span><span class="p">]</span>
 <span class="go">&#39;brown&#39;</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">KeyError</span>: <span class="n">&#39;colour&#39;</span>
 </pre></div>
 
 
@@ -285,12 +282,9 @@
 <p>When you get the function from an instance, however, it becomes a bound method. The name <em>method</em> simply means "a function inside an object", according to the usual OOP definitions, while <em>bound</em> signals that the method is linked to that instance. Why does Python bother with methods being bound or not? And how does Python transform a function into a bound method?</p>
 <p>First of all, if you try to call a class function you get an error</p>
 <div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">TypeError</span>: <span class="n">open() missing 1 required positional argument: &#39;self&#39;</span>
-<span class="gt">Traceback (most recent call last):</span>
-  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
-<span class="gr">TypeError</span>: <span class="n">open() missing 1 required positional argument: &#39;self&#39;</span>
+<span class="go">Traceback  (most recent call last):</span>
+<span class="go">  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">TypeError: open() missing 1 required positional argument: &#39;self&#39;</span>
 </pre></div>
 
 
@@ -454,11 +448,11 @@
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">"Python 3 OOP Part 4 - Polymorphism"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">"Python 3 OOP Part 3 - Delegation: composition and inheritance"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">"Python 3 OOP Part 4 - Polymorphism"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">"Advanced use of Python decorators and metaclasses"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">"Python 3 OOP Part 5 - Metaclasses"</a></li>
     </ul>
 </section>
 <section class="well" id="related-posts">

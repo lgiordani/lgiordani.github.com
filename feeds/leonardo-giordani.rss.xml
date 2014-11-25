@@ -744,7 +744,7 @@
     &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
         &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;locked&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
             &lt;span class="k"&gt;return&lt;/span&gt;
-        &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="bp"&gt;self&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="nb"&gt;super&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -924,14 +924,11 @@
 &lt;p&gt;How comes that we can call &lt;code&gt;door1.colour&lt;/code&gt;, if that attribute is not listed for that instance? This is a job performed by the magic &lt;code&gt;__getattribute__()&lt;/code&gt; method; in Python the dotted syntax automatically invokes this method so when we write &lt;code&gt;door1.colour&lt;/code&gt;, Python executes &lt;code&gt;door1.__getattribute__('colour')&lt;/code&gt;. That method performs the  &lt;em&gt;attribute  lookup&lt;/em&gt; action, i.e. finds the value of the attribute by looking in different places.&lt;/p&gt;
 &lt;p&gt;The standard implementation of &lt;code&gt;__getattribute__()&lt;/code&gt; searches first the internal dictionary (&lt;code&gt;__dict__&lt;/code&gt;) of an object, then the type of the object itself; in this case &lt;code&gt;door1.__getattribute__('colour')&lt;/code&gt; executes first &lt;code&gt;door1.__dict__['colour']&lt;/code&gt; and then, since the latter raises a &lt;code&gt;KeyError&lt;/code&gt; exception, &lt;code&gt;door1.__class__.__dict__['colour']&lt;/code&gt;&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;door1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__dict__&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;colour&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
-&lt;span class="gt"&gt;Traceback (most recent call last):&lt;/span&gt;
-  File &lt;span class="nb"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;1&lt;/span&gt;, in &lt;span class="n"&gt;&amp;lt;module&amp;gt;&lt;/span&gt;
-&lt;span class="gr"&gt;KeyError&lt;/span&gt;: &lt;span class="n"&gt;&amp;#39;colour&amp;#39;&lt;/span&gt;
+&lt;span class="go"&gt;Traceback  (most recent call last):&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;&lt;/span&gt;
+&lt;span class="go"&gt;KeyError: &amp;#39;colour&amp;#39;&lt;/span&gt;
 &lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;door1&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__class__&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;__dict__&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s"&gt;&amp;#39;colour&amp;#39;&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt;
 &lt;span class="go"&gt;&amp;#39;brown&amp;#39;&lt;/span&gt;
-&lt;span class="gt"&gt;Traceback (most recent call last):&lt;/span&gt;
-  File &lt;span class="nb"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;1&lt;/span&gt;, in &lt;span class="n"&gt;&amp;lt;module&amp;gt;&lt;/span&gt;
-&lt;span class="gr"&gt;KeyError&lt;/span&gt;: &lt;span class="n"&gt;&amp;#39;colour&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
@@ -977,12 +974,9 @@
 &lt;p&gt;When you get the function from an instance, however, it becomes a bound method. The name &lt;em&gt;method&lt;/em&gt; simply means "a function inside an object", according to the usual OOP definitions, while &lt;em&gt;bound&lt;/em&gt; signals that the method is linked to that instance. Why does Python bother with methods being bound or not? And how does Python transform a function into a bound method?&lt;/p&gt;
 &lt;p&gt;First of all, if you try to call a class function you get an error&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="n"&gt;Door&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;open&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt;
-&lt;span class="gt"&gt;Traceback (most recent call last):&lt;/span&gt;
-  File &lt;span class="nb"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;1&lt;/span&gt;, in &lt;span class="n"&gt;&amp;lt;module&amp;gt;&lt;/span&gt;
-&lt;span class="gr"&gt;TypeError&lt;/span&gt;: &lt;span class="n"&gt;open() missing 1 required positional argument: &amp;#39;self&amp;#39;&lt;/span&gt;
-&lt;span class="gt"&gt;Traceback (most recent call last):&lt;/span&gt;
-  File &lt;span class="nb"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;1&lt;/span&gt;, in &lt;span class="n"&gt;&amp;lt;module&amp;gt;&lt;/span&gt;
-&lt;span class="gr"&gt;TypeError&lt;/span&gt;: &lt;span class="n"&gt;open() missing 1 required positional argument: &amp;#39;self&amp;#39;&lt;/span&gt;
+&lt;span class="go"&gt;Traceback  (most recent call last):&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;&lt;/span&gt;
+&lt;span class="go"&gt;TypeError: open() missing 1 required positional argument: &amp;#39;self&amp;#39;&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
