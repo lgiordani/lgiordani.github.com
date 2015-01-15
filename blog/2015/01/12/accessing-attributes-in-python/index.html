@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en"
+>
+<head>
+    <title>"Accessing attributes in Python" - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
+
+<link rel="canonical" href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">
+
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="Python,Python3,OOP" />
+        <meta name="description" content="A comprehensive review of the attribute management techniques in Python" />
+
+    <!-- Enable latex plugin -->
+
+
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives/"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/"
+                       rel="bookmark"
+                       title="Permalink to "Accessing attributes in Python"">
+                        "Accessing attributes in Python"
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-01-12T17:00:00+01:00"> Mon 12 January 2015</time>
+    </span>
+
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/categories/python/">Python</a>
+        /
+	<a href="http://lgiordani.com/categories/python3/">Python3</a>
+        /
+	<a href="http://lgiordani.com/categories/oop/">OOP</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>Python is a language that tries to push the object-oriented paradigm to its maximum. This means that its object model is very powerful compared to that of other languages, but also that the behaviour of Python code may result surprising to new programmers.</p>
+<p>In this post I want to review the methods that Python provides to access object attributes, trying to provide a comprehensive overview of the matter to everyone wants to start programming in this beautiful language.</p>
+<h2>What are attributes</h2>
+<p>Since the nomenclature may vary from language to language, let me name things. In Python we call <em>attribute</em> everything is contained inside an object. In Python there is no real distinction between plain data and functions, being both objects, so what I will say about attributes is perfectly valid even for methods.</p>
+<p>As a working example, in this post I will use the following class. It represents a book with a title and an author. It also provides a <code>get_entry()</code> method which returns a string representation of the book.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Book</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+
+    <span class="k">def</span> <span class="nf">get_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;{0} by {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Every instance of this class will contain three attributes, namely <code>title</code>, <code>author</code>, and <code>get_entry</code>, in addition to the standard attributes provided by the <code>object</code> ancestor.</p>
+<p><strong>Python 2 users</strong>: remember that in Python 2 you have to specify that <code>Book</code> is a new-style class writing <code>class Book(object):</code></p>
+<h2>Basic attribute access</h2>
+<p>In Python you may call an attribute of an object using the widely accepted dotted-syntax</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Book</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Pawn of Prophecy&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s">&quot;David Eddings&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">title</span>
+<span class="go">&#39;Pawn of Prophecy&#39;</span>
+</pre></div>
+
+
+<p>As already mentioned, this mechanism works with methods too.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">get_entry</span>
+<span class="go">&lt;bound method Book.get_entry of &lt;__main__.Book object at 0xb703952c&gt;&gt;</span>
+</pre></div>
+
+
+<p>Here I intentionally omitted the calling brackets (parentheses) to show what happens when accessing the method. For a in-depth explanation of the difference between functions and bound methods read <a href="/blog/2014/08/20/python-3-oop-part-2-classes-and-members">this post</a>.</p>
+<p>When an object does not contain the attribute we are looking for, Python raises an <code>AttributeError</code> exception</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">publisher</span>
+<span class="go">Traceback  (most recent call last):</span>
+<span class="go">  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">AttributeError: &#39;Book&#39; object has no attribute &#39;publisher&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+
+
+<p>Remember also that Python objects provide a wide range of automatically created attributes such as <code>__class__</code> or <code>__doc__</code>. These attributes can be read exactly like standard attributes, since in Python the double underscore prefix and suffix is just a gentleman agreement between programmers.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">__class__</span>
+<span class="go">&lt;class &#39;__main__.Book&#39;&gt;</span>
+</pre></div>
+
+
+<p>When you try to change the value of an attribute (you <em>write</em> the attribute) the syntax does not change.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Book</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Pawn of Prophecy&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s">&quot;David Eddings&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="s">&quot;David Carroll Eddings&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">author</span>
+<span class="go">&#39;David Carroll Eddings&#39;</span>
+</pre></div>
+
+
+<h2>Properties</h2>
+<p>Sometimes you want to have an attribute which value comes from other attributes or, in general, which value shall be computed at the moment. The standard way to deal with this situation is to create a method, called <em>getter</em>, just like I did with <code>get_entry()</code>. </p>
+<p>In Python you can "mask" the method, aliasing it with a data attribute, which in this case is called <em>property</em>.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Book</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+
+    <span class="k">def</span> <span class="nf">get_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;{0} by {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">)</span>
+
+    <span class="n">entry</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">get_entry</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The above syntax defines an <code>entry</code> attribute which automatically calls <code>self.get_entry()</code> when read.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Book</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Pawn of Prophecy&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s">&quot;David Eddings&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">entry</span>
+<span class="go">&#39;Pawn of Prophecy by David Eddings&#39;</span>
+</pre></div>
+
+
+<p>Properties allow to specify also a write method (a <em>setter</em>), that is automatically called when you try to change the value of the property itself.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Book</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+
+    <span class="k">def</span> <span class="nf">_get_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;{0} by {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_set_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s">&quot; by &quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Entries shall be formatted as &#39;&lt;title&gt; by &lt;author&gt;&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; by &quot;</span><span class="p">)</span>
+
+    <span class="n">entry</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_entry</span><span class="p">,</span> <span class="n">_set_entry</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Please note that the set method shall accept the value as its second parameter. When getters and setters are masked by a property it may be a good thing to make their name start with an underscore, just to signal that they are not intended to be used directly. Remember however that this has no special meaning for the language, being just a convention between programmers.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Book</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Pawn of Prophecy&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s">&quot;David Eddings&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">entry</span>
+<span class="go">&#39;Pawn of Prophecy by David Eddings&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">entry</span> <span class="o">=</span> <span class="s">&quot;Queen of Sorcery by David Carroll Eddings&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">title</span>
+<span class="go">&#39;Queen of Sorcery&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">author</span>
+<span class="go">&#39;David Carroll Eddings&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">entry</span> <span class="o">=</span> <span class="s">&quot;Magician&#39;s Gambit, David Carroll Eddings&quot;</span>
+<span class="go">Traceback  (most recent call last):</span>
+<span class="go">  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">  File &quot;&lt;stdin&gt;&quot;, line 9, in _set_entry</span>
+<span class="go">ValueError: Entries shall be formatted as &#39;&lt;title&gt; by &lt;author&gt;&#39;</span>
+</pre></div>
+
+
+<p>While attributes are usually defined in the instance through the <code>__init__()</code> method (part of the constructor mechanism), properties are part of the class itself.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Book</span><span class="o">.</span><span class="n">title</span>
+<span class="go">Traceback  (most recent call last):</span>
+<span class="go">  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;</span>
+<span class="go">AttributeError: type object &#39;Book&#39; has no attribute &#39;title&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Book</span><span class="o">.</span><span class="n">entry</span>
+<span class="go">&lt;property object at 0xb676a374&gt;</span>
+</pre></div>
+
+
+<p>Remember however that all instances of that class share the same <em>property object</em>, which is a sort of automatic binding between attributes and methods, and not the value of the attribute itself.</p>
+<h2>Softcoding attribute access</h2>
+<p>When you write a basic attribute access like I did in the first section you are <em>hardcoding</em> the attribute name. The attribute you are looking for is part of the source code itself, and shall be known at coding time.</p>
+<p>What happens if you want to access an attribute whose name is contained in a variable as a string? This usually happens when writing debuggers or inspection tools that let the user interactively specify the attributes they want to see.</p>
+<p>To perform this "indirect" access Python provides the <code>getattr()</code> builtin function, which accepts an object and the name of an attribute.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s">&#39;title&#39;</span><span class="p">)</span>
+<span class="go">&#39;Pawn of Prophecy&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="s">&#39;get_entry&#39;</span><span class="p">)</span>
+<span class="go">&lt;bound method Book.get_entry of &lt;__main__.Book object at 0xb703952c&gt;&gt;</span>
+</pre></div>
+
+
+<p>This type of attribute access may be useful even when accessing a lot of attributes, allowing to write simple for loops or list comprehensions</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="s">&#39;author&#39;</span><span class="p">]:</span>
+<span class="gp">... </span> <span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+<span class="gp">... </span>
+<span class="go">&#39;Pawn of Prophecy&#39;</span>
+<span class="go">&#39;David Eddings&#39;</span>
+</pre></div>
+
+
+<p>While this type of access is perfectly valid in Python you should not use it as long as you can use the direct dotted access. Writing tricky code may seem very smart, but when it comes to debugging "the simpler the better".</p>
+<h2>Avoiding to fail</h2>
+<p>When you try to access an attribute that does not exist, either with the dotted syntax or with <code>getattr()</code>, Python gives you a last chance before raising the <code>AttributeError</code> exception. It calls the <code>__getattr__()</code> special method (pay attention to the double underscores) passing it the name of the attribute: in the previous example, when accessing <code>b.publisher</code>, Python calls <code>b.__getattr__('publisher')</code>. </p>
+<p>In this case, since the <code>Book</code> class or its ancestors do not define the <code>__getattr__()</code> method, the attribute access fails and Python raises the exception.</p>
+<p>Let us try to define the method, just to show that it actually works</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Book</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">author</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+
+    <span class="k">def</span> <span class="nf">get_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;{0} by {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">author</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</pre></div>
+
+
+<p><strong>WARNING</strong>: this is just an example to show how <code>__getattr__()</code> works. The code presented here shall <em>not</em> be considered a good example of Python programming.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Book</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s">&quot;Pawn of Prophecy&quot;</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="s">&quot;David Eddings&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">title</span>
+<span class="go">&#39;Pawn of Prophecy&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">publisher</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">somename</span>
+</pre></div>
+
+
+<p>As you can see the <code>publisher</code> and <code>somename</code> attributes are correctly accessed even if they do not actually exist inside the object.</p>
+<p>To find a good use for <code>__getattr__()</code> and <code>getattr()</code> we need to step into something a bit more complex, which is the explicit delegation mechanism involved in a composition between objects. You may find more details on this topic in <a href="/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance">this post</a>. </p>
+<p>Both <code>getattr()</code> and <code>__getattr__()</code> have their counterpart to manage writing access, namely <code>setattr()</code> and <code>__setattr__()</code>.</p>
+<h2>The deepest secret</h2>
+<p>Every Python object (starting from <code>object</code> itself) contains a very special method called <code>__getattribute__()</code> which should never be called explicitly or overridden. This method implements the attribute resolution inside the object, provides the attribute lookup through the inheritance hierarchy, resolves properties, calls <code>__getattr__()</code> and if needed raises the <code>AttributeError</code> exception. Even <code>__getattribute__()</code> has a counterpart that deals with write access, <code>__setattribute__()</code>.</p>
+<p>Due to the very complex nature of these methods, and the uttermost importance of their role in making Python objects run, you shall never, never try to override them. If you find yourself in a situation where dealing explicitly with <code>__getattribute__()</code> is needed, you may be pretty sure that you did something wrong.</p>
+<h2>Conclusions</h2>
+<p>As you can figure, 95% of your Python code will be based on standard dotted attribute access. Knowing other ways to manage attributes (properties) and being aware of what happens behind the scenes (<code>getattr</code>, <code>__getattr__()</code>, and <code>__getattribute__()</code>) is however essential to master the whole power of Python, which can sometimes lead to very elegant solutions that are otherwise very difficult to achieve.</p>
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-2-classes-and-members/">"Python 3 OOP Part 2 - Classes and members"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">"Python 3 OOP Part 4 - Polymorphism"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">"Advanced use of Python decorators and metaclasses"</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
+
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+                  <ul class="list-group" id="social">
+                    <li class="list-group-item"><a href="https://twitter.com/tw_lgiordani"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                    <li class="list-group-item"><a href="http://plus.google.com/+LeonardoGiordani?rel=author"><i class="fa fa-google-plus-square fa-lg"></i> Google+</a></li>
+                    <li class="list-group-item"><a href="https://github.com/lgiordani"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                  </ul>
+                </li>
+
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">
+                                "Accessing attributes in Python"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                "Advanced use of Python decorators and metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                "Python 3 OOP Part 6 - Abstract Base Classes"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                "Python 3 OOP Part 5 - Metaclasses"
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">
+                                "Python 3 OOP Part 4 - Polymorphism"
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/amqp/">
+                                AMQP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/c/">
+                                C
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/cpp/">
+                                C++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/django/">
+                                Django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/categories/erlang/">
+                                Erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/git/">
+                                Git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/pika/">
+                                Pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/postage/">
+                                Postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/categories/python/">
+                                Python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/python2/">
+                                Python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/categories/python3/">
+                                Python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/qt/">
+                                Qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/categories/rabbitmq/">
+                                RabbitMQ
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
+
+
+
+        </ul>
+    </section>
+
+</aside>        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
+
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
+</body>
+</html>

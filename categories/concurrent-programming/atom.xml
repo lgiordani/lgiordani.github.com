@@ -673,13 +673,10 @@
 
 &lt;p&gt;As you can see Erlang does not get mad at your provocation and simply &lt;strong&gt;raises and exception&lt;/strong&gt;, i.e. signals that something went wrong, giving some details about why and where it happened. This is not different from what other languages, like Python, do.&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre&gt;&lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;&lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="o"&gt;/&lt;/span&gt;&lt;span class="mi"&gt;0&lt;/span&gt;
-&lt;span class="gt"&gt;Traceback (most recent call last):&lt;/span&gt;
-  File &lt;span class="nb"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;1&lt;/span&gt;, in &lt;span class="n"&gt;&amp;lt;module&amp;gt;&lt;/span&gt;
-&lt;span class="gr"&gt;ZeroDivisionError&lt;/span&gt;: &lt;span class="n"&gt;integer division or modulo by zero&lt;/span&gt;
+&lt;span class="go"&gt;Traceback  (most recent call last):&lt;/span&gt;
+&lt;span class="go"&gt;  File &amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;, line 1, in &amp;lt;module&amp;gt;&lt;/span&gt;
+&lt;span class="go"&gt;ZeroDivisionError: integer division or modulo by zero&lt;/span&gt;
 &lt;span class="gp"&gt;&amp;gt;&amp;gt;&amp;gt; &lt;/span&gt;
-&lt;span class="gt"&gt;Traceback (most recent call last):&lt;/span&gt;
-  File &lt;span class="nb"&gt;&amp;quot;&amp;lt;stdin&amp;gt;&amp;quot;&lt;/span&gt;, line &lt;span class="m"&gt;1&lt;/span&gt;, in &lt;span class="n"&gt;&amp;lt;module&amp;gt;&lt;/span&gt;
-&lt;span class="gr"&gt;ZeroDivisionError&lt;/span&gt;: &lt;span class="n"&gt;integer division or modulo by zero&lt;/span&gt;
 &lt;/pre&gt;&lt;/div&gt;
 
 
