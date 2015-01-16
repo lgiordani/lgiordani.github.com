@@ -293,13 +293,15 @@
 <p>Due to the very complex nature of this method, and the uttermost importance of its role in making Python objects run, you shall never, never try to override it. If you find yourself in a situation where dealing explicitly with <code>__getattribute__()</code> is needed, you may be pretty sure that you did something wrong.</p>
 <h2>Conclusions</h2>
 <p>As you can figure, 95% of your Python code will be based on standard dotted attribute access. Knowing other ways to manage attributes (properties) and being aware of what happens behind the scenes (<code>getattr</code>, <code>__getattr__()</code>, and <code>__getattribute__()</code>) is however essential to master the whole power of Python, which can sometimes lead to very elegant solutions that are otherwise very difficult to achieve.</p>
+<h2>Updates</h2>
+<p>2015-01-16: Thanks to <a href="https://twitter.com/astronouth7303">Jamie</a> who spotted a wrong <code>__setattribute__()</code> method presented in the last section.</p>
             </div>
             <!-- /.entry-content -->
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">"Python 3 OOP Part 3 - Delegation: composition and inheritance"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">"Python 3 OOP Part 4 - Polymorphism"</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">"Python 3 OOP Part 3 - Delegation: composition and inheritance"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">"Python 3 OOP Part 1 - Objects and types"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">"Python 3 OOP Part 6 - Abstract Base Classes"</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-2-classes-and-members/">"Python 3 OOP Part 2 - Classes and members"</a></li>
