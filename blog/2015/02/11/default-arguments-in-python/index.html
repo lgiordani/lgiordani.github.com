@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en"
+>
+<head>
+    <title>Default arguments in Python - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
+
+<link rel="canonical" href="http://lgiordani.com/blog/2015/02/11/default-arguments-in-python/">
+
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="Python" />
+        <meta name="description" content="How to deal with default arguments in Python functions and methods" />
+
+    <!-- Enable latex plugin -->
+
+
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="http://lgiordani.com/archives/"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2015/02/11/default-arguments-in-python/"
+                       rel="bookmark"
+                       title="Permalink to Default arguments in Python">
+                        Default arguments in Python
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-02-11T10:00:00+01:00"> Wed 11 February 2015</time>
+    </span>
+
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/categories/python/">Python</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>Recently I found a nasty bug in some Python code due to a misuse of default arguments. If you already know everything about default arguments and just want to laugh at the funny error feel free to jump to the end of the article. Alas, the code was written by me, but I'm pretty sure that day I was replaced by an evil clone of myself. You know, it happens sometimes. =)</p>
+<p>This post just summarizes the basics about standard and default arguments in Python functions and warns against possible pitfalls in your code. If you are just approaching Python and started writing functions I warmly recommend checking what the official Python manual says about them at the following links: <a href="https://docs.python.org/3/tutorial/controlflow.html#defining-functions">Defining Functions</a> and <a href="https://docs.python.org/3/tutorial/controlflow.html#more-on-defining-functions">More on Defining Functions</a>.</p>
+<h2>A quick review of functions</h2>
+<p>Python is a strongly object-oriented language, pushing this programming paradigm to its maximum. But object-oriented programming still relies on the <em>function</em> concept, that is something you can use to process data. Python has a more general concept of <em>callable</em> object, that is every object that can be called, which means <em>applied</em> on some data.</p>
+<p>Functions in Python are callable objects and at a first glance they behave the same as functions in other languages. They just get some data, called <em>arguments</em>, process them, and return a <em>result</em> (which is <code>None</code> if no <code>return</code> statement is issued).</p>
+<p>Arguments are declared (when the function is defined) as placeholders for actual objects that will be <em>passed</em> when the function will be called. In Python you do not declare the type of an argument (like you do in C or Java, for example) since Python philosophy relies on polymorphism.</p>
+<p>Remember that Python variables are <em>references</em>, that is <strong>memory addresses of actual variables</strong>. This means that Python functions always work like being "passed by address" (using a C/C++ nomenclature). When you call a function you are not <em>copying</em> the value of the arguments to the function placeholders. Instead, you are pointing the placeholder to the variable itself. This has a very important consequence: you may alter the value of the variable from inside the function. A good visual explanation of the reference mechanism in Python is <a href="http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html#other-languages-have-variables">this</a>.</p>
+<p>References play a very big role in Python, being the bare bones of its fully-polymorphic approach. Check <a href="/blog/2014/08/21/python-3-oop-part-4-polymorphism">this link</a> for a better explanation of this very important subject.</p>
+<p>To check your understanding of this basic behaviour of the language try to follow this simple code (where the variable <em>ph</em> stands for "placeholder")</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">print_id</span><span class="p">(</span><span class="n">ph</span><span class="p">):</span>
+<span class="gp">... </span> <span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">ph</span><span class="p">)))</span>
+<span class="gp">... </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span>
+<span class="go">0x84ab460</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">print_id</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="go">0x84ab460</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">alter_value</span><span class="p">(</span><span class="n">ph</span><span class="p">):</span>
+<span class="gp">... </span> <span class="n">ph</span> <span class="o">=</span> <span class="n">ph</span> <span class="o">+</span> <span class="mi">1</span>
+<span class="gp">... </span> <span class="k">return</span> <span class="n">ph</span>
+<span class="gp">... </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">alter_value</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">6</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="go">&#39;0x84ab460&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="go">&#39;0x84ab470&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">alter_value</span><span class="p">(</span><span class="n">ph</span><span class="p">):</span>
+<span class="gp">... </span> <span class="n">ph</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">... </span> <span class="k">return</span> <span class="n">ph</span>
+<span class="gp">... </span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">alter_value</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">[1, 2, 3, 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span>
+<span class="go">[1, 2, 3, 1]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="go">&#39;0xb701f72c&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+<span class="go">&#39;0xb701f72c&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+
+
+<p>If you haven't been surprised by what's happening here you already grasped one of the most important things in Python and can safely skip the following explanation.</p>
+<p>The <code>print_id()</code> function demonstrates that placeholders inside functions are the very same variable passed at runtime (their memory addresses match).</p>
+<p>The two versions of <code>alter_value()</code> are meant to be functions that try to change the value of the passed argument. As you can see the first version of <code>alter_value()</code> does not succeed in changing the value of the variable <code>a</code>, while the second version does. Why? Indeed both act the same, trying to modify the value of the original variable passed, but some types in Python are <em>immutable</em>, and integers are among them. On the other hand, lists are not immutable, so the function does what its name pledges. (<a href="https://docs.python.org/3.4/reference/datamodel.html">here</a> you find more details on immutable types).</p>
+<p>There is a lot more to say about functions in Python, but these are the basic bricks about standard arguments.</p>
+<h2>Default argument values</h2>
+<p>Every now and then you need to define a function that <em>may</em> accept an argument and shall behave differently whether or not the argument is present. If a language does not provide support for such cases you only have two choices: the first one is to define two different functions and to decide which is the most suitable one to call every time, the second one is to force the presence of the argument, selecting a "null" value that signals that the argument must not be used (such as <code>0</code> or <code>None</code>, for example). Both solutions are viable but suboptimal.</p>
+<p>Python, like other languages, provides support for default argument values, that is function arguments that can either be specified by the caller or left blank to automatically receive a predefined value.</p>
+<p>A very simple (and rather useless) example of default value is the following:</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">&quot;LOG: {0}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+</pre></div>
+
+
+<p>This function may be run with an argument (which can be <code>None</code>)</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">log</span><span class="p">(</span><span class="s">&quot;File closed&quot;</span><span class="p">)</span>
+<span class="go">LOG: File closed</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+
+
+<p>but can also be called <em>without</em> arguments, in which case it will receive the default value set in its prototype (<code>None</code>, in this case)</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">log</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span>
+</pre></div>
+
+
+<p>You can find more interesting examples in the standard library, for example in the <code>open()</code> function (check the <a href="https://docs.python.org/3.4/library/functions.html#open">official documentation</a>)</p>
+<div class="highlight"><pre><span class="nb">open</span><span class="p">(</span><span class="nb">file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">buffering</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">closefd</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">opener</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+</pre></div>
+
+
+<p>It's evident from the prototype that a call like <code>f = open('/etc/hosts')</code> hides a lot of arguments by passing them default values (<code>mode</code>, <code>buffering</code>, <code>encoding</code>, etc), and making the function very simple to use in its standard use case.</p>
+<p>As you see from the <code>open()</code> builtin function we can use both standard and default arguments in a function, but the order in which they appear in the function prototype is fixed: all standard arguments first, then the default ones.</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">a_rich_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+
+
+<p>The reason is easy to figure out: if we put an argument with a default value before a standard one, the language has no way to understand if the argument  with default value has been initialized or not. For example consider the following function definition</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">a_rich_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+
+
+<p>when calling the function <code>a_rich_function(1, 2, 4, 5)</code> what arguments are we passing? Is <code>d=4, c=5</code> or <code>c=4, e=5</code> since <code>d</code> has a default value? That order of definition is thus forbidden, and if you try Python will raise a <code>SyntaxError</code>.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">a_rich_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="gp">... </span> <span class="k">pass</span>
+<span class="gp">... </span>
+<span class="go">  File &quot;&lt;stdin&gt;&quot;,  line 1</span>
+<span class="go">SyntaxError: non-default argument follows default argument</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+
+
+<h2>Default arguments evaluation</h2>
+<p>Default arguments may be provided as plain values or as the result of a function call, but this latter technique need a <strong>very big warning</strong>.</p>
+<p>While plain values are hardcoded, thus needing no evaluation except that made at compilation time, function calls are expected to be executed at run time. So we could write</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
+
+<span class="k">def</span> <span class="nf">log_time</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()):</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;{0}: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">message</span><span class="p">))</span>
+</pre></div>
+
+
+<p>expecting the <code>log_time()</code> function to correctly provide the current time each time we call it. This unfortunately does not work: default arguments are evaluated at definition time (for example when you first import the module), and the result of successive calls is</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">log_time</span><span class="p">(</span><span class="s">&quot;message 1&quot;</span><span class="p">)</span>
+<span class="go">2015-02-10T21:20:32.998647: message 1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_time</span><span class="p">(</span><span class="s">&quot;message 2&quot;</span><span class="p">)</span>
+<span class="go">2015-02-10T21:20:32.998647: message 2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">log_time</span><span class="p">(</span><span class="s">&quot;message 3&quot;</span><span class="p">)</span>
+<span class="go">2015-02-10T21:20:32.998647: message 3</span>
+</pre></div>
+
+
+<p>If you set the default value to a class instance the result may be even stranger, as you can read in <a href="http://docs.python-guide.org/en/latest/writing/gotchas/">The Hitchhiker’s Guide to Python!</a>. As suggested by this latter resource the usual solution is to replace the default value with <code>None</code> and to check the value of the argument inside the function</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
+
+<span class="k">def</span> <span class="nf">log_time</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="s">&quot;{0}: {1}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span> <span class="n">message</span><span class="p">))</span>
+</pre></div>
+
+
+<h2>Conclusions</h2>
+<p>Default arguments may vastly simplify APIs, provided that you pay attention to their only "failure point", the evaluation time. Surprisingly, one of the most basic things in Python, function arguments and references, are one of the biggest source of errors, sometimes for experienced programmers too. I recommend giving references and polymorphism some study time.</p>
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/">OOP concepts in Python 2.x - Part 2</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">Python 3 OOP Part 1 - Objects and types</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/12/11/digging-up-django-class-based-views-2/">Digging up Django class-based views - 2</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/03/26/python-generators-from-iterators-to-cooperative-multitasking-2/">Python Generators - From Iterators to Cooperative Multitasking - 2</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">OOP concepts in Python 2.x - Part 1</a></li>
+    </ul>
+</section>
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3 well well-sm" id="sidebar">
+
+<aside>
+    <section>
+        <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+                  <ul class="list-group" id="social">
+                    <li class="list-group-item"><a href="https://twitter.com/tw_lgiordani"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                    <li class="list-group-item"><a href="http://plus.google.com/+LeonardoGiordani?rel=author"><i class="fa fa-google-plus-square fa-lg"></i> Google+</a></li>
+                    <li class="list-group-item"><a href="https://github.com/lgiordani"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+                  </ul>
+                </li>
+
+                <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                    <ul class="list-group" id="recentposts">
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2015/02/11/default-arguments-in-python/">
+                                Default arguments in Python
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">
+                                Accessing attributes in Python
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">
+                                Advanced use of Python decorators and metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">
+                                Python 3 OOP Part 6 - Abstract Base Classes
+                            </a>
+                        </li>
+                        <li class="list-group-item">
+                            <a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">
+                                Python 3 OOP Part 5 - Metaclasses
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+
+                <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                    <ul class="list-group list-inline tagcloud" id="tags">
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/amqp/">
+                                AMQP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/c/">
+                                C
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/categories/concurrent-programming/">
+                                concurrent programming
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/cpp/">
+                                C++
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/decorators/">
+                                decorators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/django/">
+                                Django
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/categories/erlang/">
+                                Erlang
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/generators/">
+                                generators
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/git/">
+                                Git
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/metaclasses/">
+                                metaclasses
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/categories/oop/">
+                                OOP
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/operating-systems/">
+                                operating systems
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/pika/">
+                                Pika
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/postage/">
+                                Postage
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/categories/python/">
+                                Python
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-2">
+                            <a href="http://lgiordani.com/categories/python2/">
+                                Python2
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-1">
+                            <a href="http://lgiordani.com/categories/python3/">
+                                Python3
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/qt/">
+                                Qt
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-3">
+                            <a href="http://lgiordani.com/categories/rabbitmq/">
+                                RabbitMQ
+                            </a>
+                        </li>
+                        <li class="list-group-item tag-4">
+                            <a href="http://lgiordani.com/categories/versioning/">
+                                versioning
+                            </a>
+                        </li>
+                    </ul>
+                </li>    
+
+
+
+        </ul>
+    </section>
+
+</aside>        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
+
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
+</body>
+</html>
