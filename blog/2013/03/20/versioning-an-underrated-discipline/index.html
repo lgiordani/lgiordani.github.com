@@ -171,13 +171,13 @@
 <p>The version number shall not necessarily contain such information directly. It can however encompass some of them, those data that the development team considers useful to be visible.</p>
 <p>I think it is very wrong to give version number components a meaning of importance as it happens to external ones. Internal version numbers must represent a measurable quantity or precise steps of a procedure. Examples of measurable quantities are dates, a progressive number, the compatibility of some interfaces, the number of commits from the last version while examples of procedure steps are labels such as alpha, beta, test, if these labels have a clear meaning in the software development cycle.</p>
 <p>For instance, an internal versioning schema could be the following</p>
-<div class="highlight"><pre><span class="nt">&lt;date:</span> <span class="na">YYYYMMDD_hhmmss</span><span class="nt">&gt;</span>-<span class="nt">&lt;commits&gt;</span>
+<div class="highlight"><pre>&lt;date: YYYYMMDD_hhmmss&gt;-&lt;commits&gt;
 </pre></div>
 
 
 <p>This way the version 20130803_092500-134 immediately tells the developer some important information, that is the date of creation, which makes it easily comparable to other versions, and the number of commits included from the last version, that can be used as a rough measure of the amount of work carried out.</p>
 <p>Another example, taken from a software library versioning schema, is the following</p>
-<div class="highlight"><pre><span class="nt">&lt;api&gt;</span>.<span class="nt">&lt;abi&gt;</span>.<span class="nt">&lt;code&gt;</span>
+<div class="highlight"><pre>&lt;api&gt;.&lt;abi&gt;.&lt;code&gt;
 </pre></div>
 
 
@@ -188,7 +188,7 @@
 <p>The two examples are very different since the two schemes try to solve different needs. Indeed, your mileage may vary according to your needs or the environment where you work. In my development team, for instance, a reduced version of the second example is used, which  consists of just the API and CODE numbers since the ABI break cases are so rare that can be handled as API breaks.</p>
 <h4>The dangerous major/minor system</h4>
 <p>An example of what I consider a dangerously ambiguous system is that proposed by Microsoft to .NET developers (http://msdn.microsoft.com/en-us/library/system.version.aspx). The schema is</p>
-<div class="highlight"><pre><span class="nt">&lt;major&gt;</span>.<span class="nt">&lt;minor&gt;</span>.<span class="nt">&lt;build&gt;</span>.<span class="nt">&lt;revision&gt;</span>
+<div class="highlight"><pre>&lt;major&gt;.&lt;minor&gt;.&lt;build&gt;.&lt;revision&gt;
 </pre></div>
 
 
