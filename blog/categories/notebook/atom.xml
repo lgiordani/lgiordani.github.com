@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom"><title>The Digital Cat</title><link href="http://lgiordani.com/" rel="alternate"></link><link href="http://lgiordani.com/categories/notebook/atom.xml" rel="self"></link><id>http://lgiordani.com/</id><updated>2015-03-14T23:00:00+02:00</updated><entry><title>Python 3 OOP Notebooks</title><link href="http://lgiordani.com/blog/2015/03/14/python-3-oop-notebooks/" rel="alternate"></link><updated>2015-03-14T23:00:00+02:00</updated><author><name>Leonardo Giordani</name></author><id>tag:lgiordani.com,2015-03-14:blog/2015/03/14/python-3-oop-notebooks/</id><summary type="html">&lt;p&gt;The &lt;em&gt;Python 3 OOP&lt;/em&gt; series of posts that you can find &lt;a href="/blog/2014/08/20/python-3-oop-part-1-objects-and-types/"&gt;here&lt;/a&gt; is now available as a series of &lt;strong&gt;IPython Notebooks&lt;/strong&gt;.&lt;/p&gt;
+&lt;p&gt;From the official site:&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;The IPython Notebook is a web-based interactive computational environment where you can combine code execution, text, mathematics, plots and rich media into a single document.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;As a matter of fact, IPython Notebook is the perfect environment to teach Python itself. If you want to know more about this wonderful piece of software check &lt;a href="http://ipython.org/notebook.html"&gt;the official site&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;You can find the notebook of each post here&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="/notebooks/Python_3_OOP_Part_1__Objects_and_types.ipynb"&gt;Python 3 OOP Part 1 - Objects and types&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="/notebooks/Python_3_OOP_Part_2__Classes_and_members.ipynb"&gt;Python 3 OOP Part 2 - Classes and members&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="/notebooks/Python_3_OOP_Part_3__Delegation__composition_and_inheritance.ipynb"&gt;Python 3 OOP Part 3 - Delegation: composition and inheritance&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="/notebooks/Python_3_OOP_Part_4__Polymorphism.ipynb"&gt;Python 3 OOP Part 4 - Polymorphism&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="/notebooks/Python_3_OOP_Part_5__Metaclasses.ipynb"&gt;Python 3 OOP Part 5 - Metaclasses&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="/notebooks/Python_3_OOP_Part_6__Abstract_Base_Classes.ipynb"&gt;Python 3 OOP Part 6 - Abstract Base Classes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;or download the whole series as a &lt;a href="/notebooks/Python_3_OOP_Notebooks.zip"&gt;zip file&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;As everything on this blog, notebooks are released under &lt;a href="http://creativecommons.org/licenses/by-sa/4.0/"&gt;Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)&lt;/a&gt;. Feel free to submit corrections to the &lt;a href="https://github.com/lgiordani/lgiordani.github.com/issues"&gt;GitHub issues&lt;/a&gt; page.&lt;/p&gt;
+&lt;p&gt;This is a preview of the notebooks in action&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Notebook" src="/images/python_3_oop_notebooks/notebook.jpg" /&gt;&lt;/p&gt;</summary><category term="Python"></category><category term="Python3"></category><category term="OOP"></category><category term="Notebook"></category></entry></feed>

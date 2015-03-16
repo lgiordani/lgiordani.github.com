@@ -5,28 +5,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/index.html</loc>
-<lastmod>2015-03-03T09:13:33-00:00</lastmod>
+<lastmod>2015-03-16T09:17:45-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/tags.html</loc>
-<lastmod>2015-03-03T09:13:33-00:00</lastmod>
+<lastmod>2015-03-16T09:17:45-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/categories.html</loc>
-<lastmod>2015-03-03T09:13:33-00:00</lastmod>
+<lastmod>2015-03-16T09:17:45-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/pages/about.html</loc>
-<lastmod>2015-03-03T09:13:33-00:00</lastmod>
+<lastmod>2015-03-16T09:17:45-00:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/blog/2015/03/14/python-3-oop-notebooks/</loc>
+<lastmod>2015-03-14T23:00:00+02:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -250,7 +257,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/category/programming/</loc>
-<lastmod>2015-02-11T10:00:00+00:09</lastmod>
+<lastmod>2015-03-14T23:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -292,7 +299,14 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/python/</loc>
-<lastmod>2015-02-11T10:00:00+00:09</lastmod>
+<lastmod>2015-03-14T23:00:00+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/categories/notebook/</loc>
+<lastmod>2015-03-14T23:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -341,7 +355,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/oop/</loc>
-<lastmod>2015-01-12T17:00:00+00:09</lastmod>
+<lastmod>2015-03-14T23:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -390,7 +404,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/python3/</loc>
-<lastmod>2015-01-12T17:00:00+00:09</lastmod>
+<lastmod>2015-03-14T23:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
