@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+<head>
+    <title>99 Scala Problems 07 - Flatten a nested list structure - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
+
+<link rel="canonical" href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/">
+
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="Scala,functional programming" />
+
+        <meta property="og:site_name" content="The Digital Cat" />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="99 Scala Problems 07 - Flatten a nested list structure"/>
+        <meta property="og:url" content="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/"/>
+        <meta property="og:description" content=""/>
+        <meta property="article:published_time" content="2015-04-07" />
+            <meta property="article:section" content="Programming" />
+            <meta property="article:tag" content="Scala" />
+            <meta property="article:tag" content="functional programming" />
+            <meta property="article:author" content="Leonardo Giordani" />
+            <meta property="og:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="http://lgiordani.com/archives/"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/"
+                       rel="bookmark"
+                       title="Permalink to 99 Scala Problems 07 - Flatten a nested list structure">
+                        99 Scala Problems 07 - Flatten a nested list structure
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-04-07T09:30:00+01:00"> Tue 07 April 2015</time>
+    </span>
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/categories/scala/">Scala</a>
+        /
+	<a href="http://lgiordani.com/categories/functional-programming/">functional programming</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <h2>The problem</h2>
+<p><strong>P07</strong> (**) Flatten a nested list structure.</p>
+<p>Example:</p>
+<div class="highlight"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="n">flatten</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">),</span> <span class="mi">2</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="nc">List</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">))))</span>
+<span class="n">res0</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">5</span><span class="o">,</span> <span class="mi">8</span><span class="o">)</span>
+</pre></div>
+
+
+<h2>Initial thoughts</h2>
+<p>Flattening lists is a perfect application for recursive functions, and the algorithm shouldn't be too complex. The key point in flattening is the possibility to tell apart a list from a non-list element, to rule the call of another recursion. To solve this I will probably have to deal with typed patterns.</p>
+<h2>The recursive solution</h2>
+<p>The <code>flatten()</code> method of <code>List</code> objects works only if the list contains "traversable collections".</p>
+<div class="highlight"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">),</span> <span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)).</span><span class="n">flatten</span>
+<span class="n">res2</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="o">)</span>
+</pre></div>
+
+
+<p>But if we add a non-traversable element such as a single <code>Int</code> the list becomes a list of <code>Any</code> and there is no way for Scala to use them as traversable collections</p>
+<div class="highlight"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">),</span> <span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">),</span> <span class="mi">5</span><span class="o">).</span><span class="n">flatten</span>
+<span class="o">&lt;</span><span class="n">console</span><span class="k">&gt;:</span><span class="mi">8</span><span class="k">:</span> <span class="kt">error:</span> <span class="kt">No</span> <span class="kt">implicit</span> <span class="kt">view</span> <span class="kt">available</span> <span class="kt">from</span> <span class="kt">Any</span> <span class="o">=&gt;</span> <span class="n">scala</span><span class="o">.</span><span class="n">collection</span><span class="o">.</span><span class="nc">TraversableOnce</span><span class="o">[</span><span class="kt">B</span><span class="o">].</span>
+              <span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">),</span> <span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">),</span> <span class="mi">5</span><span class="o">).</span><span class="n">flatten</span>
+                                            <span class="o">^</span>
+</pre></div>
+
+
+<p>So this problem cannot be solved with the simple application of a method. My first solution was this</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="n">flatten</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> <span class="n">l</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">Nil</span> <span class="k">=&gt;</span> <span class="nc">Nil</span>
+    <span class="k">case</span> <span class="o">(</span><span class="n">h</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])::</span><span class="n">tail</span> <span class="k">=&gt;</span> <span class="n">flatten</span><span class="o">(</span><span class="n">h</span><span class="o">):::</span><span class="n">flatten</span><span class="o">(</span><span class="n">tail</span><span class="o">)</span>
+    <span class="k">case</span> <span class="o">(</span><span class="n">h</span><span class="k">:</span><span class="kt">A</span><span class="o">)::</span><span class="n">tail</span> <span class="k">=&gt;</span> <span class="n">h</span><span class="o">::</span><span class="n">flatten</span><span class="o">(</span><span class="n">tail</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>I have been very creative in trying to match a list or an element, but fortunately Scala seems to have a coherent syntax.</p>
+<p>This code gives nevertheless problems when compiled. The following warning was printed by the compiler "<em>warning: there were 2 unchecked warnings; re-run with -unchecked for details</em>" and running it with the suggested options results in "<em>warning: non variable type-argument A in type pattern List[A] is unchecked since it is eliminated by erasure</em>". Another warning was issues for the <code>(h:A)</code> code in the third <code>case</code> statement.</p>
+<p>Well <a href="http://www.artima.com/pins1ed/case-classes-and-pattern-matching.html">this page</a> talks a lot about <em>typed patterns</em> and <em>type erasure</em> in Scala. The short story is that Scala compiles for the JVM, which does not keep type information for collections (this is a complex matter, and not knowing Java I don't fully grasp the whole thing now).</p>
+<p>Another interesting resource about type erasure is <a href="http://www.scalafied.com/60/lightweight-type-erasure-matching">this Scalafied post</a>.</p>
+<p>This version seems to be correct</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="n">flatten</span><span class="o">(</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">])</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="n">l</span> <span class="k">match</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="nc">Nil</span> <span class="k">=&gt;</span> <span class="nc">Nil</span>
+    <span class="k">case</span> <span class="o">(</span><span class="n">h</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="k">_</span><span class="o">])::</span><span class="n">tail</span> <span class="k">=&gt;</span> <span class="n">flatten</span><span class="o">(</span><span class="n">h</span><span class="o">):::</span><span class="n">flatten</span><span class="o">(</span><span class="n">tail</span><span class="o">)</span>
+    <span class="k">case</span> <span class="n">h</span><span class="o">::</span><span class="n">tail</span> <span class="k">=&gt;</span> <span class="n">h</span><span class="o">::</span><span class="n">flatten</span><span class="o">(</span><span class="n">tail</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>I had to change the input arguments to <code>List[Any]</code> and discard the type information. This function works as expected, but there is no check of the incoming data types.</p>
+<p>The algorithm here splits the list in two, head and tail and joins them together again after they have been processed by <code>flatten()</code> itself. Its tail recursive version is rather simple</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="n">flatten</span><span class="o">(</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">])</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="k">def</span> <span class="nc">_flatten</span><span class="o">(</span><span class="n">res</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">],</span> <span class="n">rem</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">])</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="n">rem</span> <span class="k">match</span> <span class="o">{</span>
+        <span class="k">case</span> <span class="nc">Nil</span> <span class="k">=&gt;</span> <span class="n">res</span>
+        <span class="k">case</span> <span class="o">(</span><span class="n">h</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="k">_</span><span class="o">])::</span><span class="nc">Nil</span> <span class="k">=&gt;</span> <span class="nc">_flatten</span><span class="o">(</span><span class="n">res</span><span class="o">,</span> <span class="n">h</span><span class="o">)</span>
+        <span class="k">case</span> <span class="o">(</span><span class="n">h</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="k">_</span><span class="o">])::</span><span class="n">tail</span> <span class="k">=&gt;</span> <span class="nc">_flatten</span><span class="o">(</span><span class="n">res</span><span class="o">:::</span><span class="n">h</span><span class="o">,</span> <span class="n">tail</span><span class="o">)</span>
+        <span class="k">case</span> <span class="n">h</span><span class="o">::</span><span class="n">tail</span> <span class="k">=&gt;</span> <span class="nc">_flatten</span><span class="o">(</span><span class="n">res</span><span class="o">:::</span><span class="nc">List</span><span class="o">(</span><span class="n">h</span><span class="o">),</span> <span class="n">tail</span><span class="o">)</span>
+    <span class="o">}</span>
+    <span class="nc">_flatten</span><span class="o">(</span><span class="nc">List</span><span class="o">(),</span> <span class="n">l</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<h2>Flatmap</h2>
+<p><code>List</code> objects provide a very interesting method, <code>flatMap()</code> that, just like <code>map()</code>, applies a given function to all elements of the list. While <code>map()</code> builds the resulting collection concatenating the results of each application, <code>flatMap()</code> concatenates the elements of the collection that results from each application.</p>
+<p>The difference becomes evident with this simple example</p>
+<div class="highlight"><pre><span class="n">scala</span><span class="o">&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">).</span><span class="n">map</span><span class="o">(</span> <span class="n">e</span> <span class="k">=&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="n">e</span><span class="o">,</span><span class="n">e</span><span class="o">*</span><span class="mi">2</span><span class="o">)</span> <span class="o">)</span>
+<span class="n">res5</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">),</span> <span class="nc">List</span><span class="o">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">),</span> <span class="nc">List</span><span class="o">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">6</span><span class="o">),</span> <span class="nc">List</span><span class="o">(</span><span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="o">))</span>
+
+<span class="n">scala</span><span class="o">&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">).</span><span class="n">flatMap</span><span class="o">(</span> <span class="n">e</span> <span class="k">=&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="n">e</span><span class="o">,</span><span class="n">e</span><span class="o">*</span><span class="mi">2</span><span class="o">))</span>
+<span class="n">res6</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Int</span><span class="o">]</span> <span class="k">=</span> <span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">2</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">3</span><span class="o">,</span> <span class="mi">6</span><span class="o">,</span> <span class="mi">4</span><span class="o">,</span> <span class="mi">8</span><span class="o">)</span>
+</pre></div>
+
+
+<p>Here, <code>map()</code> is used to produce a list for each element containing the element itself and the element multiplied by two. As you can see the result of the <code>map()</code> method is a list of lists. <code>flatMap()</code>, conversely, returns the concatenation of all elements.</p>
+<p>The point here is that the function given to <code>flatMap()</code> shall return a list, which is then flattened, by the method itself, in that its elements are taken from the list and directly put into the source list.</p>
+<p>Our function could be expressed by the following sentence: if the element is a list, call the function recursively, otherwise return a list containing that element. How can we express such a function? Scala allows to define partial functions as case sequences (see <a href="http://www.artima.com/pins1ed/case-classes-and-pattern-matching.html">here</a>) so the solution is pretty simple</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="n">flatten</span><span class="o">(</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">])</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">Any</span><span class="o">]</span> <span class="k">=</span> <span class="n">l</span> <span class="n">flatMap</span> <span class="o">{</span>
+    <span class="k">case</span> <span class="n">ls</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="k">_</span><span class="o">]</span> <span class="k">=&gt;</span> <span class="n">flatten</span><span class="o">(</span><span class="n">ls</span><span class="o">)</span>
+    <span class="k">case</span> <span class="n">h</span> <span class="k">=&gt;</span> <span class="nc">List</span><span class="o">(</span><span class="n">h</span><span class="o">)</span>
+<span class="o">}</span>
+</pre></div>
+
+
+<p>Pay attention to the fact that this function has to drop the type check just like the first one.</p>
+<h2>Final considerations</h2>
+<p><strong>Type erasure</strong> is a new concept, and one shall be aware of it. <strong>Partial functions as case sequences</strong> are really handy, and so are the <code>map()</code> and <code>flatMap()</code> methods.</p>
+<h2>Feedback</h2>
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">99 Scala Problems 06 - Find out whether a list is a palindrome</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-01-find-last-element/">99 Scala Problems 01 - Find the last element of a list</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-04-length/">99 Scala Problems 04 - Find the number of elements of a list</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
+    </ul>
+</section>
+    <hr />
+    <!-- AddThis Button BEGIN -->
+    <div class="addthis_toolbox addthis_default_style">
+            <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+            <a class="addthis_button_tweet"></a>
+            <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    </div>
+    <!-- AddThis Button END -->
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://twitter.com/tw_lgiordani"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                <li class="list-group-item"><a href="http://plus.google.com/+LeonardoGiordani?rel=author"><i class="fa fa-google-plus-square fa-lg"></i> Google+</a></li>
+                <li class="list-group-item"><a href="https://github.com/lgiordani"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+              </ul>
+            </li>
+
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                <ul class="list-group" id="recentposts">
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-index/">
+                            99 Scala Problems Index
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">
+                            99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">
+                            99 Scala Problems 08 - Eliminate consecutive duplicates of list elements
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/">
+                            99 Scala Problems 07 - Flatten a nested list structure
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">
+                            99 Scala Problems 06 - Find out whether a list is a palindrome
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group list-inline tagcloud" id="tags">
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/amqp/">
+                            AMQP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/c/">
+                            C
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/concurrent-programming/">
+                            concurrent programming
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/cpp/">
+                            C++
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/decorators/">
+                            decorators
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/django/">
+                            Django
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-3">
+                        <a href="http://lgiordani.com/categories/erlang/">
+                            Erlang
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/functional-programming/">
+                            functional programming
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/generators/">
+                            generators
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/git/">
+                            Git
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/metaclasses/">
+                            metaclasses
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/notebook/">
+                            Notebook
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/oop/">
+                            OOP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/operating-systems/">
+                            operating systems
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/pika/">
+                            Pika
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/postage/">
+                            Postage
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/python/">
+                            Python
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/python2/">
+                            Python2
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/python3/">
+                            Python3
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/qt/">
+                            Qt
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-3">
+                        <a href="http://lgiordani.com/categories/rabbitmq/">
+                            RabbitMQ
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/scala/">
+                            Scala
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/versioning/">
+                            versioning
+                        </a>
+                    </li>
+                </ul>
+            </li>
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
+
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
+
+        <script type="text/javascript">var addthis_config = {"data_track_addressbar": true};</script>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552391e122c8506c"></script>
+</body>
+</html>
