@@ -47,6 +47,11 @@
         <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
               title="The Digital Cat ATOM Feed"/>
 
+
+
+        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
+
 </head>
 <body>
 
@@ -107,6 +112,10 @@
         <i class="fa fa-calendar"></i><time datetime="2015-04-07T09:25:00+01:00"> Tue 07 April 2015</time>
     </span>
 
+            <span class="label label-default">Series</span>
+            Part 6 of "99 Scala Problems"
+
+
 
 
 <span class="label label-default">Tags</span>
@@ -136,7 +145,7 @@
 
 <p>Nothing special to highlight here.</p>
 <h2>The recursive solution</h2>
-<p>The recursive solution may mimic the procedural implementing a helper function that reverses the list. See <a href="/blog/2015/04/02/99-scala-problems-05-reverse/">problem 05</a> for an implementation of such a function.</p>
+<p>The recursive solution may mimic the procedural implementing a helper function that reverses the list. See <a href="/blog/2015/04/07/99-scala-problems-05-reverse/">problem 05</a> for an implementation of such a function.</p>
 <p>A recursive solution for the palindrome check shall make use of functions to extract the head and tail elements from the list. Since pattern matching cannot separate the tail element, we have to use <code>List</code> type methods.</p>
 <div class="highlight"><pre><span class="k">def</span> <span class="n">isPalindrome</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span><span class="kt">Boolean</span> <span class="o">=</span> <span class="n">l</span> <span class="k">match</span> <span class="o">{</span>
     <span class="k">case</span> <span class="nc">Nil</span> <span class="k">=&gt;</span> <span class="kc">true</span>
@@ -161,7 +170,7 @@
 <h2>A custom operator</h2>
 <p>Scala version 2.10+ define an <a href="https://issues.scala-lang.org/browse/SI-2575">extractor</a> for pattern matching last element of a list, which is <code>:+</code>. The souce code can be found <a href="https://github.com/scala/scala/blob/v2.11.6/src/library/scala/collection/SeqExtractors.scala#L5">here</a>-</p>
 <p>Since I am using Scala 2.9 I want to use this occasion to learn how to implement an operator for the pattern matching.</p>
-<p>First of all: I recommend reading the following pages <a href="http://www.artima.com/pins1ed/case-classes-and-pattern-matching.html"> Case Classes and Pattern Matching</a>, <a href="http://www.artima.com/pins1ed/working-with-lists.html#16.5">List patterns</a>, <a href="http://www.artima.com/pins1ed/extractors.html">Extractors</a>. They describe in a very simple and clear way everything you need to know at this point about pattern matching and further clarify what discussed in <a href="/blog/2015/04/02/99-scala-problems-05-reverse/">problem 05</a> about the <code>::</code> class.</p>
+<p>First of all: I recommend reading the following pages <a href="http://www.artima.com/pins1ed/case-classes-and-pattern-matching.html"> Case Classes and Pattern Matching</a>, <a href="http://www.artima.com/pins1ed/working-with-lists.html#16.5">List patterns</a>, <a href="http://www.artima.com/pins1ed/extractors.html">Extractors</a>. They describe in a very simple and clear way everything you need to know at this point about pattern matching and further clarify what discussed in <a href="/blog/2015/04/07/99-scala-problems-05-reverse/">problem 05</a> about the <code>::</code> class.</p>
 <p>The version proposed in Issue 2575 works only on <code>List</code> types but is a good starting point for me</p>
 <div class="highlight"><pre><span class="k">object</span> <span class="nc">:+</span> <span class="o">{</span>
   <span class="k">def</span> <span class="n">unapply</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="o">(</span><span class="n">l</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span> <span class="k">=</span> <span class="n">l</span> <span class="k">match</span> <span class="o">{</span>
@@ -247,12 +256,29 @@
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-index/">99 Scala Problems Index</a></li>
         <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
         <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-04-length/">99 Scala Problems 04 - Find the number of elements of a list</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-index/">99 Scala Problems Index</a></li>
     </ul>
+</section>
+<section class="well" id="related-posts">
+    <h4>Part 6 of the "99 Scala Problems" series</h4>
+       <h5>Previous articles</h5>
+       <ul>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-01-find-last-element/">99 Scala Problems 01 - Find the last element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-04-length/">99 Scala Problems 04 - Find the number of elements of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-05-reverse/">99 Scala Problems 05 - Reverse a list</a></li>
+       </ul>
+       <h5>Next articles</h5>
+       <ul>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/">99 Scala Problems 07 - Flatten a nested list structure</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
+       </ul>
 </section>
     <hr />
     <!-- AddThis Button BEGIN -->
@@ -429,6 +455,20 @@
                     </li>
                 </ul>
             </li>
+
+                    <li class="list-group-item"><h4><i class="fa fa-tags fa-list-ul"></i><span class="icon-label">Series</span></h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <h5></i> Previous article</h5>
+                                <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-05-reverse/">99 Scala Problems 05 - Reverse a list</a>
+                            </li>
+                            <li class="list-group-item">
+                                <h5>Next article</h5>
+                                <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/">99 Scala Problems 07 - Flatten a nested list structure</a>
+                            </li>
+                        </ul>
+                    </li>
+
     </ul>
 </section>
             </aside>

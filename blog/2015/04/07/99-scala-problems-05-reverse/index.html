@@ -47,6 +47,11 @@
         <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
               title="The Digital Cat ATOM Feed"/>
 
+
+
+        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
+
 </head>
 <body>
 
@@ -107,6 +112,10 @@
         <i class="fa fa-calendar"></i><time datetime="2015-04-07T09:20:00+01:00"> Tue 07 April 2015</time>
     </span>
 
+            <span class="label label-default">Series</span>
+            Part 5 of "99 Scala Problems"
+
+
 
 
 <span class="label label-default">Tags</span>
@@ -125,7 +134,7 @@
 
 
 <h2>Initial thoughts</h2>
-<p>Another classical problem of computer science and functional languages. The solution will be straightforward. As happened with the <code>length()</code> function developed for <a href="/blog/2015/04/02/99-scala-problems-04-length/">problem 04</a>, this one may help solving <a href="/blog/2015/04/02/99-scala-problems-02-find-last-nth/">problem 02</a> in a pure recursive way. Moreover this problem may be solved with folding like problem 04.</p>
+<p>Another classical problem of computer science and functional languages. The solution will be straightforward. As happened with the <code>length()</code> function developed for <a href="/blog/2015/04/07/99-scala-problems-04-length/">problem 04</a>, this one may help solving <a href="/blog/2015/04/07/99-scala-problems-02-find-last-nth/">problem 02</a> in a pure recursive way. Moreover this problem may be solved with folding like problem 04.</p>
 <h2>The procedural solution</h2>
 <p><code>List</code> type provides a suitable built-in method <code>reverse()</code> to return a reversed copy of the list. Pay attention to the fact that this method does not reverse the list in place, but returns a new list.</p>
 <div class="highlight"><pre><span class="k">def</span> <span class="n">reverse</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">ls</span><span class="k">:</span> <span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span> <span class="k">=</span> <span class="n">ls</span><span class="o">.</span><span class="n">reverse</span>
@@ -240,12 +249,29 @@
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-index/">99 Scala Problems Index</a></li>
         <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
         <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">99 Scala Problems 06 - Find out whether a list is a palindrome</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-04-length/">99 Scala Problems 04 - Find the number of elements of a list</a></li>
     </ul>
+</section>
+<section class="well" id="related-posts">
+    <h4>Part 5 of the "99 Scala Problems" series</h4>
+       <h5>Previous articles</h5>
+       <ul>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-01-find-last-element/">99 Scala Problems 01 - Find the last element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-04-length/">99 Scala Problems 04 - Find the number of elements of a list</a></li>
+       </ul>
+       <h5>Next articles</h5>
+       <ul>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">99 Scala Problems 06 - Find out whether a list is a palindrome</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/">99 Scala Problems 07 - Flatten a nested list structure</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
+       </ul>
 </section>
     <hr />
     <!-- AddThis Button BEGIN -->
@@ -422,6 +448,20 @@
                     </li>
                 </ul>
             </li>
+
+                    <li class="list-group-item"><h4><i class="fa fa-tags fa-list-ul"></i><span class="icon-label">Series</span></h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <h5></i> Previous article</h5>
+                                <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-04-length/">99 Scala Problems 04 - Find the number of elements of a list</a>
+                            </li>
+                            <li class="list-group-item">
+                                <h5>Next article</h5>
+                                <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">99 Scala Problems 06 - Find out whether a list is a palindrome</a>
+                            </li>
+                        </ul>
+                    </li>
+
     </ul>
 </section>
             </aside>

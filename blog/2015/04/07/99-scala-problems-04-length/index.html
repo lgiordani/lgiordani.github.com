@@ -47,6 +47,11 @@
         <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
               title="The Digital Cat ATOM Feed"/>
 
+
+
+        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
+
 </head>
 <body>
 
@@ -107,6 +112,10 @@
         <i class="fa fa-calendar"></i><time datetime="2015-04-07T09:15:00+01:00"> Tue 07 April 2015</time>
     </span>
 
+            <span class="label label-default">Series</span>
+            Part 4 of "99 Scala Problems"
+
+
 
 
 <span class="label label-default">Tags</span>
@@ -126,7 +135,7 @@
 
 <h2>Initial thoughts</h2>
 <p>This should be straightforward both with object-oriented and functional techniques. There are no special cases except that of an empty list. There is an interesting solution that mixes functional and object-oriented techniques, which is known as folding, and I'll discuss it in detail.</p>
-<p>As already said for <a href="/blog/2015/04/02/99-scala-problems-02-find-last-nth/">problem 02</a>, this function may help solving that problem in a pure recursive way, so we'll talk about this too.</p>
+<p>As already said for <a href="/blog/2015/04/07/99-scala-problems-02-find-last-nth/">problem 02</a>, this function may help solving that problem in a pure recursive way, so we'll talk about this too.</p>
 <h2>The procedural solution</h2>
 <div class="highlight"><pre><span class="k">def</span> <span class="n">length</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">l</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span><span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
     <span class="n">l</span><span class="o">.</span><span class="n">length</span>
@@ -134,7 +143,7 @@
 </pre></div>
 
 
-<p>No special things to high light here. The <code>length()</code> method works with empty lists too, returning 0, so everything should be fine. As already shown in <a href="/blog/2015/04/02/99-scala-problems-01-find-last-element/">problem 01</a> the function may be also reduced to one single line</p>
+<p>No special things to high light here. The <code>length()</code> method works with empty lists too, returning 0, so everything should be fine. As already shown in <a href="/blog/2015/04/07/99-scala-problems-01-find-last-element/">problem 01</a> the function may be also reduced to one single line</p>
 <div class="highlight"><pre><span class="k">def</span> <span class="n">length</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">l</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span><span class="kt">Int</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">length</span>
 </pre></div>
 
@@ -190,7 +199,7 @@
 <p>which should be clear. The count function accepts an <code>Int</code> and a value of the generic type <code>A</code> and returns <code>c + 1</code>. This function is applied on each element of the list by the <code>foldLeft()</code> method, passing the result of the previous application as the first parameter <code>c</code>.</p>
 <p>The <code>count()</code> function may however be simplified to an anonymous function due to its simplicity. Making use of <a href="http://stackoverflow.com/questions/4899320/when-does-scala-need-parameter-types-for-anonymous-and-expanded-functions">type inference</a> and <a href="http://www.codecommit.com/blog/scala/quick-explanation-of-scalas-syntax">placeholder syntax</a> we may reduce it to the given form.</p>
 <h2>Last nth element</h2>
-<p>Now that we have a pure recursive solution for counting elements in a list we may go back to <a href="/blog/2015/04/02/99-scala-problems-02-find-last-nth/">problem 02</a> and give another solution.</p>
+<p>Now that we have a pure recursive solution for counting elements in a list we may go back to <a href="/blog/2015/04/07/99-scala-problems-02-find-last-nth/">problem 02</a> and give another solution.</p>
 <div class="highlight"><pre><span class="k">def</span> <span class="n">lastNth</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">n</span><span class="k">:</span> <span class="kt">Int</span><span class="o">,</span> <span class="n">l</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">A</span> <span class="o">=</span> <span class="o">{</span>
     <span class="k">def</span> <span class="n">length</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">l</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span><span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
         <span class="k">def</span> <span class="n">lengthN</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">n</span><span class="k">:</span><span class="kt">Int</span><span class="o">,</span> <span class="n">l</span><span class="k">:</span><span class="kt">List</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span><span class="kt">Int</span> <span class="o">=</span> <span class="n">l</span> <span class="k">match</span> <span class="o">{</span>
@@ -211,7 +220,7 @@
 </pre></div>
 
 
-<p>This simply takes advantage of the function <code>length()</code> developed in this post and of the function <code>findKth()</code> from <a href="/blog/2015/04/02/99-scala-problems-03-find-kth/">problem 03</a>.</p>
+<p>This simply takes advantage of the function <code>length()</code> developed in this post and of the function <code>findKth()</code> from <a href="/blog/2015/04/07/99-scala-problems-03-find-kth/">problem 03</a>.</p>
 <h2>Final considerations</h2>
 <p>The discussion about this problem involved a lot of important topics for the Scala programmer: <strong>tail recursion</strong>, <strong>folding</strong>, <strong>partial functions</strong>, <strong>partially applied functions</strong>, <strong>currying</strong>, <strong>anonymous functions</strong>, <strong>type inference</strong> and <strong>placeholder syntax</strong>. We also reached the goal of writing a pure recursive solution to problem 02.</p>
 <h2>Feedback</h2>
@@ -221,12 +230,29 @@
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-index/">99 Scala Problems Index</a></li>
         <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
         <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">99 Scala Problems 06 - Find out whether a list is a palindrome</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-index/">99 Scala Problems Index</a></li>
     </ul>
+</section>
+<section class="well" id="related-posts">
+    <h4>Part 4 of the "99 Scala Problems" series</h4>
+       <h5>Previous articles</h5>
+       <ul>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-01-find-last-element/">99 Scala Problems 01 - Find the last element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a></li>
+       </ul>
+       <h5>Next articles</h5>
+       <ul>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-05-reverse/">99 Scala Problems 05 - Reverse a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">99 Scala Problems 06 - Find out whether a list is a palindrome</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/">99 Scala Problems 07 - Flatten a nested list structure</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-09-pack-consecutive-duplicates/">99 Scala Problems 09 - Pack consecutive duplicates of list elements into sublists</a></li>
+       </ul>
 </section>
     <hr />
     <!-- AddThis Button BEGIN -->
@@ -403,6 +429,20 @@
                     </li>
                 </ul>
             </li>
+
+                    <li class="list-group-item"><h4><i class="fa fa-tags fa-list-ul"></i><span class="icon-label">Series</span></h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <h5></i> Previous article</h5>
+                                <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a>
+                            </li>
+                            <li class="list-group-item">
+                                <h5>Next article</h5>
+                                <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-05-reverse/">99 Scala Problems 05 - Reverse a list</a>
+                            </li>
+                        </ul>
+                    </li>
+
     </ul>
 </section>
             </aside>

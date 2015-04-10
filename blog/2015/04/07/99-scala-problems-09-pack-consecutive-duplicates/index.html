@@ -47,6 +47,11 @@
         <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
               title="The Digital Cat ATOM Feed"/>
 
+
+
+        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
+
 </head>
 <body>
 
@@ -107,6 +112,10 @@
         <i class="fa fa-calendar"></i><time datetime="2015-04-07T09:40:00+01:00"> Tue 07 April 2015</time>
     </span>
 
+            <span class="label label-default">Series</span>
+            Part 9 of "99 Scala Problems"
+
+
 
 
 <span class="label label-default">Tags</span>
@@ -125,7 +134,7 @@
 
 
 <h2>Initial thoughts</h2>
-<p>This is similar to <a href="/blog/2015/04/02/99-scala-problems-08-eliminate-consecutive-duplicates/">problem 08</a> but has an important difference: the result will be a list of lists. When dealing with multi-level structures like these, it is very easy to get lost, so I expect to find a recursive solution with a lot of cases or complex pattern guards.</p>
+<p>This is similar to <a href="/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">problem 08</a> but has an important difference: the result will be a list of lists. When dealing with multi-level structures like these, it is very easy to get lost, so I expect to find a recursive solution with a lot of cases or complex pattern guards.</p>
 <h2>The recursive solution</h2>
 <p>The tail recursive solution is easier to write than the standard recursive one. The resulting list we are building is a <code>List[List[A]]</code>, while the remainder is just a plain list <code>List[A]</code>.</p>
 <p>The first case is straightforward. The second case extracts an element from the list and, if the result is empty of the result doesn't contain that element, appends a new list. Pay attention: we have to check <code>res.last.head</code> since <code>res</code> is a list of lists. So <code>res.last</code> is the last list we put into <code>res</code> and its head is the repeated element. Obviously the same thing is accomplished by checking <code>res.last.last</code>, since this algorithm packs together equal values. The third case covers the situation in which the extracted element is already in the last list or <code>res</code>, so we have to modify this latter. To do this we separate <code>res</code> in <code>res.init</code> and <code>res.last</code>, append <code>h</code> to <code>res.last</code> (<code>res.last:::List(h)</code>) and merge again the two pieces.</p>
@@ -165,12 +174,26 @@
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-index/">99 Scala Problems Index</a></li>
         <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
         <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-05-reverse/">99 Scala Problems 05 - Reverse a list</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">99 Scala Problems 06 - Find out whether a list is a palindrome</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-04-length/">99 Scala Problems 04 - Find the number of elements of a list</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-index/">99 Scala Problems Index</a></li>
     </ul>
+</section>
+<section class="well" id="related-posts">
+    <h4>Part 9 of the "99 Scala Problems" series</h4>
+       <h5>Previous articles</h5>
+       <ul>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-01-find-last-element/">99 Scala Problems 01 - Find the last element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-02-find-last-nth/">99 Scala Problems 02 - Find the last but one element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-03-find-kth/">99 Scala Problems 03 - Find the Kth element of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-04-length/">99 Scala Problems 04 - Find the number of elements of a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-05-reverse/">99 Scala Problems 05 - Reverse a list</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-06-palindome/">99 Scala Problems 06 - Find out whether a list is a palindrome</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-07-flatten/">99 Scala Problems 07 - Flatten a nested list structure</a></li>
+           <li><a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a></li>
+       </ul>
 </section>
     <hr />
     <!-- AddThis Button BEGIN -->
@@ -347,6 +370,18 @@
                     </li>
                 </ul>
             </li>
+
+                    <li class="list-group-item"><h4><i class="fa fa-tags fa-list-ul"></i><span class="icon-label">Series</span></h4>
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <h5></i> Previous article</h5>
+                                <a href="http://lgiordani.com/blog/2015/04/07/99-scala-problems-08-eliminate-consecutive-duplicates/">99 Scala Problems 08 - Eliminate consecutive duplicates of list elements</a>
+                            </li>
+                            <li class="list-group-item">
+                            </li>
+                        </ul>
+                    </li>
+
     </ul>
 </section>
             </aside>
