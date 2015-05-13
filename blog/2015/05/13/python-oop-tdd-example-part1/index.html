@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+<head>
+    <title>A simple example of Python OOP development (with TDD) - Part 1 - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
+
+<link rel="canonical" href="http://lgiordani.com/blog/2015/05/13/python-oop-tdd-example-part1/">
+
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="OOP,Python,Python3,TDD" />
+        <meta name="description" content="A simple implementation of binary numbers in Python to exemplify OOP and TDD" />
+
+        <meta property="og:site_name" content="The Digital Cat" />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="A simple example of Python OOP development (with TDD) - Part 1"/>
+        <meta property="og:url" content="http://lgiordani.com/blog/2015/05/13/python-oop-tdd-example-part1/"/>
+        <meta property="og:description" content="A simple implementation of binary numbers in Python to exemplify OOP and TDD"/>
+        <meta property="article:published_time" content="2015-05-13" />
+            <meta property="article:section" content="Programming" />
+            <meta property="article:tag" content="OOP" />
+            <meta property="article:tag" content="Python" />
+            <meta property="article:tag" content="Python3" />
+            <meta property="article:tag" content="TDD" />
+            <meta property="article:author" content="Leonardo Giordani" />
+            <meta property="og:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+
+        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="http://lgiordani.com/archives/"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2015/05/13/python-oop-tdd-example-part1/"
+                       rel="bookmark"
+                       title="Permalink to A simple example of Python OOP development (with TDD) - Part 1">
+                        A simple example of Python OOP development (with TDD) - Part 1
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-05-13T17:00:00+01:00"> Wed 13 May 2015</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/categories/oop/">OOP</a>
+        /
+	<a href="http://lgiordani.com/categories/python/">Python</a>
+        /
+	<a href="http://lgiordani.com/categories/python3/">Python3</a>
+        /
+	<a href="http://lgiordani.com/categories/tdd/">TDD</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>If you are eager to learn some Python and do not know how to start, this post may give you some hints. I will develop a very simple Python package from scratch, exemplifying some Object-oriented Programming (OOP) techniques and concepts, and using a Test-Driven Development (TDD) approach.</p>
+<p>The package will provide some classes to deal with binary numbers (see the Rationale section), but remember that it is just a toy project. Nothing in this package has been designed with performance in mind: it wants to be as clearer as possible.</p>
+<h2>Rationale</h2>
+<p>Binary numbers are rather easy to understand, even if becoming familiar with them requires some time. I expect you to have knowledge of the binary numeral system. If you need to review them just take a look at the <a href="http://en.wikipedia.org/wiki/Binary_number">Wikipedia entry</a> or one of the countless resources on Internet.</p>
+<p>The package we are going to write will provide a class that represents binary numbers (<code>Binary</code>) and a class that represents binary numbers with a given bit size (<code>SizeBinary</code>). They shall provide basic binary operations like logical (and, or, xor), arithmetic (addition, subtraction, multiplication, division), shifts and indexing.</p>
+<p>A quick example of what the package shall do:</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;0101110001&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="go">&#39;0x171&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">int</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+<span class="go">369</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="go">&#39;1&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+<span class="go">&#39;0&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="o">.</span><span class="n">SHR</span><span class="p">()</span>
+<span class="go">&#39;10111000&#39;</span>
+</pre></div>
+
+
+<h2>Python and bases</h2>
+<p>Binary system is just a <em>representation</em> of numbers with base 2, just like hexadecimal (base 16) and decimal (base 10). Python can already natively deal with different bases, even if internally numbers are always stored as decimal integers. Let us check it</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="mh">0x5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="mb">0b101</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">hex</span><span class="p">(</span><span class="mb">0b101</span><span class="p">)</span>
+<span class="go">&#39;0x5&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">bin</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="go">&#39;0b101&#39;</span>
+</pre></div>
+
+
+<p>As you can see Python understands some common bases out of the box, using the <code>0x</code> prefix for hexadecimal numbers and the <code>0b</code> for binary ones (and <code>0o</code>) for octals). However the number is always printed in its base-10 form (<code>5</code> in this case). This means however that a binary number cannot be indexed, since integers does not provide support for this operation</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="mb">0b101</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">TypeError</span>: <span class="n">&#39;int&#39; object is not subscriptable</span>
+</pre></div>
+
+
+<p>You can also use a different base when converting things to integers, through the <code>base</code> attribute</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s">&#39;101&#39;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s">&#39;10&#39;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
+<span class="go">5</span>
+</pre></div>
+
+
+<h2>Test-driven development</h2>
+<p>Simple tasks are the best way to try and use new development methodologies, so this is a good occasion to start working with the so-called test-driven approach. Test-driven Development (TDD) basically means that the first thing you do when developing is to write some <em>tests</em>, that is <strong>programs that use what you are going to develop</strong>. The purpose of those programs is to test that your final product complies with a given behaviour so they provide </p>
+<ul>
+<li><strong>Documentation</strong> for your API: they are examples of use of your package.</li>
+<li><strong>Regression</strong> checks: when you change the code to develop new features they shall not break the behaviour of the previous package versions.</li>
+<li><strong>TODO list</strong>: until all tests run successfully you have something still waiting to be implemented.</li>
+</ul>
+<p>I suggest you to follow this post until we wrote some tests (section "Writing some tests" included), then <strong>write your own class, trying to make it pass all the tests</strong>. This way, actually developing something, you can really learn both TDD and Python. Then you can check your code against mine and perhaps provide a far better solution that the one found by me.</p>
+<h2>Development environment</h2>
+<p>Let us set up a simple environment for the upcoming development. First of all create a Python virtual environment</p>
+<div class="highlight"><pre>~<span class="nv">$ </span>virtualenv -p python3 venv
+</pre></div>
+
+
+<p>then activate the virtualenv and install py.test, which is what we will use to write tests.</p>
+<div class="highlight"><pre>~<span class="nv">$ </span><span class="nb">source </span>venv/bin/activate
+<span class="o">(</span>venv<span class="o">)</span>~<span class="nv">$ </span>pip install pytest
+</pre></div>
+
+
+<p>Then create a directory for the package, the <code>__init__.py</code> file and a directory for tests</p>
+<div class="highlight"><pre><span class="o">(</span>venv<span class="o">)</span>~<span class="nv">$ </span>mkdir binary
+<span class="o">(</span>venv<span class="o">)</span>~<span class="nv">$ </span><span class="nb">cd </span>binary
+<span class="o">(</span>venv<span class="o">)</span>~/binary<span class="nv">$ </span>touch __init__.py
+<span class="o">(</span>venv<span class="o">)</span>~/binary<span class="nv">$ </span>mkdir tests
+</pre></div>
+
+
+<p>Finally, let us check that everything is correctly working. Py.test does not find any test so it should exit without errors.</p>
+<div class="highlight"><pre><span class="o">(</span>venv<span class="o">)</span>~/binary<span class="nv">$ </span>py.test
+<span class="o">=====================</span> <span class="nb">test </span>session <span class="nv">starts</span> <span class="o">=====================</span>
+<span class="o">[</span>...<span class="o">]</span>
+collected <span class="m">0</span> <span class="nv">items</span> 
+
+<span class="o">=======================</span>  in 0.00 <span class="nv">seconds</span> <span class="o">======================</span>
+</pre></div>
+
+
+<p>where <code>[...]</code> will be filled with information about your execution environment.</p>
+<h2>Py.test</h2>
+<p>The approach used by py.test is very straightforward: to test your library you just have to write some functions that use it. Those functions shall run without raising any exception; if a test (a function) runs without raising an exception it passes, otherwise it fails. Let us start writing a very simple test to learn the basic syntax. Create a <code>tests/test_binary.py</code> file and write the following code</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_first</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+
+
+<p>If you run <code>py.test</code> again you shall obtain this result</p>
+<div class="highlight"><pre><span class="o">(</span>venv<span class="o">)</span>~/binary<span class="nv">$ </span>py.test
+<span class="o">=====================</span> <span class="nb">test </span>session <span class="nv">starts</span> <span class="o">=====================</span>
+<span class="o">[</span>...<span class="o">]</span>
+collected <span class="m">1</span> items 
+
+tests/test_binary.py .
+
+<span class="o">===================</span> <span class="m">1</span> passed in 0.01 <span class="nv">seconds</span> <span class="o">==================</span>
+</pre></div>
+
+
+<p>if you prefer (as I do) you may use the <code>-v</code> verbose switch to get detailed information about what tests have been executed</p>
+<div class="highlight"><pre><span class="o">(</span>venv<span class="o">)</span>~/binary<span class="nv">$ </span>py.test -v
+<span class="o">=====================</span> <span class="nb">test </span>session <span class="nv">starts</span> <span class="o">=====================</span>
+<span class="o">[</span>...<span class="o">]</span>
+collected <span class="m">1</span> items 
+
+tests/test_binary.py::test_first <span class="nv">PASSED</span>
+
+<span class="o">===================</span> <span class="m">1</span> passed in 0.01 <span class="nv">seconds</span> <span class="o">==================</span>
+</pre></div>
+
+
+<p>By default py.test looks for Python files which name starts with <code>test_</code>, and this is why it processes our file <code>tests/test_binary.py</code>. For each file it runs all functions which name, again, starts with <code>test_</code>, and this is why <code>test_first()</code> has been executed.</p>
+<p>This latter does nothing, so it runs without raising any exception and the test passes. Let us try to raise an exception</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_first</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span>
+</pre></div>
+
+
+<p>which gives the following py.test output</p>
+<div class="highlight"><pre><span class="o">(</span>venv<span class="o">)</span>~/binary<span class="nv">$ </span>py.test -v
+<span class="o">=====================</span> <span class="nb">test </span>session <span class="nv">starts</span> <span class="o">=====================</span>
+<span class="o">[</span>...<span class="o">]</span>
+collected <span class="m">1</span> items 
+
+tests/test_binary.py::test_first <span class="nv">FAILED</span>
+
+<span class="o">===========================</span> <span class="nv">FAILURES</span> <span class="o">==========================</span>
+__________________________ test_first _________________________
+
+    def test_first<span class="o">()</span>:
+&gt;       raise ValueError
+E       ValueError
+
+tests/test_binary.py:2: <span class="nv">ValueError</span>
+<span class="o">===================</span> <span class="m">1</span> failed in 0.01 <span class="nv">seconds</span> <span class="o">==================</span>
+</pre></div>
+
+
+<p>To easily write tests that raise exceptions when failing we may use the <code>assert</code> Python statement, which shall be followed by an expression. If the expression returns a true value, <code>assert</code> does nothing, otherwise it raises an <code>AssertionError</code> exception. Let us do a quick check in the Python console</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="bp">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="bp">False</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">AssertionError</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+<span class="gr">AssertionError</span>
+</pre></div>
+
+
+<p>So usually our tests will contain some code and one or more assertions. I prefer to have just one assertion for each test, except perhaps when testing the very same feature more than once (for example getting various elements from a list). This way you are immediately aware of what assertion raised the exception, that is you immediately know what feature does not work as expected.</p>
+<h2>Writing some tests</h2>
+<p>So now we will pretend we have already developed our <code>Binary</code> class and write some tests that check its behaviour. You will find the whole file in the Resources section at the end of the post, I will show here just some snippets.</p>
+<h3>Initialization</h3>
+<div class="highlight"><pre><span class="kn">from</span> <span class="nn">binary</span> <span class="kn">import</span> <span class="n">Binary</span>
+
+<span class="k">def</span> <span class="nf">test_binary_init_int</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+</pre></div>
+
+
+<p>This is our first real test. First of all we import the class from the <code>binary.py</code> file (which doesn't exists yet). The <code>test_binary_init_int()</code> function shall (as the name suggests) initialize a <code>Binary</code> with an integer. The assertion checks that the newly created <code>binary</code> variable has a consistent integer representation, which is the number we used to initialize it.</p>
+<p>We want to be able to initialize a <code>Binary</code> with a wide range of values: bit strings (<code>'110'</code>), binary strings (<code>'0b110'</code>), hexadecimal strings (<code>'0x6'</code>), hexadecimal values (<code>0x6</code>), lists of integers (<code>[1,1,0]</code>) and list of strings (<code>['1','1','0']</code>). The following tests check all those cases</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_init_bitstr</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;110&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+
+<span class="k">def</span> <span class="nf">test_binary_init_binstr</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;0b110&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+
+<span class="k">def</span> <span class="nf">test_binary_init_hexstr</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;0x6&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+
+<span class="k">def</span> <span class="nf">test_binary_init_hex</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="mh">0x6</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+
+<span class="k">def</span> <span class="nf">test_binary_init_intseq</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+
+<span class="k">def</span> <span class="nf">test_binary_init_strseq</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">([</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;1&#39;</span><span class="p">,</span><span class="s">&#39;0&#39;</span><span class="p">])</span>
+    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+</pre></div>
+
+
+<p>Finally, let us check that our <code>Binary</code> class cannot be initialized with a negative number. I decided to represent negative numbers through the two's complement technique, which however requires a predefined bit length. So for simple binaries I just discard negative numbers.</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="p">[</span><span class="o">...</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">test_binary_init_negative</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+        <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+
+<p>As you can see, now we have to check that our class raises an exception, but if we make the class raise it the test will fail. To let the test pass we shall check that the exception is raised but suppress it, and this can be done with <code>pytest.raises</code>, which is a suitable <a href="https://www.python.org/dev/peps/pep-0343/">context manager</a>.</p>
+<h3>Conversions</h3>
+<p>I want to check that my binary numbers can be correctly converted to integers (through <code>int()</code>), binary strings (through <code>bin()</code>), hexadecimals (through <code>hex()</code>) and to strings (through <code>str()</code>). I want the string representation to be a plain sequence of zeros and ones, that is the binary string representation without the <code>0b</code> prefix.</p>
+<p>Some examples (check the full code for the whole set of tests)</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_int</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">int</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+
+<span class="k">def</span> <span class="nf">test_binary_str</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="nb">str</span><span class="p">(</span><span class="n">binary</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#39;110&#39;</span>
+</pre></div>
+
+
+<h3>Project structure</h3>
+<p>I warmly suggest to check <a href="https://pytest.org/latest/goodpractises.html">this page</a> for a project layout that allows py.test to work flawlessly. To avoid putting too many things in this post I am going to run <code>py.test</code> with a custom <code>PYTHONPATH</code> to make it correctly import the code. However, please remember that this setup is just a trick for simplicity's sake. Check <a href="http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/">this detailed post</a> by Jeff Knupp to learn a lot about Python packaging and project layouts.</p>
+<h3>Writing the class</h3>
+<p>Trying to run the tests at this point just returns a big failure due to an import error, since the <code>binary.py</code> module does not exists yet.</p>
+<div class="highlight"><pre><span class="o">(</span>venv<span class="o">)</span>~/binary<span class="nv">$ PYTHONPATH</span><span class="o">=</span>. py.test -v
+<span class="o">=====================</span> <span class="nb">test </span>session <span class="nv">starts</span> <span class="o">=====================</span>
+<span class="o">[</span>...<span class="o">]</span>
+collected <span class="m">0</span> items / <span class="m">1</span> <span class="nv">errors</span>
+<span class="o">============================</span> <span class="nv">ERRORS</span> <span class="o">===========================</span>
+____________ ERROR collecting tests/test_binary.py ____________
+tests/test_binary.py:2: in &lt;module&gt;
+    from binary import Binary
+E   ImportError: No module named <span class="s1">&#39;binary&#39;</span>
+
+<span class="o">===================</span> <span class="m">1</span> error in 0.01 <span class="nv">seconds</span> <span class="o">===================</span>
+</pre></div>
+
+
+<p>Let us create the file <code>binary.py</code> in the project root (i.e. inside the <code>binary/</code> directory you created, together with <code>__init__.py</code> and <code>tests/</code>) and start creating the <code>Binary</code> class.</p>
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Binary</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+
+
+<p>Now running py.test shows that all tests can be run and that all them fail (I will just show the first one)</p>
+<div class="highlight"><pre><span class="o">(</span>venv<span class="o">)</span>~/binary<span class="nv">$ PYTHONPATH</span><span class="o">=</span>. py.test -v
+<span class="o">=====================</span> <span class="nb">test </span>session <span class="nv">starts</span> <span class="o">=====================</span>
+<span class="o">[</span>...<span class="o">]</span>
+collected <span class="m">13</span> items 
+
+tests/test_binary.py::test_binary_init_int FAILED
+<span class="o">[</span>...<span class="o">]</span>
+
+<span class="o">============================</span> <span class="nv">FAILURES</span> <span class="o">==========================</span>
+_____________________ test_binary_init_int _____________________
+
+    def test_binary_init_int<span class="o">()</span>:
+&gt;       <span class="nv">binary</span> <span class="o">=</span> Binary<span class="o">(</span>6<span class="o">)</span>
+E       TypeError: object<span class="o">()</span> takes no parameters
+
+tests/test_binary.py:5: TypeError
+<span class="o">[</span>...<span class="o">]</span>
+<span class="o">===================</span> <span class="m">13</span> failed in 0.03 <span class="nv">seconds</span> <span class="o">==================</span>
+</pre></div>
+
+
+<p>So now you can start writing code and use your test battery to check if it works as expected. Obviously "as expected" means that all the tests you wrote pass, but this does not imply you covered all cases. TDD is an iterative methodology: when you find a bug or a missing feature you first write a good test or a set of tests that address the matter and then produce some code that make the tests pass.</p>
+<p><strong>At this point you are warmly encouraged to write the code by yourself</strong> and to check your product with the given battery of tests. Just download the first version of the tests file (<a href="/code/python-oop-tdd-part1/test_binary_ver1.py"><code>test_binary_ver1.py</code></a>) and put it in the <code>tests/</code> directory. Then read it carefully to understand what the requirements are and start writing the class. When you think you are done with a part of it just run the tests and see if everything works well, then move on.</p>
+<h2>My solution</h2>
+<p>The most complex part of the class is the initialization, since I want it to accept a wide range of data types. Basically we have to deal with sequences (strings and lists) or with plain values. The latter ones shall be convertible to an integer, otherwise trying to initialize a binary number with them makes no sense. Since binary numbers are just a representation of integers I decided to store the value in the class as an integer inside the <code>self._value</code> attribute. Pay attention that this decision means that all leading zeros will be stripped from the number, i.e., <code>Binary('000101')</code> is equal to <code>Binary('101')</code>. This will be important for indexing and slicing.</p>
+<p>This is the code</p>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">collections</span>
+
+<span class="k">class</span> <span class="nc">Binary</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;0b&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;0x&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">value</span><span class="p">]),</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Binary cannot accept negative numbers. Use SizedBinary instead&quot;</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Cannot convert value {} to Binary&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__int__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+</pre></div>
+
+
+<p>Running the tests I get <code>4 failed, 9 passed in 0.02 seconds</code>, which is a good score. The tests that still fail are <code>test_binary_eq</code>, <code>test_binary_bin</code>, <code>test_binary_str</code> and <code>test_binary_hex</code>. Since I still wrote no code for the conversions those failures were expected.</p>
+<p>Let us review the code I wrote. I make use of the <code>collections</code> module to tell apart sequences from plain values in a pythonic way. If you do not know what Abstract Base Classes are, please check <a href="/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes">this post</a> and the <a href="https://docs.python.org/3/library/collections.abc.html"><code>collections.abc</code> module documentation</a>.</p>
+<p><strong>WARNING</strong>: if you are using Python 3.2 or less you will find those classes in the <code>collections</code> module instead of <code>collections.abc</code>, which has been introduced with Python 3.3</p>
+<p>Basically through <code>isinstance(value, collections.abc.Sequence)</code> we check that the incoming value <em>behaves</em> like a sequence, which is different from saying that it <em>is</em> a <code>list</code>, a <code>string</code>, or other sequences. The first case covers an incoming string in the form <code>0bXXXXX</code>, which is converted to an integer through the <code>int()</code> function. The second case is the same but for hexadecimal strings in the form <code>0xXXXXX</code>.</p>
+<p>The third case covers a generic sequence of values that shall be individually convertible to <code>0</code> or <code>1</code>. The code converts each element of the sequence to a string, joins them in a single string and converts it with base 2. This covers the case of a string of zeros and ones and the case of an iterable of integers, like a list for example.</p>
+<p>If the incoming value is not a sequence it shall be convertible to an integer, which is exactly what the <code>try</code> part does. Here we also check if the value is negative and raise a suitable exception.</p>
+<p>Finally, the <code>__int__()</code> method (one of the Python <em>magic methods</em>) is automatically called when we apply <code>int()</code> to our binary, just like we do in a lot of the tests. This method is basically the one responsible of providing a conversion to integer of a given class. In this case we just have to return the value we stored internally.</p>
+<p><strong>Obviously I didn't write this code in a single burst. I had to run the tests more than once to tune my code.</strong></p>
+<p>I already wrote the method that performs the conversion to an integer. Some tests however (namely <code>test_binary_bin</code> and <code>test_binary_hex</code>) still fail with the error message <code>TypeError: 'Binary' object cannot be interpreted as an integer</code>.</p>
+<p>According to <a href="https://docs.python.org/3/library/functions.html#bin">the official documentation</a>,  "If x is not a Python int object, it has to define an <code>__index__()</code> method that returns an integer." so this is what we are missing. As for <code>__index__()</code>, the <a href="https://docs.python.org/3/reference/datamodel.html#object.__index__">documentation</a> states that "In order to have a coherent integer type class, when <code>__index__()</code> is defined <code>__int__()</code> should also be defined, and both should return the same value."</p>
+<p>So we just have to add</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">__index__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__int__</span><span class="p">()</span>
+</pre></div>
+
+
+<p>inside the class, and we get two more successful tests.</p>
+<p>To make <code>test_binary_str</code> pass we have to provide a magic method that converts the object into a string, which is</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="bp">self</span><span class="p">))[</span><span class="mi">2</span><span class="p">:]</span>
+</pre></div>
+
+
+<p>It makes use of the internal Python algorithm provided by <code>bin()</code> stripping the <code>0b</code> prefix.</p>
+<p>The last failing test is <code>test_binary_eq</code> which tests for equality between two <code>Binary</code> objects</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_eq</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Out of the box, Python compares objects on a very low level, just checking if the two references point to the same object in memory. To make it smarter we have to provide the <code>__eq__()</code> method</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</pre></div>
+
+
+<p>And now all the tests run successfully.</p>
+<h2>Binary operations</h2>
+<p>Now it is time to add new features to our <code>Binary</code> class. As already said, the TDD methodology wants us to first write the tests, then to write the code. Our class is missing some basic arithmetic and binary operations so the tests are (again you will find all tests in the attached file)</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_addition_int</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_binary_addition_binary</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_binary_division_int</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_binary_division_rem_int</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">21</span><span class="p">)</span> <span class="o">/</span> <span class="mi">4</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_binary_get_bit</span><span class="p">():</span>
+    <span class="n">binary</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;0101110001&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">binary</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;1&#39;</span>
+    <span class="k">assert</span> <span class="n">binary</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;1&#39;</span>
+    <span class="k">assert</span> <span class="n">binary</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;0&#39;</span>
+
+<span class="k">def</span> <span class="nf">test_binary_not</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="o">~</span><span class="n">Binary</span><span class="p">(</span><span class="s">&#39;1101&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;10&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_binary_and</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;1101&#39;</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">test_binary_shl_pos</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;1101&#39;</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;110100000&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The first two tests check that adding both an integer and a <code>Binary</code> to a <code>Binary</code> works as expected. The division checks two different cases: because integer division produces a remainder, which is not considered here. The <code>test_binary_get_bit</code> function tests indexing and is one of the few tests that contain more than one assertion. Please note that binary indexing, unlike standard sequence indexing in Python, start from the leftmost element.</p>
+<p>Bitwise and arithmetic operations are implemented using Python magic methods. Please check <a href="https://docs.python.org/3.4/library/operator.html">the official documentation</a> for a complete list of operators and related methods.</p>
+<p><strong>Now download the file <a href="/code/python-oop-tdd-part1/test_binary_ver2.py"><code>test_binary_ver2.py</code></a> and use it to develop the new features.</strong></p>
+<p>The code that implements the required behaviour is</p>
+<div class="highlight"><pre>    <span class="k">def</span> <span class="nf">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">&amp;</span> <span class="n">Binary</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">|</span> <span class="n">Binary</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">^</span> <span class="n">Binary</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">&lt;&lt;</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pos</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">&gt;&gt;</span> <span class="n">pos</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">+</span> <span class="n">Binary</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">-</span> <span class="n">Binary</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">*</span> <span class="n">Binary</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__truediv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">/</span> <span class="n">Binary</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">_value</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)[</span><span class="o">-</span><span class="p">(</span><span class="n">item</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">__invert__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Binary</span><span class="p">([</span><span class="nb">abs</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)])</span>
+</pre></div>
+
+
+<p>All methods are straightforward, except perhaps <code>__getitem__()</code> and <code>__invert__()</code>. The <code>__invert__()</code> method is called when performing a bitwise NOT operation (<code>~</code>) and is implemented avoiding negative numbers. A simple solution is to convert the <code>Binary</code> into a string and then reverse every digit (<code>abs(int(i) - 1)</code> returns 0 for '1' and 1 for '0').</p>
+<p>The <code>__getitem__()</code> method is required to provide indexing, and as said shall index starting from the rightmost element and moving left. This is the reason of the <code>-(item + 1)</code> index. Please notice that this method will be changed later to provide full support to slicing.</p>
+<h2>Slicing</h2>
+<p>I want <code>Binary</code> to support slicing, just like lists. The difference between lists and my <code>Binary</code> type is that for the latter indexes start from the rightmost element. So when I get bits 3:7 of an 8-bit <code>Binary</code> I obtain the four leftmost ones. The desired behaviour is thus exemplified by</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">b</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;01101010&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">7</span><span class="p">]</span>
+<span class="go">&lt;binary.Binary object at 0x...&gt; (110)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+<span class="go">&lt;binary.Binary object at 0x...&gt; (101)</span>
+</pre></div>
+
+
+<p>that can immediately be converted into tests</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_slice</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;01101010&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;10&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;01101010&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;101&#39;</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;01101010&#39;</span><span class="p">)[</span><span class="mi">4</span><span class="p">:]</span> <span class="o">==</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;110&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><strong>You will find the new tests in the <a href="/code/python-oop-tdd-part1/test_binary_ver3.py"><code>test_binary_ver3.py</code></a> file.</strong></p>
+<p>Running the tests shows that the <code>__getitem__()</code> function does not provide support for <code>slice</code> objects, raising the exception <code>TypeError: unsupported operand type(s) for +: 'slice' and 'int'</code>. Checking <a href="https://docs.python.org/3.4/reference/datamodel.html#object.__getitem__">the documentation</a> of <code>__getitem__()</code> we notice that it shall manage both integers and <code>slice</code> objects (this is the missing part) and that it shall raise <code>IndexError</code> for illegal indexes to make for loops work. So I immediately add a test for this rule</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_illegal_index</span><span class="p">():</span>
+    <span class="k">with</span> <span class="n">pytest</span><span class="o">.</span><span class="n">raises</span><span class="p">(</span><span class="ne">IndexError</span><span class="p">):</span>
+        <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;01101010&#39;</span><span class="p">)[</span><span class="mi">7</span><span class="p">]</span>
+</pre></div>
+
+
+<p>and other tests to match the correct behaviour (you will find them in the full code). Remember that leading zeros are stripped, so getting the index number 7 shall fail, since the binary number has just 7 digits, even if the incoming string has 8 characters.</p>
+<p>Instead of trying to reimplement the whole list slicing behaviour with reversed indexes, it is much simpler to make use of it. We can just take the string version of our <code>Binary</code>, slice its reversed version and return the result (reversed again). The result of the slice can be a single element, however, so we have to check it against the <code>Sequence</code> class</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">reversed_list</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))]</span>
+        <span class="n">sliced</span> <span class="o">=</span> <span class="n">reversed_list</span><span class="o">.</span><span class="n">__getitem__</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sliced</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Sequence</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sliced</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Binary</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">sliced</span><span class="p">)])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Binary</span><span class="p">(</span><span class="n">sliced</span><span class="p">)</span>
+</pre></div>
+
+
+<p>The first list comprehension returns a list of integers with the reversed version of the binary number (i.e. from <code>Binary('01101')</code> to <code>[1, 0, 1, 1]</code>, remember that leading zeros are stripped). Then we delegate the slice to the <code>list</code> type, calling <code>__getitem__()</code>. The result of this call may be a sequence or a single element (integer), so we tell apart the two cases. In the first case we reverse the result again, in the second case we just return it. In both cases we create a <code>Binary</code> object. The check on the length of the list must be introduced because the slice may return no elements, but the <code>Binary</code> class does not accept an empty list.</p>
+<h2>Splitting binaries</h2>
+<p>The last feature I want to add is a <code>split()</code> function that divides the binary number in two binaries. The rightmost one shall have the given size in bits, while the leftmost just contains the remaining bits. The following tests exemplify the behaviour of <code>split()</code></p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">test_binary_split_no_remainder</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;110&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;110&#39;</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">test_binary_split_remainder</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;110&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;10&#39;</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">test_binary_split_exact</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;100010110&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;100010110&#39;</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">test_binary_split_leading_zeros</span><span class="p">():</span>
+    <span class="k">assert</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;100010110&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">Binary</span><span class="p">(</span><span class="s">&#39;10110&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+<p><strong>These new tests are in the file <a href="/code/python-oop-tdd-part1/test_binary_ver4.py"><code>test_binary_ver4.py</code></a>.</strong></p>
+<p>The code that implements it is</p>
+<div class="highlight"><pre><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bits</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">bits</span><span class="p">:],</span> <span class="bp">self</span><span class="p">[:</span><span class="n">bits</span><span class="p">])</span>
+</pre></div>
+
+
+<h2>Resources</h2>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/Binary_number">Wikipedia entry</a> on binary numbers.</li>
+<li><a href="https://www.python.org/dev/peps/pep-0343/">Context managers</a> in Python.</li>
+<li><a href="https://pytest.org/latest/goodpractises.html">Py.test project layouts</a>.</li>
+<li>Jeff Knupp on <a href="http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/">open sourcing a Python project</a>.</li>
+<li>The Python <a href="https://docs.python.org/3/library/collections.abc.html"><code>collections.abc</code> module documentation</a>.</li>
+<li><a href="https://docs.python.org/3.4/library/operator.html">Python operators documentation</a>.</li>
+</ul>
+<p>The code developed in this post can be found here:</p>
+<ul>
+<li>The full code of the <code>Binary</code> class is <a href="/code/python-oop-tdd-part1/binary.py">here</a>.</li>
+<li>The last version of the tests file is <a href="/code/python-oop-tdd-part1/test_binary_ver4.py">here</a>.</li>
+</ul>
+<h2>Final words</h2>
+<p>If you tried and write your own class before checking my solution I'm sure you experienced both some frustration when tests failed and a great joy when they finally passed. I'm also sure that you could appreciate the simplicity of TDD and perhaps understand why so many programmes adopt it.</p>
+<p>In the next post I will guide you through the addition of the <code>SizeBinary</code> class, again following the TDD methodology.</p>
+<h2>Feedback</h2>
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">Advanced use of Python decorators and metaclasses</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">Python 3 OOP Part 6 - Abstract Base Classes</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">Python 3 OOP Part 4 - Polymorphism</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/03/14/python-3-oop-notebooks/">Python 3 OOP Notebooks</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">Accessing attributes in Python</a></li>
+    </ul>
+</section>
+    <hr />
+    <!-- AddThis Button BEGIN -->
+    <div class="addthis_toolbox addthis_default_style">
+            <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+            <a class="addthis_button_tweet"></a>
+            <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    </div>
+    <!-- AddThis Button END -->
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://twitter.com/tw_lgiordani"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                <li class="list-group-item"><a href="http://plus.google.com/+LeonardoGiordani?rel=author"><i class="fa fa-google-plus-square fa-lg"></i> Google+</a></li>
+                <li class="list-group-item"><a href="https://github.com/lgiordani"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+              </ul>
+            </li>
+
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                <ul class="list-group" id="recentposts">
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/05/13/python-oop-tdd-example-part1/">
+                            A simple example of Python OOP development (with TDD) - Part 1
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/05/13/99-scala-problems-16-20/">
+                            99 Scala Problems 16-20
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/04/23/python-decorators-metaprogramming-with-style/">
+                            Python decorators: metaprogramming with style
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/04/14/99-scala-problems-15-duplicate-the-elements-of-a-list-a-given-number-of-times/">
+                            99 Scala Problems 15 - Duplicate the elements of a list a given number of times
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/04/14/99-scala-problems-14-duplicate-the-elements-of-a-list/">
+                            99 Scala Problems 14 - Duplicate the elements of a list
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group list-inline tagcloud" id="tags">
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/amqp/">
+                            AMQP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/c/">
+                            C
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/concurrent-programming/">
+                            concurrent programming
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/cpp/">
+                            C++
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-3">
+                        <a href="http://lgiordani.com/categories/decorators/">
+                            decorators
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/django/">
+                            Django
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-3">
+                        <a href="http://lgiordani.com/categories/erlang/">
+                            Erlang
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/functional-programming/">
+                            functional programming
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/generators/">
+                            generators
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/git/">
+                            Git
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/metaclasses/">
+                            metaclasses
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/metaprogramming/">
+                            metaprogramming
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/notebook/">
+                            Notebook
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/oop/">
+                            OOP
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/operating-systems/">
+                            operating systems
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/pika/">
+                            Pika
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/postage/">
+                            Postage
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/python/">
+                            Python
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-2">
+                        <a href="http://lgiordani.com/categories/python2/">
+                            Python2
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/python3/">
+                            Python3
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/qt/">
+                            Qt
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-3">
+                        <a href="http://lgiordani.com/categories/rabbitmq/">
+                            RabbitMQ
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-1">
+                        <a href="http://lgiordani.com/categories/scala/">
+                            Scala
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/tdd/">
+                            TDD
+                        </a>
+                    </li>
+                    <li class="list-group-item tag-4">
+                        <a href="http://lgiordani.com/categories/versioning/">
+                            versioning
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
+
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
+
+        <script type="text/javascript">var addthis_config = {"data_track_addressbar": true};</script>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552391e122c8506c"></script>
+</body>
+</html>

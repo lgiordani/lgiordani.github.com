@@ -5,28 +5,42 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/index.html</loc>
-<lastmod>2015-04-23T13:06:01-00:00</lastmod>
+<lastmod>2015-05-13T17:24:13-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/tags.html</loc>
-<lastmod>2015-04-23T13:06:01-00:00</lastmod>
+<lastmod>2015-05-13T17:24:13-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/categories.html</loc>
-<lastmod>2015-04-23T13:06:01-00:00</lastmod>
+<lastmod>2015-05-13T17:24:13-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/pages/about.html</loc>
-<lastmod>2015-04-23T13:06:01-00:00</lastmod>
+<lastmod>2015-05-13T17:24:13-00:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/blog/2015/05/13/python-oop-tdd-example-part1/</loc>
+<lastmod>2015-05-13T17:00:00+01:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/blog/2015/05/13/99-scala-problems-16-20/</loc>
+<lastmod>2015-05-13T16:00:00+01:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -376,7 +390,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/category/programming/</loc>
-<lastmod>2015-04-23T13:00:00+00:09</lastmod>
+<lastmod>2015-05-13T17:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -390,7 +404,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/functional-programming/</loc>
-<lastmod>2015-04-23T13:00:00+00:09</lastmod>
+<lastmod>2015-05-13T16:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -418,7 +432,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/scala/</loc>
-<lastmod>2015-04-14T12:30:00+00:09</lastmod>
+<lastmod>2015-05-13T16:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -460,7 +474,14 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/python/</loc>
-<lastmod>2015-04-23T13:00:00+00:09</lastmod>
+<lastmod>2015-05-13T17:00:00+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/categories/tdd/</loc>
+<lastmod>2015-05-13T17:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -474,7 +495,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/oop/</loc>
-<lastmod>2015-04-23T13:00:00+00:09</lastmod>
+<lastmod>2015-05-13T17:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -495,7 +516,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/python3/</loc>
-<lastmod>2015-03-14T23:00:00+00:09</lastmod>
+<lastmod>2015-05-13T17:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
