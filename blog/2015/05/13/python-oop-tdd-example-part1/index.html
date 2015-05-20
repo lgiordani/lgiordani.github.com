@@ -457,7 +457,7 @@ tests/test_binary.py:5: TypeError
 <p>inside the class, and we get two more successful tests.</p>
 <p>To make <code>test_binary_str</code> pass we have to provide a magic method that converts the object into a string, which is</p>
 <div class="highlight"><pre><span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="nb">bin</span><span class="p">(</span><span class="bp">self</span><span class="p">))[</span><span class="mi">2</span><span class="p">:]</span>
+    <span class="k">return</span> <span class="nb">bin</span><span class="p">(</span><span class="bp">self</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span>
 </pre></div>
 
 
@@ -629,6 +629,8 @@ tests/test_binary.py:5: TypeError
 <h2>Final words</h2>
 <p>If you tried and write your own class before checking my solution I'm sure you experienced both some frustration when tests failed and a great joy when they finally passed. I'm also sure that you could appreciate the simplicity of TDD and perhaps understand why so many programmes adopt it.</p>
 <p>In the next post I will guide you through the addition of the <code>SizeBinary</code> class, again following the TDD methodology.</p>
+<h2>Updates</h2>
+<p>2015-05-15 As suggested by <a href="https://plus.google.com/u/0/b/110554719587236016835/+JacobZimmermanCrapEDM/posts">Jacob Zimmerman</a> in <a href="https://plus.google.com/110554719587236016835/posts/F7TrsivP94B">this comment</a> the class lacks some methods to be a complete numeric class, most notably <code>__radd__</code> and <code>__rsub__</code>. Indeed, my first goal was to show TDD so I did not add the whole series of reflected arithmetic operations. You will find all those methods <a href="https://docs.python.org/3/reference/datamodel.html#object.__radd__">here</a> and try to implement them following the methodology shown in the post. Jacob also suggested to shorten the <code>__str__()</code> implementation, and I fixed it. Thanks Jacob!</p>
 <h2>Feedback</h2>
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
             </div>
@@ -636,11 +638,11 @@ tests/test_binary.py:5: TypeError
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">Advanced use of Python decorators and metaclasses</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">Python 3 OOP Part 6 - Abstract Base Classes</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">Python 3 OOP Part 4 - Polymorphism</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/03/14/python-3-oop-notebooks/">Python 3 OOP Notebooks</a></li>
         <li><a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">Accessing attributes in Python</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">Python 3 OOP Part 3 - Delegation: composition and inheritance</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">Python 3 OOP Part 4 - Polymorphism</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/04/python-3-oop-part-6-abstract-base-classes/">Python 3 OOP Part 6 - Abstract Base Classes</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">Advanced use of Python decorators and metaclasses</a></li>
     </ul>
 </section>
     <hr />

@@ -31,7 +31,7 @@ class Binary:
         return self.__int__()
 
     def __str__(self):
-        return str(bin(self))[2:]
+        return bin(self)[2:]
 
     def __eq__(self, other):
         return int(self) == int(other)
