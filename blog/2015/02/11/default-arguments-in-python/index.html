@@ -229,7 +229,7 @@
 
 <h2>Default arguments evaluation</h2>
 <p>Default arguments may be provided as plain values or as the result of a function call, but this latter technique need a <strong>very big warning</strong>.</p>
-<p>While plain values are hardcoded, thus needing no evaluation except that made at compilation time, function calls are expected to be executed at run time. So we could write</p>
+<p>While plain values are hardcoded, thus needing no evaluation except that made at compilation time, function calls are expected to be executed at run time (check <a href="http://www.reddit.com/r/Python/comments/2viygh/default_arguments_in_python/coii8bn?context=3">this comment on Reddit</a> for a better explanation of this matter). So we could write</p>
 <div class="highlight"><pre><span class="kn">import</span> <span class="nn">datetime</span> <span class="kn">as</span> <span class="nn">dt</span>
 
 <span class="k">def</span> <span class="nf">log_time</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="n">dt</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()):</span>
@@ -259,15 +259,17 @@
 
 <h2>Conclusions</h2>
 <p>Default arguments may vastly simplify APIs, provided that you pay attention to their only "failure point", the evaluation time. Surprisingly, one of the most basic things in Python, function arguments and references, are one of the biggest source of errors, sometimes for experienced programmers too. I recommend giving references and polymorphism some study time.</p>
+<h2>Updates</h2>
+<p>2015-06-10: <a href="http://www.reddit.com/user/brandjon">brandjon</a> added some useful information <a href="http://www.reddit.com/r/Python/comments/2viygh/default_arguments_in_python/coii8bn?context=3">here</a>, explaining how CPython deals with plain values and functions. I added the link to the commented section.</p>
             </div>
             <!-- /.entry-content -->
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">OOP concepts in Python 2.x - Part 1</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">Accessing attributes in Python</a></li>
-        <li><a href="http://lgiordani.com/blog/2013/03/29/python-generators-from-iterators-to-cooperative-multitasking-3/">Python Generators - From Iterators to Cooperative Multitasking - 3</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/03/14/python-3-oop-notebooks/">Python 3 OOP Notebooks</a></li>
         <li><a href="http://lgiordani.com/blog/2014/03/10/oop-concepts-in-python-2-dot-x-part-2/">OOP concepts in Python 2.x - Part 2</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-1-objects-and-types/">Python 3 OOP Part 1 - Objects and types</a></li>
+        <li><a href="http://lgiordani.com/blog/2013/07/25/postage-a-rabbitmq-based-component-python-library/">Postage - a RabbitMQ-based component Python library</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">Python 3 OOP Part 4 - Polymorphism</a></li>
     </ul>
 </section>
