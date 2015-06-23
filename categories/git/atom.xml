@@ -66,6 +66,11 @@
 &lt;/pre&gt;&lt;/div&gt;
 
 
+&lt;h2&gt;The &lt;code&gt;gitflow gh&lt;/code&gt; command&lt;/h2&gt;
+&lt;p&gt;&lt;a href="https://github.com/lgiordani/gitflow/tree/github_support"&gt;This repository&lt;/a&gt; is a fork of the official gitflow repository and inplements a new gitflow command &lt;code&gt;gh&lt;/code&gt; to easily perform what has been described in this post. The changes are implemented in the &lt;code&gt;github_support&lt;/code&gt; branch, which has been developed with the modified gitflow program itself.&lt;/p&gt;
+&lt;p&gt;As of 22-06-2015 I &lt;a href="https://github.com/petervanderdoes/gitflow/pull/208"&gt;submitted a PR&lt;/a&gt; to the official gitflow repository, but I do not know if it is going to be accepted.&lt;/p&gt;
+&lt;p&gt;If you are interested in using this feature feel free to clone my gitflow repository and report any issue either there or in the PR itself. As soon as the PR is processed, I'll update this section.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;gh&lt;/code&gt; command is described in &lt;a href="https://github.com/lgiordani/gitflow/tree/github_support#github-integration"&gt;the README&lt;/a&gt;. It currently provides six commands: enable, disable, activate, import, squash and publish.&lt;/p&gt;
 &lt;h2&gt;Links&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;The GitHUb workflow &lt;a href="https://guides.github.com/introduction/flow/"&gt;official documentation&lt;/a&gt;&lt;/li&gt;
@@ -74,6 +79,8 @@
 &lt;li&gt;Some insights on &lt;a href="https://git-scm.com/book/en/v2/Git-Internals-Git-Objects"&gt;Git objects&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;Another solution to work with GitHub and gitflow: &lt;a href="https://datasift.github.io/gitflow/"&gt;HubFlow&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
+&lt;h2&gt;Updates&lt;/h2&gt;
+&lt;p&gt;2015-06-23: Added a section about a gitflow fork that implements the concepts explained in the post.&lt;/p&gt;
 &lt;h2&gt;Feedback&lt;/h2&gt;
 &lt;p&gt;Feel free to use &lt;a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts"&gt;the blog Google+ page&lt;/a&gt; to comment the post. The &lt;a href="https://github.com/lgiordani/lgiordani.github.com/issues"&gt;GitHub issues&lt;/a&gt; page is the best place to submit corrections.&lt;/p&gt;</summary><category term="Git"></category></entry><entry><title>libqgit2: a Qt wrapper for libgit2</title><link href="http://lgiordani.com/blog/2013/07/18/libqgit2-a-qt-wrapper-for-libgit2/" rel="alternate"></link><updated>2013-07-18T10:51:00+01:00</updated><author><name>Leonardo Giordani</name></author><id>tag:lgiordani.com,2013-07-18:blog/2013/07/18/libqgit2-a-qt-wrapper-for-libgit2/</id><summary type="html">&lt;p&gt;&lt;a href="http://libgit2.github.com/"&gt;Libgit2&lt;/a&gt; is "a portable, pure C implementation of the Git core methods" started in 2008 by Shawn O. Pearce. It is successfully used in both commercial an open source projects and wrapped in many languages (among the others Ruby, C#, Python). In 2011 Laszlo Papp from KDE started the libqgit2 project, aiming to port libgit2 features to C++/Qt. Sadly, lately the development slowed down a little and the library could not compile against the latest libgit2.&lt;/p&gt;
 &lt;p&gt;Being interested in using libgit2 in Qt/KDE projects, I am trying to restart the development.
