@@ -5,28 +5,35 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/index.html</loc>
-<lastmod>2015-06-23T15:09:48-00:00</lastmod>
+<lastmod>2015-09-11T17:23:33-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/tags.html</loc>
-<lastmod>2015-06-23T15:09:48-00:00</lastmod>
+<lastmod>2015-09-11T17:23:33-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/categories.html</loc>
-<lastmod>2015-06-23T15:09:48-00:00</lastmod>
+<lastmod>2015-09-11T17:23:33-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/pages/about.html</loc>
-<lastmod>2015-06-23T15:09:48-00:00</lastmod>
+<lastmod>2015-09-11T17:23:33-00:00</lastmod>
+<changefreq>monthly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/blog/2015/09/10/python-oop-tdd-example-part2/</loc>
+<lastmod>2015-09-10T20:00:00+01:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
@@ -397,7 +404,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/category/programming/</loc>
-<lastmod>2015-06-22T14:00:00+00:09</lastmod>
+<lastmod>2015-09-10T20:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -419,6 +426,13 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
 <loc>http://lgiordani.com/categories/amqp/</loc>
 <lastmod>2013-08-21T18:10:00+00:09</lastmod>
+<changefreq>daily</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>http://lgiordani.com/categories/python2/</loc>
+<lastmod>2014-07-04T13:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -473,22 +487,15 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>http://lgiordani.com/categories/qt/</loc>
-<lastmod>2013-07-18T10:51:00+00:09</lastmod>
-<changefreq>daily</changefreq>
-<priority>0.5</priority>
-</url>
-
-<url>
 <loc>http://lgiordani.com/categories/python/</loc>
-<lastmod>2015-05-13T17:00:00+00:09</lastmod>
+<lastmod>2015-09-10T20:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/categories/tdd/</loc>
-<lastmod>2015-05-13T17:00:00+00:09</lastmod>
+<lastmod>2015-09-10T20:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -502,7 +509,7 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/oop/</loc>
-<lastmod>2015-05-13T17:00:00+00:09</lastmod>
+<lastmod>2015-09-10T20:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -523,14 +530,14 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
 <loc>http://lgiordani.com/categories/python3/</loc>
-<lastmod>2015-05-13T17:00:00+00:09</lastmod>
+<lastmod>2015-09-10T20:00:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
-<loc>http://lgiordani.com/categories/python2/</loc>
-<lastmod>2014-07-04T13:00:00+00:09</lastmod>
+<loc>http://lgiordani.com/categories/pika/</loc>
+<lastmod>2013-07-25T15:50:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
@@ -550,8 +557,8 @@ xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 </url>
 
 <url>
-<loc>http://lgiordani.com/categories/pika/</loc>
-<lastmod>2013-07-25T15:50:00+00:09</lastmod>
+<loc>http://lgiordani.com/categories/qt/</loc>
+<lastmod>2013-07-18T10:51:00+00:09</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>

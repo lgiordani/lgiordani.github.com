@@ -50,11 +50,6 @@
         <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
               title="The Digital Cat ATOM Feed"/>
 
-
-
-        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
-              title="The Digital Cat Programming ATOM Feed"/>
-
 </head>
 <body>
 
@@ -112,10 +107,8 @@
 <footer class="post-info">
     <span class="label label-default">Date</span>
     <span class="published">
-        <i class="fa fa-calendar"></i><time datetime="2015-05-13T17:00:00+01:00"> Wed 13 May 2015</time>
+        <i class="fa fa-calendar"></i><time datetime="2015-05-13T17:00:00+01:00"> mer 13 maggio 2015</time>
     </span>
-
-
 
 
 
@@ -131,7 +124,7 @@
 </footer><!-- /.post-info -->                    </div>
                 </div>
                 <p>If you are eager to learn some Python and do not know how to start, this post may give you some hints. I will develop a very simple Python package from scratch, exemplifying some Object-oriented Programming (OOP) techniques and concepts, and using a Test-Driven Development (TDD) approach.</p>
-<p>The package will provide some classes to deal with binary numbers (see the Rationale section), but remember that it is just a toy project. Nothing in this package has been designed with performance in mind: it wants to be as clearer as possible.</p>
+<p>The package will provide some classes to deal with binary numbers (see the Rationale section), but remember that it is just a toy project. Nothing in this package has been designed with performance in mind: it wants to be as clear as possible.</p>
 <h2>Rationale</h2>
 <p>Binary numbers are rather easy to understand, even if becoming familiar with them requires some time. I expect you to have knowledge of the binary numeral system. If you need to review them just take a look at the <a href="http://en.wikipedia.org/wiki/Binary_number">Wikipedia entry</a> or one of the countless resources on Internet.</p>
 <p>The package we are going to write will provide a class that represents binary numbers (<code>Binary</code>) and a class that represents binary numbers with a given bit size (<code>SizeBinary</code>). They shall provide basic binary operations like logical (and, or, xor), arithmetic (addition, subtraction, multiplication, division), shifts and indexing.</p>
@@ -176,7 +169,7 @@
 </pre></div>
 
 
-<p>You can also use a different base when converting things to integers, through the <code>base</code> attribute</p>
+<p>You can also use a different base when converting things to integers, through the <code>base</code> parameter</p>
 <div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s">&#39;101&#39;</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">a</span>
 <span class="go">5</span>
@@ -187,7 +180,7 @@
 
 
 <h2>Test-driven development</h2>
-<p>Simple tasks are the best way to try and use new development methodologies, so this is a good occasion to start working with the so-called test-driven approach. Test-driven Development (TDD) basically means that the first thing you do when developing is to write some <em>tests</em>, that is <strong>programs that use what you are going to develop</strong>. The purpose of those programs is to test that your final product complies with a given behaviour so they provide </p>
+<p>Simple tasks are the best way to try and use new development methodologies, so this is a good occasion to start working with the so-called test-driven approach. Test-driven Development (TDD) basically means that the first thing you do when developing is to write some <em>tests</em>, that is <strong>programs that use what you are going to develop</strong>. The purpose of those programs is to test that your final product complies with a given behaviour. So they provide </p>
 <ul>
 <li><strong>Documentation</strong> for your API: they are examples of use of your package.</li>
 <li><strong>Regression</strong> checks: when you change the code to develop new features they shall not break the behaviour of the previous package versions.</li>
@@ -638,11 +631,11 @@ tests/test_binary.py:5: TypeError
 <section class="well" id="related-posts">
     <h4>Related Posts:</h4>
     <ul>
-        <li><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">Python 3 OOP Part 5 - Metaclasses</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">Advanced use of Python decorators and metaclasses</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">Accessing attributes in Python</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/03/14/python-3-oop-notebooks/">Python 3 OOP Notebooks</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/09/10/python-oop-tdd-example-part2/">A simple example of Python OOP development (with TDD) - Part 2</a></li>
         <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">Python 3 OOP Part 3 - Delegation: composition and inheritance</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">Accessing attributes in Python</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">Python 3 OOP Part 4 - Polymorphism</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/03/14/python-3-oop-notebooks/">Python 3 OOP Notebooks</a></li>
     </ul>
 </section>
     <hr />
@@ -673,6 +666,11 @@ tests/test_binary.py:5: TypeError
             <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
                 <ul class="list-group" id="recentposts">
                     <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/09/10/python-oop-tdd-example-part2/">
+                            A simple example of Python OOP development (with TDD) - Part 2
+                        </a>
+                    </li>
+                    <li class="list-group-item">
                         <a href="http://lgiordani.com/blog/2015/06/22/using-gitflow-with-github-a-simple-procedure/">
                             Using gitflow with GitHub: a simple procedure
                         </a>
@@ -692,146 +690,14 @@ tests/test_binary.py:5: TypeError
                             Python decorators: metaprogramming with style
                         </a>
                     </li>
-                    <li class="list-group-item">
-                        <a href="http://lgiordani.com/blog/2015/04/14/99-scala-problems-15-duplicate-the-elements-of-a-list-a-given-number-of-times/">
-                            99 Scala Problems 15 - Duplicate the elements of a list a given number of times
-                        </a>
-                    </li>
                 </ul>
             </li>
 
 
             <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
                 <ul class="list-group list-inline tagcloud" id="tags">
-                    <li class="list-group-item tag-4">
-                        <a href="http://lgiordani.com/categories/amqp/">
-                            AMQP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="http://lgiordani.com/categories/c/">
-                            C
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="http://lgiordani.com/categories/concurrent-programming/">
-                            concurrent programming
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="http://lgiordani.com/categories/cpp/">
-                            C++
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-3">
-                        <a href="http://lgiordani.com/categories/decorators/">
-                            decorators
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="http://lgiordani.com/categories/django/">
-                            Django
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-3">
-                        <a href="http://lgiordani.com/categories/erlang/">
-                            Erlang
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="http://lgiordani.com/categories/functional-programming/">
-                            functional programming
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="http://lgiordani.com/categories/generators/">
-                            generators
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-3">
-                        <a href="http://lgiordani.com/categories/git/">
-                            Git
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="http://lgiordani.com/categories/metaclasses/">
-                            metaclasses
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="http://lgiordani.com/categories/metaprogramming/">
-                            metaprogramming
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="http://lgiordani.com/categories/notebook/">
-                            Notebook
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="http://lgiordani.com/categories/oop/">
-                            OOP
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="http://lgiordani.com/categories/operating-systems/">
-                            operating systems
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="http://lgiordani.com/categories/pika/">
-                            Pika
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="http://lgiordani.com/categories/postage/">
-                            Postage
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="http://lgiordani.com/categories/python/">
-                            Python
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-2">
-                        <a href="http://lgiordani.com/categories/python2/">
-                            Python2
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="http://lgiordani.com/categories/python3/">
-                            Python3
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="http://lgiordani.com/categories/qt/">
-                            Qt
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-3">
-                        <a href="http://lgiordani.com/categories/rabbitmq/">
-                            RabbitMQ
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-1">
-                        <a href="http://lgiordani.com/categories/scala/">
-                            Scala
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="http://lgiordani.com/categories/tdd/">
-                            TDD
-                        </a>
-                    </li>
-                    <li class="list-group-item tag-4">
-                        <a href="http://lgiordani.com/categories/versioning/">
-                            versioning
-                        </a>
-                    </li>
                 </ul>
             </li>
-
-
     </ul>
 </section>
             </aside>
