@@ -50,6 +50,11 @@
         <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
               title="The Digital Cat ATOM Feed"/>
 
+
+
+        <link href="http://lgiordani.com/category/programming/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming ATOM Feed"/>
+
 </head>
 <body>
 
@@ -109,6 +114,8 @@
     <span class="published">
         <i class="fa fa-calendar"></i><time datetime="2015-05-13T17:00:00+01:00"> mer 13 maggio 2015</time>
     </span>
+
+
 
 
 
@@ -499,7 +506,7 @@ tests/test_binary.py:5: TypeError
 </pre></div>
 
 
-<p>The first two tests check that adding both an integer and a <code>Binary</code> to a <code>Binary</code> works as expected. The division checks two different cases: because integer division produces a remainder, which is not considered here. The <code>test_binary_get_bit</code> function tests indexing and is one of the few tests that contain more than one assertion. Please note that binary indexing, unlike standard sequence indexing in Python, start from the leftmost element.</p>
+<p>The first two tests check that adding both an integer and a <code>Binary</code> to a <code>Binary</code> works as expected. The division checks two different cases: because integer division produces a remainder, which is not considered here. The <code>test_binary_get_bit</code> function tests indexing and is one of the few tests that contain more than one assertion. Please note that binary indexing, unlike standard sequence indexing in Python, starts from the rightmost element.</p>
 <p>Bitwise and arithmetic operations are implemented using Python magic methods. Please check <a href="https://docs.python.org/3.4/library/operator.html">the official documentation</a> for a complete list of operators and related methods.</p>
 <p><strong>Now download the file <a href="/code/python-oop-tdd-part1/test_binary_ver2.py"><code>test_binary_ver2.py</code></a> and use it to develop the new features.</strong></p>
 <p>The code that implements the required behaviour is</p>
@@ -624,6 +631,7 @@ tests/test_binary.py:5: TypeError
 <p>In the next post I will guide you through the addition of the <code>SizeBinary</code> class, again following the TDD methodology.</p>
 <h2>Updates</h2>
 <p>2015-05-15 As suggested by <a href="https://plus.google.com/u/0/b/110554719587236016835/+JacobZimmermanCrapEDM/posts">Jacob Zimmerman</a> in <a href="https://plus.google.com/110554719587236016835/posts/F7TrsivP94B">this comment</a> the class lacks some methods to be a complete numeric class, most notably <code>__radd__</code> and <code>__rsub__</code>. Indeed, my first goal was to show TDD so I did not add the whole series of reflected arithmetic operations. You will find all those methods <a href="https://docs.python.org/3/reference/datamodel.html#object.__radd__">here</a> and try to implement them following the methodology shown in the post. Jacob also suggested to shorten the <code>__str__()</code> implementation, and I fixed it. Thanks Jacob!</p>
+<p>2015-09-22 <a href="https://github.com/cmccormack">Christopher McCormack</a> spotted an error about binary indexing: "starts from the leftmost element" should be "starts from the rightmost element". Now it has been fixed. Thanks Christopher!</p>
 <h2>Feedback</h2>
 <p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
             </div>
@@ -632,10 +640,10 @@ tests/test_binary.py:5: TypeError
     <h4>Related Posts:</h4>
     <ul>
         <li><a href="http://lgiordani.com/blog/2015/09/10/python-oop-tdd-example-part2/">A simple example of Python OOP development (with TDD) - Part 2</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-3-delegation-composition-and-inheritance/">Python 3 OOP Part 3 - Delegation: composition and inheritance</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/08/20/python-3-oop-part-2-classes-and-members/">Python 3 OOP Part 2 - Classes and members</a></li>
         <li><a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">Accessing attributes in Python</a></li>
-        <li><a href="http://lgiordani.com/blog/2014/08/21/python-3-oop-part-4-polymorphism/">Python 3 OOP Part 4 - Polymorphism</a></li>
-        <li><a href="http://lgiordani.com/blog/2015/03/14/python-3-oop-notebooks/">Python 3 OOP Notebooks</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/10/14/decorators-and-metaclasses/">Advanced use of Python decorators and metaclasses</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">Python 3 OOP Part 5 - Metaclasses</a></li>
     </ul>
 </section>
     <hr />
@@ -698,6 +706,8 @@ tests/test_binary.py:5: TypeError
                 <ul class="list-group list-inline tagcloud" id="tags">
                 </ul>
             </li>
+
+
     </ul>
 </section>
             </aside>
