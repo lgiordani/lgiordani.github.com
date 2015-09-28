@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:og="http://ogp.me/ns#"
+      xmlns:fb="https://www.facebook.com/2008/fbml">
+<head>
+    <title>Clojure sequential data types for Python programmers - The Digital Cat</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <link href="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" rel="icon">
+
+<link rel="canonical" href="http://lgiordani.com/blog/2015/09/22/clojure-sequential-data-types-for-python-programmers/">
+
+        <meta name="author" content="Leonardo Giordani" />
+        <meta name="keywords" content="functional programming,Python,Python2,Python3,Clojure" />
+        <meta name="description" content="A brief comparison of Clojure sequential data types (vectors and lists) with Python lists and tuples" />
+
+        <meta property="og:site_name" content="The Digital Cat" />
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Clojure sequential data types for Python programmers"/>
+        <meta property="og:url" content="http://lgiordani.com/blog/2015/09/22/clojure-sequential-data-types-for-python-programmers/"/>
+        <meta property="og:description" content="A brief comparison of Clojure sequential data types (vectors and lists) with Python lists and tuples"/>
+        <meta property="article:published_time" content="2015-09-22" />
+            <meta property="article:section" content="Programming/Projects" />
+            <meta property="article:tag" content="functional programming" />
+            <meta property="article:tag" content="Python" />
+            <meta property="article:tag" content="Python2" />
+            <meta property="article:tag" content="Python3" />
+            <meta property="article:tag" content="Clojure" />
+            <meta property="article:author" content="Leonardo Giordani" />
+            <meta property="og:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <meta name="twitter:card" content="summary">
+        <meta name="twitter:site" content="@tw_lgiordani">
+        <meta name="twitter:creator" content="@tw_lgiordani">
+    <meta name="twitter:domain" content="http://lgiordani.com">
+            <meta property="twitter:image"
+                  content="http://lgiordani.com/images/TheDigitalCat_logo_200.jpg"/>
+
+    <!-- Bootstrap -->
+        <link rel="stylesheet" href="http://lgiordani.com/theme/css/bootstrap.spacelab.min.css" type="text/css"/>
+    <link href="http://lgiordani.com/theme/css/font-awesome.min.css" rel="stylesheet">
+
+    <link href="http://lgiordani.com/theme/css/pygments/monokai.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://lgiordani.com/theme/css/style.css" type="text/css"/>
+
+        <link href="http://lgiordani.com/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat ATOM Feed"/>
+
+
+
+        <link href="http://lgiordani.com/category/programmingprojects/atom.xml" type="application/atom+xml" rel="alternate"
+              title="The Digital Cat Programming/Projects ATOM Feed"/>
+
+</head>
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+	<div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="http://lgiordani.com/" class="navbar-brand">
+<img src="http://lgiordani.com/images/TheDigitalCat_favicon_32.png" width="24"/> The Digital Cat            </a>
+        </div>
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+            <ul class="nav navbar-nav">
+                         <li><a href="http://lgiordani.com/pages/about.html">
+                             About
+                          </a></li>
+                        <li >
+                            <a href="http://lgiordani.com/category/programming/">Programming</a>
+                        </li>
+                        <li class="active">
+                            <a href="http://lgiordani.com/category/programmingprojects/">Programming/projects</a>
+                        </li>
+                        <li >
+                            <a href="http://lgiordani.com/category/projects/">Projects</a>
+                        </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="http://lgiordani.com/archives/"><i class="fa fa-th-list"></i><span class="icon-label">Archives</span></a></li>
+            </ul>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+</div> <!-- /.navbar -->
+<!-- Banner -->
+<!-- End Banner -->
+<div class="container">
+    <div class="row">
+        <div class="col-sm-9">
+
+    <section id="content">
+        <article>
+            <header class="page-header">
+                <h1>
+                    <a href="http://lgiordani.com/blog/2015/09/22/clojure-sequential-data-types-for-python-programmers/"
+                       rel="bookmark"
+                       title="Permalink to Clojure sequential data types for Python programmers">
+                        Clojure sequential data types for Python programmers
+                    </a>
+                </h1>
+            </header>
+            <div class="entry-content">
+                <div class="panel">
+                    <div class="panel-body">
+<footer class="post-info">
+    <span class="label label-default">Date</span>
+    <span class="published">
+        <i class="fa fa-calendar"></i><time datetime="2015-09-22T19:00:00+01:00"> mar 22 settembre 2015</time>
+    </span>
+
+
+
+
+
+<span class="label label-default">Tags</span>
+	<a href="http://lgiordani.com/categories/functional-programming/">functional programming</a>
+        /
+	<a href="http://lgiordani.com/categories/python/">Python</a>
+        /
+	<a href="http://lgiordani.com/categories/python2/">Python2</a>
+        /
+	<a href="http://lgiordani.com/categories/python3/">Python3</a>
+        /
+	<a href="http://lgiordani.com/categories/clojure/">Clojure</a>
+    
+</footer><!-- /.post-info -->                    </div>
+                </div>
+                <p>I have been working with Python for more than fifteen years and I developed very big systems with this language, learning to know and love both its power and its weaknesses, admiring its gorgeous object-oriented system and exploring some of its darkest corners.</p>
+<p>Despite being so committed to this language (both for personal choices and for business reasons) I never stopped learning new languages, trying to get a clear picture of new (or old) paradigms, to explore new solutions to old problems and in general to get my mind open.</p>
+<p>Unfortunately introducing a new language in your business is always very risky, expensive and many times not a decision of yours only. You are writing software that other may have to maintain, so either you evangelize your team and persuade other to join you or you will be forced to stay with the languages shared by them. This is not bad in itself, but sometimes it is a big obstacle for the adoption of a new language.</p>
+<p>One of the languages I fell in love (but never used in production) is LISP. I strongly believe that everyone calls themselves a programmer shall be somehow familiar with LISP, as well as with Assembly language. The reasons are many and probably do not fit well with the title of this article so I will save them for another, more theoretical post, and move on.</p>
+<p>Clojure is a LISP implementation that runs on the JVM, thus being available on a wide number of platforms. As any other LISP its syntax is a step lower in the abstraction tree: while other languages provide their syntax and then a conversion to an AST (Abstract Syntax Tree), LISPs provide only their AST syntax. This has the great advantage of homoiconicity, something that they share with Assembly and other languages like Prolog, but comes at the cost of a slightly more difficult syntax, at least for the novice.</p>
+<p>In this post I want to review the sequential data types provided by Clojure, trying to introduce them to programmers accustomed to Python data types. Anyway, while the nomenclature and the examples will be specific to Python, I think the discussion can be easily extended to other dynamic languages such as Ruby.</p>
+<h2>Three collection types for the programming-kings</h2>
+<p>In Clojure, just like in Python, you find three types of basic collection types, that is types of data that hold together other types of data, also called compound data types. These are sequences, sets and maps.</p>
+<p>Python provides two types of basic sequences, <strong>tuples</strong> and <strong>lists</strong>, while maps are called <strong>dictionaries</strong>. Those are present in Python since its first versions. <strong>Sets</strong> have been introduced with Python 2.3 in 2003, at first with a dedicated <code>set</code> module, which was then deprecated with Python 2.6 in favour of the built-in type with the same name. From Python 2.7 sets get also a dedicated short syntax similar to that of dictionaries (e.g. <code>{'just', 'a', 'set'</code>).</p>
+<p>The two basic Python sequences differ mainly for a small but very important detail: mutability. In Python tuples are immutable, while lists can be modified. Python lists behave mostly like C arrays: elements can be appended to and extracted from the right end. Apart from the mutability, Python lists and tuples expose a common API which we may address as the <strong>Python sequence API</strong> or <strong>protocol</strong>.</p>
+<p>An object that follows the sequence API in Python has the following traits, among the others:</p>
+<ul>
+<li>Elements are indexed starting from 0 up to the total number of elements minus 1.</li>
+<li>The sequence can be traversed in order, that is, elements can be visited one by one and each repeated visit of the whole collection presents the elements in the same order.</li>
+</ul>
+<p>A derived feature which is provided by sequences is that they can be sliced, i.e. part of them can be extracted as a collection of the same type.</p>
+<p>These features are paramount because they allow Python to define a common interface for loops. This is obviously shared with mostly every programming language, but Clojure implements it in a slightly different way. A Python class shall implement some "magic" methods to expose the sequence API. To get a starting picture of the steps involved read <a href="/blog/2015/05/13/python-oop-tdd-example-part1/">this post</a>, where I discuss the implementation of a binary number type in Python.</p>
+<h2>A matter of definitions</h2>
+<p>The Clojure counterpart of the Python sequence protocol is the <strong>seq API</strong> and it consists of two simple functions: <code>first</code> and <code>rest</code>. Their behaviour is the following</p>
+<ul>
+<li>If the collection is not empty <code>(first collection)</code> returns the first element, otherwise returns <code>nil</code>.</li>
+<li>If the collection is not empty <code>(rest collection)</code> returns a new sequence containing all the elements of <code>collection</code> except the first one, in the same order. If the collection is empty <code>rest</code> returns an empty collection.</li>
+</ul>
+<p>This API is the same we can find in functional languages like Erlang or Scala, where most of the loops are implemented as (tail-) recursive function calls that consume the sequence one element at a time, leaving the rest of the sequence to the next recursion.</p>
+<p>Pay attention to an important difference in Clojure's handling of empty sequences, compared to other LISPs and Python itself. While those treat empty sequences as logically false, Clojure doesn't, so be careful when you deal with this part of it coming from a different language. Remember that in Clojure <strong>everything is true except <code>nil</code> and <code>false</code></strong>.</p>
+<p>Given the definition of the <em>seq</em> API, in Clojure we call <strong>sequence</strong> everything behaves according to it. Since Clojure is implemented on the JVM this "behaviour" matches a very specific Java interface, which in this case is <code>ISeq</code> (see the source definition <a href="https://github.com/clojure/clojure/blob/master/src/jvm/clojure/lang/ISeq.java">here</a>).</p>
+<p>The concept of being an ordered set of values in Clojure is represented by the word <strong>sequential</strong>, which corresponds to the Java interface <code>Sequential</code> (<a href="https://github.com/clojure/clojure/blob/master/src/jvm/clojure/lang/Sequential.java">source code</a>). Last, the concept of being a <strong>collection</strong> is represented in Clojure by means of the Java interface <code>IPersistenCollection</code> (<a href="https://github.com/clojure/clojure/blob/master/src/jvm/clojure/lang/IPersistentCollection.java">source code</a>).</p>
+<p>Given these definitions it is immediately clear what difference is there between the <code>seq?</code>, <code>sequential?</code> and <code>coll?</code> functions. They tell you if the given parameter implements the relative Java interface.</p>
+<p>The function <code>seq</code>, instead, performs a conversion of its input into a sequence, that is something that implements the <code>ISeq</code> interface. This function always returns <code>nil</code> if the input is an empty collection, which allows Clojure to adhere to the standard LISP technique called <em>nil-punning</em>, or in simpler words <strong>loop termination condition check</strong>. Every collection in Clojure provides a meaningful output for the <code>seq</code> function, but some of them provide more than one function to return a sequence. For example maps provide a way to get the sequence of both keys and values through the aptly named <code>keys</code> and <code>vals</code> functions.</p>
+<h2>Vectors and lists</h2>
+<p>Clojure provides two sequential data types just like Python, but they do not differ for the mutability property, because in Clojure every collection is immutable. Instead, they differ for their behaviour as queues (where a new element goes and where a popped element comes from).</p>
+<p>These two data types are vectors and lists, and as happens in other LISPs lists are very important for the language syntax itself. Their main difference between the two types, which is immediately clear when using them, is that while vectors grow on the right end, lists grow on the left one. This will be important when discussing append functions like <code>conj</code>.</p>
+<p>Let me first start with some details on mutability and persistence.</p>
+<h2>Mutability and persistence</h2>
+<p>Clojure's collections are <strong>immutable</strong>, which means that you cannot change the content of one of their instances. This is a feature provided in Python by means of the tuple data type only. As happens in other languages like Erlang, Clojure's immutability of collections is a trampoline to concurrency safety, something the language provides as a feature rather than a limitation.</p>
+<p>Clojure collections are also <strong>persistent</strong>. The original meaning of this word refers to the possibility of accessing the old version of a given structure after having changed it. Since structures in Clojure are immutable you are forced to create a new variable every time you want to change something, which implies that the "old version" is still available. That is, immutability implies persistence. In Clojure, moreover, structures share values as long as this is consistent, which is exactly what Python does with the references concept (see <a href="/blog/2014/08/21/python-3-oop-part-4-polymorphism">this post</a>).</p>
+<h2>Vectors in Clojure</h2>
+<p>Clojure's vectors are very similar to Python lists. The first thing that makes them similar (apart from the square brackets syntax) is that they grow on the right end.</p>
+<div class="highlight"><pre><span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">conj </span><span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">]</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span><span class="p">]</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+</pre></div>
+
+
+<p>From the right end you can also easily get values</p>
+<div class="highlight"><pre><span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">peek </span><span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span><span class="p">])</span>
+<span class="mi">5</span>
+</pre></div>
+
+
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span>
+<span class="go">[1, 2, 3, 4, 5]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+<span class="go">5</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span>
+<span class="go">[1, 2, 3, 4]</span>
+</pre></div>
+
+
+<p>So Clojure vectors and Python lists are LIFO queues (Last In First Out), otherwise known as <em>stacks</em>. In Clojure <code>peek</code> takes the role of the classic <code>pop</code> operation, but remember that being collections immutable, what you get is a new value. That is, while in Python <code>pop()</code> modifies the list, in Clojure <code>peek</code> doesn't alter the vector.</p>
+<h3>Subvectors</h3>
+<p>Just like Python lists, vectors can be sliced with the <code>subvec</code> function</p>
+<div class="highlight"><pre><span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">subvec </span><span class="p">[</span><span class="ss">:a</span> <span class="ss">:b</span> <span class="ss">:c</span> <span class="ss">:d</span> <span class="ss">:e</span><span class="p">]</span> <span class="mi">2</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">[</span><span class="ss">:c</span> <span class="ss">:d</span> <span class="ss">:e</span><span class="p">]</span>
+</pre></div>
+
+
+<p>Subvectors are however different from Python list slices. When you slice a list in Python you get a new object containing part of the same references you can find in the source list. That is, slicing a list actually builds a new list copying the reference of each object contained in the slice.</p>
+<p>Let us briefly review this important concept. For this example I build a list of mutable objects, in this case dictionaries.</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">l</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;c&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;e&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s">&#39;f&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span>
+<span class="go">[{&#39;b&#39;: 2, &#39;a&#39;: 1}, {&#39;c&#39;: 3, &#39;d&#39;: 4}, {&#39;f&#39;: 6, &#39;e&#39;: 5}]</span>
+</pre></div>
+
+
+<p>then take a slice of it, a list containing the second element only</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span>
+<span class="go">[{&#39;c&#39;: 3, &#39;d&#39;: 4}]</span>
+</pre></div>
+
+
+<p>The original list <code>l</code> and the slice <code>s</code> are different objects, as shown by their memory address</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+<span class="go">3069706412</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">id</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+<span class="go">3061925100</span>
+</pre></div>
+
+
+<p>but there is still a link between them, as you can see if you change the value of the element contained in the slice. This change affects the original list too</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span>
+<span class="go">[{&#39;c&#39;: 100, &#39;d&#39;: 4}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">l</span>
+<span class="go">[{&#39;b&#39;: 2, &#39;a&#39;: 1}, {&#39;c&#39;: 100, &#39;d&#39;: 4}, {&#39;f&#39;: 6, &#39;e&#39;: 5}]</span>
+</pre></div>
+
+
+<p>In Clojure a subvector is a complete reference to the source vector, with a special annotation of the slice boundaries. This gives you a very fast way to create subvectors, which is independent from the size of the vector itself (aka O(1) or constant time). On the other hand this gives you a structure which is a bit slower when accessed, due to the math involved in computing the actual offset. This handicap however does not propagate to subvectors of subvectors, so it can be considered a (little) constant slowdown of every subvector.</p>
+<h3>Appending values (push)</h3>
+<p>You find two different functions that can append values to a Clojure vector, <code>into</code> and <code>conj</code>, implementing the <code>push</code> operation of classic stacks. Clojure is not an object-oriented language, so these functions are not methods of the vector type. Those methods however behave in a different way according to the destination type.</p>
+<p>The <code>into</code> function, according to the <a href="https://clojuredocs.org/clojure.core/into">official documentation</a> <em>conjoins every item</em> of the second argument (the <em>from</em> collection) into the first argument (the <em>to</em> collection). This means that every item of the incoming collection is appended to the destination, according to the way that collection manages the append operation. For example, vectors grow on the right, so performing an <code>into</code> will append elements on the right end of the vector itself. This means also that <code>into</code> may be used to convert one type of collection into another.</p>
+<p>Conversely, the <code>conj</code> function <em>conjoins the whole second argument</em> (<code>conj</code> accepts more than two arguments but let's deal with the simpler case now)</p>
+<div class="highlight"><pre><span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">conj </span><span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">]</span> <span class="p">[</span><span class="mi">5</span> <span class="mi">6</span><span class="p">])</span>
+<span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="p">[</span><span class="mi">5</span> <span class="mi">6</span><span class="p">]]</span>
+</pre></div>
+
+
+<p>Just like <code>into</code>, <code>conj</code> relies on the destination type to perform the actual append operation.</p>
+<p>In Python you can find a similar situation if you consider the two methods <code>extend()</code> and <code>append()</code> of lists. The first one expects an argument that exposes the sequential protocol, and pushes into the destination list each of its elements</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span>
+</pre></div>
+
+
+<p>On the other hand, <code>append()</code> pushes into the list the whole argument, just like <code>conj</code> does for vectors in Clojure, and thus is mostly used to append single elements, for example in for loops.</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]]</span>
+</pre></div>
+
+
+<h3>Getting values (pop)</h3>
+<p>The <code>pop</code> operation of classic stacks is also implemented by two different functions, <code>peek</code> and <code>pop</code>. The first one returns the last element of the vector, being thus the Clojure's equivalent of Python's <code>pop()</code> as shown in a previous example. Clojure's <code>pop</code>, instead, removes the last element and returns the resulting vector.</p>
+<div class="highlight"><pre><span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">pop </span><span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">5</span><span class="p">])</span>
+<span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">]</span>
+</pre></div>
+
+
+<p>The Python equivalent could be a slice</p>
+<div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">][:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="go">[1, 2, 3, 4]</span>
+</pre></div>
+
+
+<p>The <code>last</code> function will return the same value as <code>peek</code>, but is very inefficient for vectors. The <a href="https://clojuredocs.org/clojure.core/peek">official documentation</a> gives an example for a vector of ten thousand elements where <code>last</code> is around 25 times slower than <code>peek</code>. This is mainly due to the fact that <code>last</code> scans the whole sequence to find the last element, that is works in linear time O(n) (see the <a href="https://github.com/clojure/clojure/blob/clojure-1.7.0/src/clj/clojure/core.clj#L249">source code</a>).</p>
+<p>A final note about looking for values. The Python <code>in</code> operator has no direct equivalent for Clojure vectors. Beware that the <code>contains?</code> function does check the collection keys (indices of the vector) and not the values. The <a href="https://clojuredocs.org/clojure.core/contains_q">official documentation</a> of <code>contains?</code> gives some hints about this problem. I strongly suggest you to check them.</p>
+<h3>Random access</h3>
+<p>Clojure vectors and Python lists are both arrays of indexed values, which means that they are optimized for random access. In Python you may just index the list</p>
+<div class="highlight"><pre><span class="o">&gt;&gt;&gt;</span> <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;list&quot;</span><span class="p">,</span> <span class="s">&quot;of&quot;</span><span class="p">,</span> <span class="s">&quot;strings&quot;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">l</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="s">&#39;of&#39;</span>
+</pre></div>
+
+
+<p>where the indexing syntax works also for slices. In Clojure you can use the <code>nth</code> function</p>
+<div class="highlight"><pre><span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">nth </span><span class="p">[</span><span class="s">&quot;a&quot;</span> <span class="s">&quot;vector&quot;</span> <span class="s">&quot;of&quot;</span> <span class="s">&quot;strings&quot;</span><span class="p">]</span> <span class="mi">2</span><span class="p">)</span>
+<span class="s">&quot;of&quot;</span>
+</pre></div>
+
+
+<p>For vectors the <code>get</code> function maps to <code>nth</code>, since vectors are after all ordered dictionaries with the position indices as keys. Vectors in Clojure can also be directly used as functions, which aliases the use of <code>nth</code></p>
+<div class="highlight"><pre><span class="nv">user=&gt;</span> <span class="p">([</span><span class="s">&quot;a&quot;</span> <span class="s">&quot;vector&quot;</span> <span class="s">&quot;of&quot;</span> <span class="s">&quot;strings&quot;</span><span class="p">]</span> <span class="mi">2</span><span class="p">)</span>
+<span class="s">&quot;of&quot;</span>
+</pre></div>
+
+
+<h2>Lists in Clojure</h2>
+<p>Being Clojure a LISP, lists are of paramount importance and a complete discussion about them will surely span more than a small post on a blog. So in this section I will try to stay focused on the differences with Python lists (and Clojure vectors), rather than give you a complete overview of this incredibly powerful tool. The most important thing I will not review here is that lists in Clojure are part of the syntax itself and in the following section I will only consider lists as data containers. The fact that LISPs consider code as data is outside the scope of this work.</p>
+<p>Being vectors the Clojure collection that implement classic stacks (LIFO queues), and being stacks one of the most used data structures in computer science, it is no surprise that a lot of sequential data processing in Clojure is done through vectors.</p>
+<p>As already stated the big difference between vectors and lists in Clojure is the fact that lists grow on the left end. Let us review the behaviour of <code>peek</code> and <code>conj</code> on lists compared to that of the same functions on vectors</p>
+<div class="highlight"><pre><span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">peek </span><span class="o">&#39;</span><span class="p">(</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">))</span>
+<span class="mi">1</span>
+<span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">peek </span><span class="p">[</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">])</span>
+<span class="mi">4</span>
+<span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">conj </span><span class="o">&#39;</span><span class="p">(</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">)</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">(</span><span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">conj </span><span class="p">[</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">]</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span> <span class="mi">1</span><span class="p">]</span>
+<span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">pop </span><span class="o">&#39;</span><span class="p">(</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">))</span>
+<span class="p">(</span><span class="mi">3</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nv">user=&gt;</span> <span class="p">(</span><span class="nb">pop </span><span class="p">[</span><span class="mi">2</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">])</span>
+<span class="p">[</span><span class="mi">2</span> <span class="mi">3</span><span class="p">]</span>
+</pre></div>
+
+
+<p>I think this is simple to remember and easy to deal with in algorithms. As you can see lists behave somehow like mirrored vectors. Beware, however, that functions such as <code>first</code> and <code>last</code> still work in the same way. That is, lists are not reversed vectors.</p>
+<p>As happened for vectors there are some performance considerations to do for lists. Even for lists the <code>last</code> function performs in linear time, but while vectors can use <code>peek</code> to perform the same service, lists cannot. This is a big asymmetry and one of the reasons you could prefer vectors over lists for your data. While accessing the first element is blazing fast both for lists and vectors, accessing the last can be very fast for vectors through the <code>peek</code> function but is performed in linear time on lists.</p>
+<p>One of the biggest drawbacks of Clojure lists used like arrays is that they are not optimized for random access, while vectors are. That is, the <code>nth</code> function performs in linear time on lists since, just like <code>last</code>, it scans the whole list one element at a time. Vectors, on the other hand, are indexed, which means that random access is performed in constant time.</p>
+<p>As you can see there is not much to say about Clojure lists as data containers (here <em>data</em> is used more in a Python sense): there are simply very few reasons to prefer lists over vectors as data containers.</p>
+<h2>Final words</h2>
+<p>Python and Clojure are very different languages, so this was not an attempt to find "migration rules" from Python code to Clojure. I just wanted to review what Python programmers shall expect from Clojure sequential data types, expressing it in a familiar way.</p>
+<p>I wish you a happy Clojure time!</p>
+<h2>Feedback</h2>
+<p>Feel free to use <a href="https://plus.google.com/u/0/b/110554719587236016835/110554719587236016835/posts">the blog Google+ page</a> to comment the post. The <a href="https://github.com/lgiordani/lgiordani.github.com/issues">GitHub issues</a> page is the best place to submit corrections.</p>
+            </div>
+            <!-- /.entry-content -->
+<section class="well" id="related-posts">
+    <h4>Related Posts:</h4>
+    <ul>
+        <li><a href="http://lgiordani.com/blog/2015/01/12/accessing-attributes-in-python/">Accessing attributes in Python</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/09/01/python-3-oop-part-5-metaclasses/">Python 3 OOP Part 5 - Metaclasses</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/05/13/python-oop-tdd-example-part1/">A simple example of Python OOP development (with TDD) - Part 1</a></li>
+        <li><a href="http://lgiordani.com/blog/2014/03/05/oop-concepts-in-python-2-dot-x-part-1/">OOP concepts in Python 2.x - Part 1</a></li>
+        <li><a href="http://lgiordani.com/blog/2015/09/10/python-oop-tdd-example-part2/">A simple example of Python OOP development (with TDD) - Part 2</a></li>
+    </ul>
+</section>
+    <hr />
+    <!-- AddThis Button BEGIN -->
+    <div class="addthis_toolbox addthis_default_style">
+            <a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+            <a class="addthis_button_tweet"></a>
+            <a class="addthis_button_google_plusone" g:plusone:size="medium"></a>
+    </div>
+    <!-- AddThis Button END -->
+        </article>
+    </section>
+
+        </div>
+        <div class="col-sm-3" id="sidebar">
+            <aside>
+
+<section class="well well-sm">
+    <ul class="list-group list-group-flush">
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Social</span></h4>
+              <ul class="list-group" id="social">
+                <li class="list-group-item"><a href="https://twitter.com/tw_lgiordani"><i class="fa fa-twitter-square fa-lg"></i> Twitter</a></li>
+                <li class="list-group-item"><a href="http://plus.google.com/+LeonardoGiordani?rel=author"><i class="fa fa-google-plus-square fa-lg"></i> Google+</a></li>
+                <li class="list-group-item"><a href="https://github.com/lgiordani"><i class="fa fa-github-square fa-lg"></i> GitHub</a></li>
+              </ul>
+            </li>
+
+            <li class="list-group-item"><h4><i class="fa fa-home fa-lg"></i><span class="icon-label">Recent Posts</span></h4>
+                <ul class="list-group" id="recentposts">
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/09/22/clojure-sequential-data-types-for-python-programmers/">
+                            Clojure sequential data types for Python programmers
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/09/10/python-oop-tdd-example-part2/">
+                            A simple example of Python OOP development (with TDD) - Part 2
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/06/22/using-gitflow-with-github-a-simple-procedure/">
+                            Using gitflow with GitHub: a simple procedure
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/05/13/python-oop-tdd-example-part1/">
+                            A simple example of Python OOP development (with TDD) - Part 1
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <a href="http://lgiordani.com/blog/2015/05/13/99-scala-problems-16-20/">
+                            99 Scala Problems 16-20
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
+
+            <li class="list-group-item"><a href="http://lgiordani.com/"><h4><i class="fa fa-tags fa-lg"></i><span class="icon-label">Tags</span></h4></a>
+                <ul class="list-group list-inline tagcloud" id="tags">
+                </ul>
+            </li>
+
+
+    </ul>
+</section>
+            </aside>
+        </div>
+    </div>
+</div>
+<footer>
+   <div class="container">
+      <hr>
+      <div class="row">
+         <div class="col-xs-10">&copy; 2015 Leonardo Giordani
+            &middot; Powered by <a href="https://github.com/DandyDev/pelican-bootstrap3" target="_blank">pelican-bootstrap3</a>,
+            <a href="http://docs.getpelican.com/" target="_blank">Pelican</a>,
+            <a href="http://getbootstrap.com" target="_blank">Bootstrap</a>              <p><small>  <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="border-width:0" src="//i.creativecommons.org/l/by-sa/4.0/80x15.png" /></a>
+    Content
+  licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution 4.0 International License</a>, except where indicated otherwise.
+</small></p>
+         </div>
+         <div class="col-xs-2"><p class="pull-right"><i class="fa fa-arrow-up"></i> <a href="#">Back to top</a></p></div>
+      </div>
+   </div>
+</footer>
+<script src="http://lgiordani.com/theme/js/jquery.min.js"></script>
+
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="http://lgiordani.com/theme/js/bootstrap.min.js"></script>
+
+<!-- Enable responsive features in IE8 with Respond.js (https://github.com/scottjehl/Respond) -->
+<script src="http://lgiordani.com/theme/js/respond.min.js"></script>
+
+    <!-- Google Analytics Universal -->
+    <script type="text/javascript">
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-38715090-1', '');
+        ga('send', 'pageview');
+    </script>
+    <!-- End Google Analytics Universal Code -->
+
+        <script type="text/javascript">var addthis_config = {"data_track_addressbar": true};</script>
+    <script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-552391e122c8506c"></script>
+</body>
+</html>
