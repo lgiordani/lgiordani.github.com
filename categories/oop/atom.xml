@@ -2399,7 +2399,7 @@ tests/test_binary.py:5: TypeError
 &lt;p&gt;So I chose to split the previous series and to adapt the content to Python 3 instead of posting a mere list of corrections. I find this way to be more useful for new readers, that otherwise sould be forced to read the previous series.&lt;/p&gt;
 &lt;h3&gt;Print&lt;/h3&gt;
 &lt;p&gt;One of the most noticeable changes introduced by Python 3 is the transformation of the &lt;code&gt;print&lt;/code&gt; keyword into the &lt;code&gt;print()&lt;/code&gt; function. This is indeed a very small change, compared to other modifications made to the internal structures, but is the most visual-striking one, and will be the source of 80% of your syntax errors when you will start writing Python 3 code.&lt;/p&gt;
-&lt;p&gt;Remember that print is now a function so write &lt;code&gt;print(a)&lt;/code&gt; and not &lt;code&gt;print a&lt;/code&gt;.d&lt;/p&gt;
+&lt;p&gt;Remember that print is now a function so write &lt;code&gt;print(a)&lt;/code&gt; and not &lt;code&gt;print a&lt;/code&gt;.&lt;/p&gt;
 &lt;h2&gt;Back to the Object&lt;/h2&gt;
 &lt;p&gt;Computer science deals with data and with procedures to manipulate that data. Everything, from the earliest Fortran programs to the latest mobile apps is about data and their manipulation. &lt;/p&gt;
 &lt;p&gt;So if data are the ingredients and procedures are the recipes, it seems (and can be) reasonable to keep them separate.&lt;/p&gt;
