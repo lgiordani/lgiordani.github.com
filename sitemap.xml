@@ -4,29 +4,29 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitem
 xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
 <url>
-<loc>http://lgiordani.com/index.html</loc>
-<lastmod>2015-10-20T14:24:25-00:00</lastmod>
+<loc>http://lgiordani.com/</loc>
+<lastmod>2015-11-05T16:46:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/tags.html</loc>
-<lastmod>2015-10-20T14:24:25-00:00</lastmod>
+<lastmod>2015-11-05T16:46:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/categories.html</loc>
-<lastmod>2015-10-20T14:24:25-00:00</lastmod>
+<lastmod>2015-11-05T16:46:02-00:00</lastmod>
 <changefreq>daily</changefreq>
 <priority>0.5</priority>
 </url>
 
 <url>
 <loc>http://lgiordani.com/pages/about.html</loc>
-<lastmod>2015-10-20T14:24:25-00:00</lastmod>
+<lastmod>2015-11-05T16:46:02-00:00</lastmod>
 <changefreq>monthly</changefreq>
 <priority>0.5</priority>
 </url>
